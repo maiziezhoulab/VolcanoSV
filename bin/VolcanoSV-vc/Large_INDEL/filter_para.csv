@@ -1,0 +1,7 @@
+﻿asm,dtype,lb_ins,rb_ins,lb_del,rb_del
+other,ccs,0.048,2.61,0.097,2.59
+other,clr,0.0327,2.476,0.102,2.638
+other,ont,0.191,2.44,0.123,2.67
+volcano,ccs,0.097,2.754,0.2,2.605
+volcano,clr,0.075,2.383,0.186,3.018
+volcano,ont,0.206,2.79,0.242,2.77

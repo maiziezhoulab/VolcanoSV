@@ -1,0 +1,4 @@
+t_large_11:0.55
+t_small_11:0.59
+t_large_01:0.65
+t_small_01:0.75
