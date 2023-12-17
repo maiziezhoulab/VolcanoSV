@@ -2,7 +2,8 @@
 
 
 ## Dependencies for Github installation:
-VolcanoSV utilizes <a href="https://www.python.org/downloads/">Python3.8.6. The dependencies include
+VolcanoSV utilizes Python3.8.6. 
+The dependencies include
 
 ```
 collections
