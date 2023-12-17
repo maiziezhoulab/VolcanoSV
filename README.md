@@ -68,108 +68,95 @@ The VolcanoSV assembly is designed to be run by chromosomes. The main code is `b
 
 
 
-After running the above code, you will have output folder "./OER/part2" that contains important OER information. Now, you are good to run the VolcanoSV pipeline.
+After running the above code, you will have output contigs in `<ouput_folder>/assembly/final_contigs/final_contigs.fa`.
 
 
-### Step 1: 
-```
-python3 VolcanoSV/bin/VolcanoSV_step1.py  --bam_file selected.bam --vcf_file test_freebayes.vcf --chr_num 3 --out_dir test_sv --OER_dir ./OER/part2
+### VolcanoSV Variant Call: 
 
-```
-#### *Required parameters
+#### Large Indel detection
 
-**--bam_file:** "selected.bam" is a bam file for a target region. How to get the bam file, you can also check <a href="https://github.com/maiziezhoulab/VolcanoSV/blob/master/src/How_to_get_bam_and_vcf.md">here</a>.
+The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The input arguments for this code are explained below:
 
-**--vcf_file:** "test_freebayes.vcf" is a VCF file generated from variant caller like "FreeBayes". How to get the vcf file, you can also check <a href="https://github.com/maiziezhoulab/VolcanoSV/blob/master/src/How_to_get_bam_and_vcf.md">here</a>. 
-
-**--chr_num:** "3" is the chromosome number you need to define for the target region or the structural variant you are interested in.
-
-**--OER_dir:**  ./OER/part2 is the OER folder you generated in step 0.
-
-
-#### *Optional parameters
-**--mole_boundary:** default = 50000 (50kb). We use 50kb to differentiate reads with the same barcode are drawn from different long molecules. 
-
-**--out_dir:** default = ./VolcanoSV_results. You can define your own folder name.
-
-**--num_threads:** default = 8. 
-
-**--num_threads_bwa_mem:** number of threads for bwa-mem, default = 20
-
-**--clean:** default = 1. It will delete all assembly files from SPAdes and intermediate bam/fastq files from VolcanoSV.
-
-
-
-### Step 2: 
-```
-python3 VolcanoSV/bin/VolcanoSV_step2.py --out_dir test_sv --chr_num 3 
 
 ```
-#### *Required parameters
-**--chr_num:** "3" is the chromosome number you need to define for the target region or the structural variant you are interested in.
-
-**--reference:** "genome_hg19.fa" is the human reference fasta file.
-
-#### *Optional parameters
-**--out_dir:** default = ./VolcanoSV_results, make sure it's the same as "--out_dir" from ***Step1*** if you want to define your own output directory name.
-
-**--num_threads:** default = 10, this determines the number of files assembled simultaneously by SPAdes.  
-
-**--num_threads_spades:** default = 5, this is the "-t" for SPAdes. 
-
-
-
-### Step 3: 
-```
-python3 VolcanoSV/bin/VolcanoSV_step3.py  --assembly_dir test_sv  -o_dir test_sv --ref_file genome_hg19.fa  --chr_num 3 
-
-```
-#### *Required parameters
-**--assembly_dir:** folder to store assembly results from step1 and step2 (same as "--out_dir" for step1 and step2).
-
-**--ref_file:** "genome_hg19.fa" is the human reference fasta file.
-
-**--chr_num:** "3" is the chromosome number you need to define for the target region or the structural variant you are interested in.
-
-#### *Optional parameters
-**--out_dir:** default = ./VolcanoSV_Step3_Results. Directory to store the final VCF file from VolcanoSV, and you can define your own folder name
-
-**--var_size:** default = 1, variant size, cut off size for indel and SV, 
-
-**--num_of_threads:** number of threads, default = 1
-
-**--clean:** default = 1. You can choose to delete intermediate files or no
-
-### Step 4 (optional): 
-```
-#----------extract SVs
-cat ./test_sv/VolcanoSV_Step3_Result/VolcanoSV_Contig_final_sorted.vcf \
-	| awk '($1 ~ /^#/ || length($5) - length($(4)) > 30 || length($4) - length($(5)) > 30 )' \
-	> ./test_sv/VolcanoSV_Step3_Result/VolcanoSV_Contig_final_sorted_sv.vcf
-
-python3 VolcanoSV/bin/remove_redundancy.py   \
--i ./test_sv/VolcanoSV_Step3_Result/VolcanoSV_Contig_final_sorted_sv.vcf  \
--o ./test_sv/Remove_redundancy/
+  --fasta_pattern FASTA_PATTERN, -fa FASTA_PATTERN
+                        by chromosome fasta, replace chr number with *
+  --ref_pattern REF_PATTERN, -chrref REF_PATTERN
+                        by chromosome reference, replace chr number with *
+  --output_dir OUTPUT_DIR, -o OUTPUT_DIR
+  --data_type DATA_TYPE, -dtype DATA_TYPE
+                        CCS;CLR;ONT
+  --rbam_file RBAM_FILE, -rbam RBAM_FILE
+                        reads bam file for reads signature extraction
+  --reference REFERENCE, -ref REFERENCE
+                        wgs reference file
+  --n_thread N_THREAD, -t N_THREAD
+  --n_thread_align N_THREAD_ALIGN, -ta N_THREAD_ALIGN
+  --mem_per_thread MEM_PER_THREAD, -mempt MEM_PER_THREAD
+                        Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M
 
 ```
 
-Sometimes the result will have duplicate calls, and to remove these calls, you can use **remove_redundancy.py**. 
+After running the above code, you will have output VCF in `<ouput_folder>/variants_filter_DEL_corGT.vcf`.
 
-## Running for multiple regions:
 
-If you have multiple interested regions, you can save the regions into a BED file and use our example script **bin/mt_region_VolcanoSV.sh** to detect SVs in multiple regions. Make sure you change the parameters in the bash script before you run it. The parameters are explained below:
+#### Complex SV detection
 
-```
-#-----------------Parameter------------
+The main code is `bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The input arguments for this code are explained below:
 
-bed_file="test.bed"  # Specify your BED file
-wgsbam=possorted_bam.bam #your whole genome bam file
-wgsvcf=possorted_bam_freebayes.vcf #your whole genome VCF file
-oerdir=./OER/part2   # the OER file generated in step 0
-reference=genome_hg19.fa # reference file
-RegionInde_dir=./VolcanoSV/ # VolcanoSV install directory (The full path the user installs VolcanoSV)
 
 ```
+  --hp1fa HP1FA, -hp1 HP1FA
+  --hp2fa HP2FA, -hp2 HP2FA
+  --indelvcf INDELVCF, -vcf INDELVCF
+  --bamfile BAMFILE, -bam BAMFILE
+  --reference REFERENCE, -ref REFERENCE
+  --datatype {CCS,CLR,ONT}, -d {CCS,CLR,ONT}
+  --out_dir OUT_DIR, -o OUT_DIR
+  --n_thread N_THREAD, -t N_THREAD
+
+```
+
+After running the above code, you will have output VCF in `<ouput_folder>/complex_SV.vcf`.
+
+
+#### Small Indel detection
+
+The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
+
+
+```
+  --hp1_bam HP1_BAM, -hp1 HP1_BAM
+                        either hp1 bam or hp1 fa need to be provided (default: None)
+  --hp2_bam HP2_BAM, -hp2 HP2_BAM
+                        either hp2 bam or hp2 fa need to be provided (default: None)
+  --hp1_fa HP1_FA, -fhp1 HP1_FA
+                        either hp1 bam or hp1 fa need to be provided (default: None)
+  --hp2_fa HP2_FA, -fhp2 HP2_FA
+                        either hp2 bam or hp2 fa need to be provided (default: None)
+  --read_bam READ_BAM, -rbam READ_BAM
+  --output_dir OUTPUT_DIR, -o OUTPUT_DIR
+  --reference REFERENCE, -ref REFERENCE
+  --bedfile BEDFILE, -bed BEDFILE
+                        optional; a high confidence bed file (default: None)
+  --region REGION, -r REGION
+                        optional; exmaple: chr21:2000000-2100000 (default: None)
+  --n_thread N_THREAD, -t N_THREAD
+  --kmer_size KMER_SIZE, -k KMER_SIZE
+  --ratio RATIO, -rt RATIO
+                        maximum bad kmer ratio (default: 0.3)
+  --min_support MIN_SUPPORT, -ms MIN_SUPPORT
+                        maximum support for bad kmer (default: 5)
+
+```
+
+After running the above code, you will have output VCF in `<ouput_folder>/indel_2_49.vcf`.
+
+
+
+
+
+
 
 
 #### Memory/Time Usage For VolcanoSV
@@ -178,40 +165,7 @@ Coverage| Memory| Time for one SV on a single node
 60X | 20GB | 00:10:32 |
 
 
-## Final Output:
-**test_sv/VolcanoSV_step3_results:** VolcanoSV_contig_final.vcf
-```
-test_sv
-|
-|-H5_for_molecules 
-|   └-target_chr3_sorted.h5    --> (molecule files for target region including barcode, variants annotation (0: ref allele; 1: alt allele), coordinates for each molecule)
-|
-|-results_phased_probmodel
-|   └-chr*.phased_final        --> (Phased molecule files)
-|
-|
-|-Local_Assembly_by_chunks
-|   └-chr*_files_cutPBHC
-|       |-fastq_by_*_*_hp1.fastq                  --> (reads fastq file for haplotype 1)
-|       |-fastq_by_*_*_hp2.fastq                  --> (reads fastq file for haplotype 2)
-|       
-|
-|-Assembly_Contigs_files
-|    |-VolcanoSV_Contig_chr*.fasta                    --> (final contigs fasta file for the target region)
-|    |-VolcanoSV_Contig_chr*.bam                      --> (final contigs bam file for the target region)
-|    |-VolcanoSV_Contig_chr*_hp1.fasta                     --> (final contigs fasta file for haplotype 1)
-|    └-VolcanoSV_Contig_chr*_hp2.fasta                     --> (final contigs fasta file for haplotype 2)
-|
-└-VolcanoSV_step3_results
-     └-VolcanoSV_Contig_final_sorted.vcf --> (final VCF including SNPs, small Indels and SVs)
-     
-     
-```
 
-## Final contig bam file (VolcanoSV_Contig_chr*.bam) diplayed in IGV (SV + 25kb left and right flanking regions):
-<p align="center">
-	<img src="src/igv1.png"  width="650">
-</p>
 
 
 ## Troubleshooting:
