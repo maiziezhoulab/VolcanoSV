@@ -2,82 +2,84 @@
 
 
 ## Dependencies for Github installation:
-RegionIndel utilizes <a href="https://www.python.org/downloads/">Python3 (+ numpy, pysam, sortedcontainers, and scipy)</a>, <a href="http://samtools.sourceforge.net/">SAMtools</a>, and <a href="https://github.com/lh3/minimap2">minimap2</a>. To be able to execute the above programs by typing their name on the command line, the program executables must be in one of the directories listed in the PATH environment variable (".bashrc"). <br />
-Or you could just run "./install.sh" to check their availability and install them if not, but make sure you have installed "python3", "conda" and "wget" first. 
+VolcanoSV utilizes <a href="https://www.python.org/downloads/">Python3.8.6. The dependencies include
+
+```
+collections
+edlib
+joblib
+math
+multiprocessing
+pysam
+random
+scipy
+sklearn
+statistics
+subprocess
+tqdm
+argparse
+edlib
+gzip
+jellyfish
+logging
+matplotlib
+networkx
+numpy
+pandas
+pickle
+pysam
+subprocess
+pyvcf
+```
+You need to run `conda install <packagename>` to install all the above dependencies.
 
 # Install through Github:
 
 ```
-git clone https://github.com/maiziex/RegionIndel.git
-cd RegionIndel
-chmod +x install.sh
-./install.sh
+git clone https://github.com/maiziex/VolcanoSV.git
 ```
 
 
-## source folder:
-After running "./install.sh", a folder "source" would be downloaded.
+
 
 ## Running The Code:
-Put the "RegionIndel/bin" in the ".bashrc" file, and source the ".bashrc" file <br />
-Or just use the full path of "**RegionIndel_step1.py**", "**RegionIndel_step2.py**" and "**RegionIndel_step3.py**"
+Put the "VolcanoSV/bin" in the ".bashrc" file, and source the ".bashrc" file <br />
+Or just use the full path of "**volcanosv-asm.py**", "**volcanosv-vc-large-indel.py**", "**volcanosv-vc-complex-sv.py**" and "**volcanosv-vc-small-indel.py**"
 
-*We provide  <a href="https://github.com/maiziezhoulab/RegionIndel/blob/main/example_data/run_example_data.md">a test example dataset</a> to run the whole pipeline. 
 
-### Step 0:
-We added "orphan end reads" (OER) to our pipeline to generate more accurate assembly and boost the performance. Orphan end reads are defined as a read pair in which each mate is aligned to a different chromosome. The below code is how we prepare OER in a whole genome scale.
+
+### VolcanoSV Assembly 
+
+
+The VolcanoSV assembly is designed to be run by chromosomes. The main code is `bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+
+
 ```
-## specify the wgs bam path
-wgs_bam=possorted_bam.bam
+  --inbam INBAM, -i INBAM
+  --out_dir OUT_DIR, -o OUT_DIR
+  --chrref CHRREF, -r CHRREF
+  --n_thread N_THREAD, -t N_THREAD
+  --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
+  --dtype {CCS,CLR,ONT}, -d {CCS,CLR,ONT}
+  --prefix PREFIX, -px PREFIX
 
-# create directory for by chromosme bam files
-mkdir bam_by_chr
-
-# extract bam file for chr1-chr22 and hs37d5, and add index
-for i in {1..22}
-do
-samtools view -Sb $wgs_bam chr$i > bam_by_chr/possorted_bam_chr${i}.bam
-samtools index bam_by_chr/possorted_bam_chr${i}.bam
-done
-
-samtools view -Sb $wgs_bam hs37d5 > bam_by_chr/possorted_bam_hs37d5.bam
-samtools index bam_by_chr/possorted_bam_hs37d5.bam
-
-# extract OER part1
-for i in {1..22}
-do
-python3 RegionIndel/bin/OER_SCAN_part1.py \
--i bam_by_chr/possorted_bam_chr${i}.bam \
--o ./OER/part1
-done
-
-# extract OER part2
-for i in {1..22}
-do
-python3 RegionIndel/bin/OER_SCAN_part2.py \
--i bam_by_chr/possorted_bam_chr${i}.bam \
--chrn chr${i} -o ./OER/part2 \
--rq ./OER/part1
-done
-
-python3 RegionIndel/bin/OER_SCAN_part2.py \
--i bam_by_chr/possorted_bam_hs37d5.bam \
--chrn hs37d5 -o ./OER/part2 \
--rq ./OER/part1
 ```
-After running the above code, you will have output folder "./OER/part2" that contains important OER information. Now, you are good to run the RegionIndel pipeline.
+
+
+
+After running the above code, you will have output folder "./OER/part2" that contains important OER information. Now, you are good to run the VolcanoSV pipeline.
 
 
 ### Step 1: 
 ```
-python3 RegionIndel/bin/RegionIndel_step1.py  --bam_file selected.bam --vcf_file test_freebayes.vcf --chr_num 3 --out_dir test_sv --OER_dir ./OER/part2
+python3 VolcanoSV/bin/VolcanoSV_step1.py  --bam_file selected.bam --vcf_file test_freebayes.vcf --chr_num 3 --out_dir test_sv --OER_dir ./OER/part2
 
 ```
 #### *Required parameters
 
-**--bam_file:** "selected.bam" is a bam file for a target region. How to get the bam file, you can also check <a href="https://github.com/maiziezhoulab/RegionIndel/blob/master/src/How_to_get_bam_and_vcf.md">here</a>.
+**--bam_file:** "selected.bam" is a bam file for a target region. How to get the bam file, you can also check <a href="https://github.com/maiziezhoulab/VolcanoSV/blob/master/src/How_to_get_bam_and_vcf.md">here</a>.
 
-**--vcf_file:** "test_freebayes.vcf" is a VCF file generated from variant caller like "FreeBayes". How to get the vcf file, you can also check <a href="https://github.com/maiziezhoulab/RegionIndel/blob/master/src/How_to_get_bam_and_vcf.md">here</a>. 
+**--vcf_file:** "test_freebayes.vcf" is a VCF file generated from variant caller like "FreeBayes". How to get the vcf file, you can also check <a href="https://github.com/maiziezhoulab/VolcanoSV/blob/master/src/How_to_get_bam_and_vcf.md">here</a>. 
 
 **--chr_num:** "3" is the chromosome number you need to define for the target region or the structural variant you are interested in.
 
@@ -87,19 +89,19 @@ python3 RegionIndel/bin/RegionIndel_step1.py  --bam_file selected.bam --vcf_file
 #### *Optional parameters
 **--mole_boundary:** default = 50000 (50kb). We use 50kb to differentiate reads with the same barcode are drawn from different long molecules. 
 
-**--out_dir:** default = ./RegionIndel_results. You can define your own folder name.
+**--out_dir:** default = ./VolcanoSV_results. You can define your own folder name.
 
 **--num_threads:** default = 8. 
 
 **--num_threads_bwa_mem:** number of threads for bwa-mem, default = 20
 
-**--clean:** default = 1. It will delete all assembly files from SPAdes and intermediate bam/fastq files from RegionIndel.
+**--clean:** default = 1. It will delete all assembly files from SPAdes and intermediate bam/fastq files from VolcanoSV.
 
 
 
 ### Step 2: 
 ```
-python3 RegionIndel/bin/RegionIndel_step2.py --out_dir test_sv --chr_num 3 
+python3 VolcanoSV/bin/VolcanoSV_step2.py --out_dir test_sv --chr_num 3 
 
 ```
 #### *Required parameters
@@ -108,7 +110,7 @@ python3 RegionIndel/bin/RegionIndel_step2.py --out_dir test_sv --chr_num 3
 **--reference:** "genome_hg19.fa" is the human reference fasta file.
 
 #### *Optional parameters
-**--out_dir:** default = ./RegionIndel_results, make sure it's the same as "--out_dir" from ***Step1*** if you want to define your own output directory name.
+**--out_dir:** default = ./VolcanoSV_results, make sure it's the same as "--out_dir" from ***Step1*** if you want to define your own output directory name.
 
 **--num_threads:** default = 10, this determines the number of files assembled simultaneously by SPAdes.  
 
@@ -118,7 +120,7 @@ python3 RegionIndel/bin/RegionIndel_step2.py --out_dir test_sv --chr_num 3
 
 ### Step 3: 
 ```
-python3 RegionIndel/bin/RegionIndel_step3.py  --assembly_dir test_sv  -o_dir test_sv --ref_file genome_hg19.fa  --chr_num 3 
+python3 VolcanoSV/bin/VolcanoSV_step3.py  --assembly_dir test_sv  -o_dir test_sv --ref_file genome_hg19.fa  --chr_num 3 
 
 ```
 #### *Required parameters
@@ -129,7 +131,7 @@ python3 RegionIndel/bin/RegionIndel_step3.py  --assembly_dir test_sv  -o_dir tes
 **--chr_num:** "3" is the chromosome number you need to define for the target region or the structural variant you are interested in.
 
 #### *Optional parameters
-**--out_dir:** default = ./RegionIndel_Step3_Results. Directory to store the final VCF file from RegionIndel, and you can define your own folder name
+**--out_dir:** default = ./VolcanoSV_Step3_Results. Directory to store the final VCF file from VolcanoSV, and you can define your own folder name
 
 **--var_size:** default = 1, variant size, cut off size for indel and SV, 
 
@@ -140,12 +142,12 @@ python3 RegionIndel/bin/RegionIndel_step3.py  --assembly_dir test_sv  -o_dir tes
 ### Step 4 (optional): 
 ```
 #----------extract SVs
-cat ./test_sv/RegionIndel_Step3_Result/RegionIndel_Contig_final_sorted.vcf \
+cat ./test_sv/VolcanoSV_Step3_Result/VolcanoSV_Contig_final_sorted.vcf \
 	| awk '($1 ~ /^#/ || length($5) - length($(4)) > 30 || length($4) - length($(5)) > 30 )' \
-	> ./test_sv/RegionIndel_Step3_Result/RegionIndel_Contig_final_sorted_sv.vcf
+	> ./test_sv/VolcanoSV_Step3_Result/VolcanoSV_Contig_final_sorted_sv.vcf
 
-python3 RegionIndel/bin/remove_redundancy.py   \
--i ./test_sv/RegionIndel_Step3_Result/RegionIndel_Contig_final_sorted_sv.vcf  \
+python3 VolcanoSV/bin/remove_redundancy.py   \
+-i ./test_sv/VolcanoSV_Step3_Result/VolcanoSV_Contig_final_sorted_sv.vcf  \
 -o ./test_sv/Remove_redundancy/
 
 ```
@@ -154,7 +156,7 @@ Sometimes the result will have duplicate calls, and to remove these calls, you c
 
 ## Running for multiple regions:
 
-If you have multiple interested regions, you can save the regions into a BED file and use our example script **bin/mt_region_RegionIndel.sh** to detect SVs in multiple regions. Make sure you change the parameters in the bash script before you run it. The parameters are explained below:
+If you have multiple interested regions, you can save the regions into a BED file and use our example script **bin/mt_region_VolcanoSV.sh** to detect SVs in multiple regions. Make sure you change the parameters in the bash script before you run it. The parameters are explained below:
 
 ```
 #-----------------Parameter------------
@@ -164,19 +166,19 @@ wgsbam=possorted_bam.bam #your whole genome bam file
 wgsvcf=possorted_bam_freebayes.vcf #your whole genome VCF file
 oerdir=./OER/part2   # the OER file generated in step 0
 reference=genome_hg19.fa # reference file
-RegionInde_dir=./RegionIndel/ # RegionIndel install directory (The full path the user installs RegionIndel)
+RegionInde_dir=./VolcanoSV/ # VolcanoSV install directory (The full path the user installs VolcanoSV)
 
 ```
 
 
-#### Memory/Time Usage For RegionIndel
+#### Memory/Time Usage For VolcanoSV
 Coverage| Memory| Time for one SV on a single node 
 --- | --- | --- | 
 60X | 20GB | 00:10:32 |
 
 
 ## Final Output:
-**test_sv/RegionIndel_step3_results:** RegionIndel_contig_final.vcf
+**test_sv/VolcanoSV_step3_results:** VolcanoSV_contig_final.vcf
 ```
 test_sv
 |
@@ -194,24 +196,24 @@ test_sv
 |       
 |
 |-Assembly_Contigs_files
-|    |-RegionIndel_Contig_chr*.fasta                    --> (final contigs fasta file for the target region)
-|    |-RegionIndel_Contig_chr*.bam                      --> (final contigs bam file for the target region)
-|    |-RegionIndel_Contig_chr*_hp1.fasta                     --> (final contigs fasta file for haplotype 1)
-|    └-RegionIndel_Contig_chr*_hp2.fasta                     --> (final contigs fasta file for haplotype 2)
+|    |-VolcanoSV_Contig_chr*.fasta                    --> (final contigs fasta file for the target region)
+|    |-VolcanoSV_Contig_chr*.bam                      --> (final contigs bam file for the target region)
+|    |-VolcanoSV_Contig_chr*_hp1.fasta                     --> (final contigs fasta file for haplotype 1)
+|    └-VolcanoSV_Contig_chr*_hp2.fasta                     --> (final contigs fasta file for haplotype 2)
 |
-└-RegionIndel_step3_results
-     └-RegionIndel_Contig_final_sorted.vcf --> (final VCF including SNPs, small Indels and SVs)
+└-VolcanoSV_step3_results
+     └-VolcanoSV_Contig_final_sorted.vcf --> (final VCF including SNPs, small Indels and SVs)
      
      
 ```
 
-## Final contig bam file (RegionIndel_Contig_chr*.bam) diplayed in IGV (SV + 25kb left and right flanking regions):
+## Final contig bam file (VolcanoSV_Contig_chr*.bam) diplayed in IGV (SV + 25kb left and right flanking regions):
 <p align="center">
 	<img src="src/igv1.png"  width="650">
 </p>
 
 
 ## Troubleshooting:
-##### Please submit issues on the github page for <a href="https://github.com/maiziezhoulab/RegionIndel/issues">RegionIndel</a>. 
+##### Please submit issues on the github page for <a href="https://github.com/maiziezhoulab/VolcanoSV/issues">VolcanoSV</a>. 
 
 
