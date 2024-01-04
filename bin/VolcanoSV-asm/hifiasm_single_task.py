@@ -42,7 +42,6 @@ if not os.path.exists(final_contig_dir ):
 
 global hifiasm_dir
 hifiasm_dir=os.path.dirname(os.path.realpath(__file__))+'/hifiasm-0.14/'
-hifiasm_dir = "/data/maiziezhou_lab/CanLuo/Software/hifiasm-0.14/"
 # run assembly
 cmd = hifiasm_dir + "/hifiasm -o %s/%s -t 2 \
 %s"%(working_dir,prefix,input_path)

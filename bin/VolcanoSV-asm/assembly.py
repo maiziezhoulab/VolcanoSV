@@ -68,7 +68,7 @@ if assembler == 'hifiasm':
 	-t %d"%(assembly_threads)
 	Popen(cmd,shell=True).wait()
 elif assembler == 'flye':
-	cmd = "python3 /data/maiziezhou_lab/CanLuo/long_reads_project/DipPAV_pipeline/side_bin/bin_v2/run_assembly_diff_assembler.py \
+	cmd = "python3 "+code_dir+"/run_assembly_diff_assembler.py \
 	-i "+fastq_dir+" \
 	-w "+output_dir+"/assembly_files/ \
 	-o "+output_dir+"/final_contigs/ \

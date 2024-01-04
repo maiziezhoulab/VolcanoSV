@@ -5,7 +5,7 @@ parser = ArgumentParser(description="",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--inbam','-i')
 parser.add_argument('--out_dir','-o')
-parser.add_argument('--chrref','-r')
+parser.add_argument('--reference','-r')
 parser.add_argument('--n_thread','-t', type = int, default =10 )
 parser.add_argument('--chrnum','-chr', type = int, choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] )
 parser.add_argument('--dtype','-d', choices = ['CCS','CLR','ONT'])
@@ -13,11 +13,12 @@ parser.add_argument('--prefix','-px', default = "Sample")
 args = parser.parse_args()
 
 
-out_dir= args.out_dir
+
 inbam=args.inbam
 prefix=args.prefix
-chrref=args.chrref
+reference=args.reference
 chrnum = args.chrnum
+out_dir= args.out_dir + "/chr"+str(chrnum)+"/"
 dtype=args.dtype
 n_thread = args.n_thread
 
@@ -62,7 +63,7 @@ cmd = f"mkdir -p {out_dir}/phasing_result"
 Popen(cmd, shell = True).wait()
 
 cmd = f'''longshot --bam {out_dir}/{prefix}.bam \
---ref {chrref} \
+--ref {reference} \
 --out {out_dir}/phasing_result/{prefix}_phased.vcf \
 -O {out_dir}/phasing_result/{prefix}_phased.bam -F
 samtools index {out_dir}/phasing_result/{prefix}_phased.bam'''
