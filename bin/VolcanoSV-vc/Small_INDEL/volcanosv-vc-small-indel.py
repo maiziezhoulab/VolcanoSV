@@ -1,5 +1,31 @@
 
 '''ml GCC/10.2.0 BCFtools/1.16'''
+
+
+def merge_fasta(input_dir,outdir):
+   test_path = input_dir+"/chr"+str(1)+"/assembly/final_contigs/final_contig.p_ctg.fa"
+   if os.path.exists(test_path):
+      fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
+   else:
+      fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+
+   if not os.path.exists(outdir):
+      os.system("mkdir -p " + outdir)
+   hp1file = outdir+"/hp1.fa"
+   hp2file = outdir+"/hp2.fa"
+   fhp1 = open(hp1file,'w')
+   fhp2 = open(hp2file,'w')
+   for fasta in fasta_list:
+      with open(fasta,'r') as f:
+         for line in f:
+            if line[0] == '>':
+               if "hp1" in line:
+                  fw = fhp1 
+               else:
+                  fw = fhp2 
+               fw.write(line)
+   return 
+
 def filter_vcf_by_bed(input_vcf_path,  output_folder, prefix,bed_path = None):
     # create output folder if it does not exist
     os.makedirs(output_folder, exist_ok=True)
@@ -57,8 +83,7 @@ def align_fa(reference, contig, hp, outdir,n_thread):
     Popen(cmd, shell = True).wait()
     return 
 
-def call_var(hp1_bam ,
-    hp2_bam ,
+def call_var(
     hp1_fa,
     hp2_fa,
     read_bam ,
@@ -82,13 +107,13 @@ def call_var(hp1_bam ,
     stars1 = '\n\n' + '*'*40
     os.makedirs(output_dir, exist_ok = True)
 
-    if hp1_bam is None:
-        # align contig
-        logger.info(stars0 + "align contigs to reference" + stars1)
-        align_fa(reference, hp1_fa, 'hp1', output_dir,n_thread)
-        align_fa(reference, hp2_fa, 'hp2', output_dir,n_thread)
-        hp1_bam = f'{output_dir}/hp1.bam'
-        hp2_bam = f'{output_dir}/hp2.bam'
+
+    # align contig
+    logger.info(stars0 + "align contigs to reference" + stars1)
+    align_fa(reference, hp1_fa, 'hp1', output_dir,n_thread)
+    align_fa(reference, hp2_fa, 'hp2', output_dir,n_thread)
+    hp1_bam = f'{output_dir}/hp1.bam'
+    hp2_bam = f'{output_dir}/hp2.bam'
 
     # detect snp indel
     logger.info(stars0 + "detect SNP indel from both haplotypes" + stars1)
@@ -141,10 +166,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description="",
         usage='use "python3 %(prog)s --help" for more information',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--hp1_bam','-hp1', help = "either hp1 bam or hp1 fa need to be provided")
-    parser.add_argument('--hp2_bam','-hp2', help = "either hp2 bam or hp2 fa need to be provided")
-    parser.add_argument('--hp1_fa','-fhp1', help = "either hp1 bam or hp1 fa need to be provided")
-    parser.add_argument('--hp2_fa','-fhp2', help = "either hp2 bam or hp2 fa need to be provided")
+    parser.add_argument('--input_dir','-i')
     parser.add_argument('--read_bam','-rbam')
     parser.add_argument('--output_dir','-o')
     parser.add_argument('--reference','-ref')
@@ -158,14 +180,12 @@ if __name__ == '__main__':
     parser.add_argument('--restart','-rs', action='store_true', help = "restart mode; assume there is kmer support file already.")
     parser.add_argument('--eval','-e', action='store_true')
     args = parser.parse_args()
-    hp1_bam = args.hp1_bam
-    hp2_bam = args.hp2_bam
-    hp1_fa = args.hp1_fa
-    hp2_fa = args.hp2_fa
+
     reference = args.reference
     bedfile = args.bedfile
     read_bam = args.read_bam
     region = args.region
+    input_dir = args.input_dir
     output_dir = args.output_dir
     n_thread = args.n_thread
     kmer_size = args.kmer_size
@@ -182,9 +202,13 @@ if __name__ == '__main__':
     import os
     code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
+    logger.info("-------------------------------Merge contigs")
+    merge_fasta(input_dir,output_dir)
 
-    call_var(hp1_bam ,
-    hp2_bam ,
+    hp1_fa = output_dir+"/hp1.fa"
+    hp2_fa = output_dir+"/hp2.fa"
+
+    call_var(
     hp1_fa,
     hp2_fa,
     read_bam ,
