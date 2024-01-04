@@ -79,7 +79,7 @@ The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The
 
 
 ```
-  --intput_dir INPUT_DIR, -i INPUT_DIR
+  --input_dir INPUT_DIR, -i INPUT_DIR
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --data_type DATA_TYPE, -dtype DATA_TYPE
                         CCS;CLR;ONT
@@ -93,7 +93,7 @@ The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The
                         Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M
 
 ```
-The input directory should be the output directory from VolcaoSV-asm.
+The input directory should be the output directory of VolcaoSV-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/variants_filter_DEL_corGT.vcf`.
 
 
@@ -103,8 +103,7 @@ The main code is `bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The i
 
 
 ```
-  --hp1fa HP1FA, -hp1 HP1FA
-  --hp2fa HP2FA, -hp2 HP2FA
+  --input_dir INPUT_DIR, -i INPUT_DIR
   --indelvcf INDELVCF, -vcf INDELVCF
   --bamfile BAMFILE, -bam BAMFILE
   --reference REFERENCE, -ref REFERENCE
@@ -113,7 +112,7 @@ The main code is `bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The i
   --n_thread N_THREAD, -t N_THREAD
 
 ```
-
+The input directory should be the output directory of VolcaoSV-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/complex_SV.vcf`.
 
 
@@ -123,14 +122,7 @@ The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The
 
 
 ```
-  --hp1_bam HP1_BAM, -hp1 HP1_BAM
-                        either hp1 bam or hp1 fa need to be provided (default: None)
-  --hp2_bam HP2_BAM, -hp2 HP2_BAM
-                        either hp2 bam or hp2 fa need to be provided (default: None)
-  --hp1_fa HP1_FA, -fhp1 HP1_FA
-                        either hp1 bam or hp1 fa need to be provided (default: None)
-  --hp2_fa HP2_FA, -fhp2 HP2_FA
-                        either hp2 bam or hp2 fa need to be provided (default: None)
+  --input_dir INPUT_DIR, -i INPUT_DIR
   --read_bam READ_BAM, -rbam READ_BAM
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --reference REFERENCE, -ref REFERENCE
@@ -147,6 +139,7 @@ The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The
 
 ```
 
+The input directory should be the output directory of VolcaoSV-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/indel_2_49.vcf`.
 
 
