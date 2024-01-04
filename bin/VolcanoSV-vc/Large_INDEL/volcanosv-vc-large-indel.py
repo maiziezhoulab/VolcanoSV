@@ -2,8 +2,10 @@ from argparse import ArgumentParser
 
 parser = ArgumentParser(description="",usage='use "python3 %(prog)s --help" for more information')
 
-parser.add_argument('--fasta_pattern','-fa', help = "by chromosome fasta, replace chr number with *")
-parser.add_argument('--ref_pattern','-chrref', help = "by chromosome reference, replace chr number with *")
+# parser.add_argument('--fasta_pattern','-fa', help = "by chromosome fasta, replace chr number with *")
+# parser.add_argument('--ref_pattern','-chrref', help = "by chromosome reference, replace chr number with *")
+
+parser.add_argument('--input_dir','-i')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--data_type','-dtype',help='CCS;CLR;ONT')
 
@@ -21,12 +23,13 @@ parser.add_argument('--mem_per_thread','-mempt', default = '768M',help = "Set ma
 
 args = parser.parse_args()
 
-fasta_pattern = args.fasta_pattern
-ref_pattern = args.ref_pattern
+# fasta_pattern = args.fasta_pattern
+# ref_pattern = args.ref_pattern
 read_signature_dir = args.read_signature_dir
 rbam_file = args.rbam_file
 reference=args.reference
 pre_cutesig= args.pre_cutesig
+input_dir = args.input_dir
 output_dir = args.output_dir
 data_type = args.data_type
 ## optional
@@ -55,15 +58,34 @@ datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(" ")
 
 
-# df = pd.read_csv(asm_csv)
-# fasta_temp = df['fasta_pattern'][0]
-# chr_place_holder = df['chrom_place_holder'][0]
-chr_place_holder = '*'
-fasta_list =  [fasta_pattern.replace(chr_place_holder,str(i+1)) for i in range(22)]
+def split_reference(input_path,output_dir):
+    logger.info("load reference...")
+    with open(input_path,'r') as f:
+        s = f.read()
+    chr_list = s.split('>')[1:]
+    if not os.path.exists(output_dir):
+        os.system("mkdir -p "+output_dir)
+    for i in tqdm(range(22),desc = "write by chromosome ref"):
+        path = output_dir+'/chr%d.fa'%(i+1)
+        with open(path, 'w') as f:
+            f.write('>'+chr_list[i])
+        cmd = "samtools faidx "+path
+        os.system(cmd)
+    return 
 
+
+logger.info("split reference by chromosome...")
+ref_dir = output_dir+"/ref_by_chr/"
+split_reference(reference, ref_dir)
+
+if data_type == "CCS":
+	fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
+else:
+	fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+ref_list = [ref_dir + "/chr"+str(i+1)+"/" for i in range(22)]
 
 def run_one_chrom(i):
-	ref_one_chr = ref_pattern.replace('*', str(i+1))
+	ref_one_chr = ref_list[i]
 	logger.info("process chromosome %d..."%(i+1))
 
 	if read_signature_dir is None:
