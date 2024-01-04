@@ -3,8 +3,7 @@ from argparse import ArgumentParser
 parser = ArgumentParser(description="",
 	usage='use "python3 %(prog)s --help" for more information',
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--hp1fa','-hp1')
-parser.add_argument('--hp2fa','-hp2')
+parser.add_argument('--input_dir','-i')
 parser.add_argument('--indelvcf','-vcf')
 parser.add_argument('--bamfile','-bam')
 parser.add_argument('--reference','-ref')
@@ -13,8 +12,7 @@ parser.add_argument('--out_dir','-o')
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 # parser.add_argument('--delete_temp_file','-d', action='store_true')
 args = parser.parse_args()
-hp1fa = args.hp1fa
-hp2fa = args.hp2fa
+input_dir = args.input_dir
 indelvcf = args.indelvcf
 bamfile = args.bamfile
 out_dir = args.out_dir
@@ -37,6 +35,37 @@ logger = logging.getLogger(" ")
 import os
 from subprocess import Popen
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
+
+
+def merge_fasta(input_dir,outdir):
+   if datatype == "CCS":
+      fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
+   else:
+      fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+
+   if not os.path.exists(outdir):
+      os.system("mkdir -p " + outdir)
+   hp1file = outdir+"/hp1.fa"
+   hp2file = outdir+"/hp2.fa"
+   fhp1 = open(hp1file,'w')
+   fhp2 = open(hp2file,'w')
+   for fasta in fasta_list:
+      with open(fasta,'r') as f:
+         for line in f:
+            if line[0] == '>':
+               if "hp1" in line:
+                  fw = fhp1 
+               else:
+                  fw = fhp2 
+               fw.write(line)
+   return 
+
+logger.info("-------------------------------Merge contigs")
+merge_fasta(input_dir,out_dir)
+
+hp1fa = out_dir+"/hp1.fa"
+hp2fa = out_dir+"/hp2.fa"
+
 
 logger.info("-------------------------------Extract raw complex SV")
 raw_dir = out_dir+"/Raw_Detection/"
