@@ -58,7 +58,7 @@ The VolcanoSV assembly is designed to be run by chromosomes. The main code is `b
 ```
   --inbam INBAM, -i INBAM
   --out_dir OUT_DIR, -o OUT_DIR
-  --chrref CHRREF, -r CHRREF
+  --reference REFERENCE, -r REFERENCE
   --n_thread N_THREAD, -t N_THREAD
   --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
   --dtype {CCS,CLR,ONT}, -d {CCS,CLR,ONT}
@@ -68,7 +68,7 @@ The VolcanoSV assembly is designed to be run by chromosomes. The main code is `b
 
 
 
-After running the above code, you will have output contigs in `<ouput_folder>/assembly/final_contigs/final_contigs.fa`.
+After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contigs.fa` (for CLR and ONT data) or `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contig.p_ctg.fa` (for Hifi data).
 
 
 ### VolcanoSV Variant Call: 
@@ -79,10 +79,7 @@ The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The
 
 
 ```
-  --fasta_pattern FASTA_PATTERN, -fa FASTA_PATTERN
-                        by chromosome fasta, replace chr number with *
-  --ref_pattern REF_PATTERN, -chrref REF_PATTERN
-                        by chromosome reference, replace chr number with *
+  --intput_dir INPUT_DIR, -i INPUT_DIR
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --data_type DATA_TYPE, -dtype DATA_TYPE
                         CCS;CLR;ONT
@@ -96,7 +93,7 @@ The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The
                         Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M
 
 ```
-
+The input directory should be the output directory from VolcaoSV-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/variants_filter_DEL_corGT.vcf`.
 
 
