@@ -94,7 +94,7 @@ The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The
 
 ```
 The input directory should be the output directory of VolcaoSV-asm.
-After running the above code, you will have output VCF in `<ouput_folder>/variants_filter_DEL_corGT.vcf`.
+After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_variants.vcf`.
 
 
 #### Complex SV detection
@@ -140,7 +140,7 @@ The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The
 ```
 
 The input directory should be the output directory of VolcaoSV-asm.
-After running the above code, you will have output VCF in `<ouput_folder>/indel_2_49.vcf`.
+After running the above code, you will have output VCF in `<ouput_folder>/indel_2_49bp.vcf`.
 
 
 
@@ -149,10 +149,10 @@ After running the above code, you will have output VCF in `<ouput_folder>/indel_
 
 
 
-#### Memory/Time Usage For VolcanoSV
-Coverage| Memory| Time for one SV on a single node 
+#### Memory/Time Usage For VolcanoSV-asm
+Coverage| Memory| Time for chr22 on Hifi data
 --- | --- | --- | 
-60X | 20GB | 00:10:32 |
+60X | 200GB | 00:42:32 |
 
 
 
