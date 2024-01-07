@@ -31,6 +31,8 @@ pickle
 pysam
 subprocess
 pyvcf
+longshot
+flye
 ```
 You need to run `conda install <packagename>` to install all the above dependencies.
 
