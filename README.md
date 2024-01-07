@@ -94,7 +94,7 @@ The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The
 
 ```
 The input directory should be the output directory of VolcaoSV-asm.
-After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_variants.vcf`.
+After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_large_indel.vcf`.
 
 
 #### Complex SV detection
@@ -113,7 +113,7 @@ The main code is `bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The i
 
 ```
 The input directory should be the output directory of VolcaoSV-asm.
-After running the above code, you will have output VCF in `<ouput_folder>/complex_SV.vcf`.
+After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_complex_SV.vcf`.
 
 
 #### Small Indel detection
@@ -140,7 +140,7 @@ The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The
 ```
 
 The input directory should be the output directory of VolcaoSV-asm.
-After running the above code, you will have output VCF in `<ouput_folder>/indel_2_49bp.vcf`.
+After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_small_indel.vcf`.
 
 
 
