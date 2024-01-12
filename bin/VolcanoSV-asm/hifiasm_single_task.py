@@ -42,6 +42,7 @@ if not os.path.exists(final_contig_dir ):
 
 global hifiasm_dir
 hifiasm_dir=os.path.dirname(os.path.realpath(__file__))+'/hifiasm-0.14/'
+# hifiasm_dir = "/data/maiziezhou_lab/CanLuo/Software/hifiasm-0.14/"
 # run assembly
 cmd = hifiasm_dir + "/hifiasm -o %s/%s -t 2 \
 %s"%(working_dir,prefix,input_path)
@@ -70,7 +71,7 @@ raw_fasta = "%s/%s.r_utg.fa"%(working_dir,prefix)
 reformat_fasta(raw_fasta,hap_name)
 
 # concat fasta file to an overall fasta file
-cmd = "cat %s/%s.p_ctg.fa >> %s/final_contig.p_ctg.fa"%(working_dir,prefix,final_contig_dir)
+cmd = "cat %s/%s.p_ctg.fa >> %s/final_contigs.fa"%(working_dir,prefix,final_contig_dir)
 Popen(cmd, shell= True).wait()
 cmd = "cat %s/%s.p_utg.fa >> %s/final_contig.p_utg.fa"%(working_dir,prefix,final_contig_dir)
 Popen(cmd, shell= True).wait()

@@ -6,10 +6,10 @@ parser = ArgumentParser(description="",
 parser.add_argument('--inbam','-i')
 parser.add_argument('--out_dir','-o')
 parser.add_argument('--reference','-r')
-parser.add_argument('--n_thread','-t', type = int, default =10 )
 parser.add_argument('--chrnum','-chr', type = int, choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] )
 parser.add_argument('--dtype','-d', choices = ['CCS','CLR','ONT'])
-parser.add_argument('--prefix','-px', default = "Sample")
+parser.add_argument('--n_thread','-t', required = True,type = int, help = "number of threads", default =10 )
+parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
 args = parser.parse_args()
 
 
@@ -100,5 +100,10 @@ cmd = f'''python3 {code_dir}/assembly.py \
     -dtype {dtype} -t {tA} -ta {ta}'''
 Popen(cmd, shell = True).wait()
 
+####### remove bam, fastq file####
+cmd = f'''rm -r {out_dir}/assembly/fastq_by_hap
+rm {out_dir}/phasing_result/{prefix}_phased.bam*
+rm {out_dir}/{prefix}.bam*'''
+Popen(cmd, shell = True).wait()
 
 
