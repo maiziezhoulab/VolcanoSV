@@ -253,7 +253,7 @@ def filter_indel( vcffile, indel_kmer_file, reads_bamfile, output_folder,
     if vcffile:
         cnt = 0
         with open(vcffile,'r') as f:
-            with open(vcffile.replace('.vcf','_filtered.vcf'),'w') as fw:
+            with open(output_folder+"/volcanosv_small_indel.vcf",'w') as fw:
                 for line in f:
                     
                     if line[0]=='#':

@@ -7,7 +7,7 @@ parser.add_argument('--vcffile','-vcf')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--bamfile','-bam')
 parser.add_argument('--n_thread','-t', type = int, default = 30 )
-parser.add_argument('--flanking','-f',type = int, default = 100, help = 'flanking region')
+parser.add_argument('--flanking','-f',type = int, default = 1000, help = 'flanking region')
 parser.add_argument('--min_support','-ms',type = int, default = 10, help = 'minimum support')
 parser.add_argument('--min_mapq','-mq',type = int, default = 10, help = 'minimum mapping quality')
 parser.add_argument('--max_dist','-d',type = int, default = 100, help = 'maximum distance to merge 2 breakends')
@@ -169,44 +169,75 @@ def load_merged_vcf(vcffile):
 
 
 
+# def is_tra(bamfile, var, flanking, min_support, min_mapq):
+#     chrom1,pos1,chrom2, pos2,_ = var
+#     samfile = pysam.AlignmentFile(bamfile)
+#     dc1 = []
+#     try:
+#         for read in samfile.fetch(chrom1,pos1-flanking, pos1+flanking):
+#             if read.mapq>= min_mapq:
+#                 dc1.append(read.qanme)
+#                 # if read.qname in dc1:
+#                 #     if read.mapq > dc1[read.qname]:
+#                 #         dc1[read.qname] = read.mapq
+#                 # else:
+#                 #     dc1[read.qname] = read.mapq 
+#     except:
+#         pass
+
+#     dc2 = []
+#     try:
+#         for read in samfile.fetch(chrom2,pos2-flanking, pos2+flanking):
+#             if read.mapq>= min_mapq:
+#                 dc2.append(read.qname)
+#             # if read.qname in dc2:
+#             #     if read.mapq > dc2[read.qname]:
+#             #         dc2[read.qname] = read.mapq
+#             # else:
+#             #     dc2[read.qname] = read.mapq 
+#     except:
+#         pass
+
+#     # dc = {}
+#     # for qname in dc1:
+#     #     if qname in dc2:
+#     #         dc[qname] = (dc1[qname], dc2[qname])
+#     dc = set(dc1) & set(dc2)
+#     if len(dc)>= min_support:
+#         return 1
+#     else:
+#         return 0 
+
 def is_tra(bamfile, var, flanking, min_support, min_mapq):
     chrom1,pos1,chrom2, pos2,_ = var
     samfile = pysam.AlignmentFile(bamfile)
-    dc1 = []
-    try:
-        for read in samfile.fetch(chrom1,pos1-flanking, pos1+flanking):
-            if read.mapq>= min_mapq:
-                dc1.append(read.qanme)
-                # if read.qname in dc1:
-                #     if read.mapq > dc1[read.qname]:
-                #         dc1[read.qname] = read.mapq
-                # else:
-                #     dc1[read.qname] = read.mapq 
-    except:
-        pass
+    dc1 = {}
+    for read in samfile.fetch(chrom1,pos1-flanking, pos1+flanking):
+        if read.mapq>= min_mapq:
+            if read.qname in dc1:
+                if read.mapq > dc1[read.qname]:
+                    dc1[read.qname] = read.mapq
+            else:
+                dc1[read.qname] = read.mapq 
 
-    dc2 = []
-    try:
-        for read in samfile.fetch(chrom2,pos2-flanking, pos2+flanking):
-            if read.mapq>= min_mapq:
-                dc2.append(read.qname)
-            # if read.qname in dc2:
-            #     if read.mapq > dc2[read.qname]:
-            #         dc2[read.qname] = read.mapq
-            # else:
-            #     dc2[read.qname] = read.mapq 
-    except:
-        pass
+    dc2 = {}
+    for read in samfile.fetch(chrom2,pos2-flanking, pos2+flanking):
+        if read.mapq>= min_mapq:
+            if read.qname in dc2:
+                if read.mapq > dc2[read.qname]:
+                    dc2[read.qname] = read.mapq
+            else:
+                dc2[read.qname] = read.mapq 
 
-    # dc = {}
-    # for qname in dc1:
-    #     if qname in dc2:
-    #         dc[qname] = (dc1[qname], dc2[qname])
-    dc = set(dc1) & set(dc2)
+    dc = {}
+    for qname in dc1:
+        if qname in dc2:
+            dc[qname] = (dc1[qname], dc2[qname])
     if len(dc)>= min_support:
         return 1
     else:
         return 0 
+
 
 def write_vcf(var_list, is_tra_list, header, ofile):
     

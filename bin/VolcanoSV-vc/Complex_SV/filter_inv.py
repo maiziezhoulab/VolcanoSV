@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 parser = ArgumentParser(description="",
 	usage='use "python3 %(prog)s --help" for more information',
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--vcffile','-v')
+parser.add_argument('--vcffile','-vcf')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--bamfile','-bam')
 parser.add_argument('--min_support','-ms',type = int, default = 1, help = "minimum reads support per breakend")

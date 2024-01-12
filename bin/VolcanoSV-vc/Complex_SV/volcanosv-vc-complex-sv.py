@@ -38,10 +38,11 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
 def merge_fasta(input_dir,outdir):
-   if datatype == "CCS":
-      fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
-   else:
-      fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+   # if datatype == "CCS":
+   #    fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
+   # else:
+   
+   fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
 
    if not os.path.exists(outdir):
       os.system("mkdir -p " + outdir)
@@ -57,32 +58,33 @@ def merge_fasta(input_dir,outdir):
                   fw = fhp1 
                else:
                   fw = fhp2 
-               fw.write(line)
+            fw.write(line)
+   fhp1.close()
+   fhp2.close()
    return 
+
+hp1fa = out_dir+"/hp1.fa"
+hp2fa = out_dir+"/hp2.fa"
+raw_dir = out_dir+"/Raw_Detection/"
 
 logger.info("-------------------------------Merge contigs")
 merge_fasta(input_dir,out_dir)
 
-hp1fa = out_dir+"/hp1.fa"
-hp2fa = out_dir+"/hp2.fa"
-
-
 logger.info("-------------------------------Extract raw complex SV")
-raw_dir = out_dir+"/Raw_Detection/"
+
 os.system("mkdir -p " + raw_dir)
 cmd = f'''minimap2 -a -x asm10 --cs -r2k -t {n_thread} \
-   ${reference} \
-   ${hp1fa} \
-   | samtools sort -@ {n_thread} -m 4G > ${raw_dir}/assembly_hp1.bam
-samtools index -@ {n_thread} ${raw_dir}/assembly_hp1.bam'''
+   {reference} \
+   {hp1fa} \
+   | samtools sort -@ {n_thread} -m 4G > {raw_dir}/assembly_hp1.bam
+samtools index -@ {n_thread} {raw_dir}/assembly_hp1.bam'''
 Popen(cmd, shell = True).wait()
 
 cmd = f'''minimap2 -a -x asm10 --cs -r2k -t {n_thread} \
-   ${reference} \
-   ${hp2fa} \
-   | samtools sort -@ {n_thread} -m 4G > ${raw_dir}/assembly_hp2.bam
-samtools index -@ {n_thread} ${raw_dir}/assembly_hp2.bam'''
-
+   {reference} \
+   {hp2fa} \
+   | samtools sort -@ {n_thread} -m 4G > {raw_dir}/assembly_hp2.bam
+samtools index -@ {n_thread} {raw_dir}/assembly_hp2.bam'''
 Popen(cmd, shell = True).wait()
 
 cmd = f'''python3 {code_dir}/svim-asm-1.0.2/src/svim_asm/svim-asm diploid {raw_dir}/ \
@@ -93,7 +95,8 @@ Popen(cmd, shell = True).wait()
 
 
 logger.info("-------------------------------DUP detection")
-cmd = f"python3 {code_dir}/align_ins2ref.py -i {indelvcf} -o {out_dir}/DUP -d {datatype}"
+cmd = f"python3 {code_dir}/align_ins2ref.py -i {indelvcf} -o {out_dir}/DUP -d {datatype} \
+   -ref {reference}"
 Popen(cmd, shell = True).wait()
 cmd = f"cat {raw_dir}/variants.vcf |grep SVTYPE=DUP > {raw_dir}/variants_dup.vcf"
 Popen(cmd, shell = True).wait()
@@ -111,8 +114,8 @@ cmd = f"python3 {code_dir}/filter_inv.py -vcf {raw_dir}/variants.vcf -o {out_dir
 Popen(cmd, shell = True).wait()
 
 
-logger.info("-------------------------------INV detection")
-cmd = "cat {out_dir}/DUP/DUP_final.vcf {out_dir}/TRA/TRA_final.vcf {out_dir}/INV/INV_final.vcf > {out_dir}/complex_SV.vcf "
+logger.info("-------------------------------Merge DUP TRA INV")
+cmd = f"cat {out_dir}/DUP/DUP_final.vcf {out_dir}/TRA/TRA_final.vcf {out_dir}/INV/INV_final.vcf > {out_dir}/volcanosv_complex_SV.vcf "
 Popen(cmd, shell = True).wait()
 
  

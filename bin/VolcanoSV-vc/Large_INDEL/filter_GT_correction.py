@@ -43,7 +43,7 @@ from subprocess import Popen
 filtered_vcf = os.path.join(os.path.dirname(vcffile), f"{os.path.basename(vcffile)[:-4]}_filter_{ft_vtype}.vcf")
 dtype_lc = dtype.lower()
 gtdir = os.path.join(os.path.dirname(vcffile), "GT_Correction")
-final_vcf = os.path.join(os.path.dirname(vcffile), f"{os.path.basename(vcffile)[:-4]}_filter_{ft_vtype}_corGT.vcf")
+final_vcf = os.path.join(os.path.dirname(vcffile), f"volcanosv_large_indel.vcf")
 workdir = os.path.dirname(vcffile)
 
 script_dir = os.path.dirname(__file__)  # Assuming this script is in the same directory as your Python script
@@ -87,6 +87,7 @@ if pre_cutesig is None:
     {new_cutesig} \
     {para} \
     --retain_work_dir -t {t}'''
+    print(cmd)
     Popen(cmd, shell = True).wait()
 
     sigdir = new_cutesig 

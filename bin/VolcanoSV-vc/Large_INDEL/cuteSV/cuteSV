@@ -678,7 +678,8 @@ def main_ctrl(args, argv):
     if not os.path.isfile(args.reference):
         raise FileNotFoundError("[Errno 2] No such file: '%s'"%args.reference)
     if not os.path.exists(args.work_dir):
-        raise FileNotFoundError("[Errno 2] No such directory: '%s'"%args.work_dir)
+        # raise FileNotFoundError("[Errno 2] No such directory: '%s'"%args.work_dir)
+        os.system("mkdir -p " + args.work_dir)
 
     samfile = pysam.AlignmentFile(args.input)
     contig_num = len(samfile.get_index_statistics())

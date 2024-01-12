@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
-
-parser = ArgumentParser(description="",usage='use "python3 %(prog)s --help" for more information')
+import argparse
+parser = ArgumentParser(description="",
+						usage='use "python3 %(prog)s --help" for more information',
+						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 # parser.add_argument('--fasta_pattern','-fa', help = "by chromosome fasta, replace chr number with *")
 # parser.add_argument('--ref_pattern','-chrref', help = "by chromosome reference, replace chr number with *")
@@ -9,7 +11,7 @@ parser.add_argument('--input_dir','-i')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--data_type','-dtype',help='CCS;CLR;ONT')
 
-parser.add_argument('--rbam_file','-rbam', help = "reads bam file for reads signature extraction; if both read_sognature_dir and pre_cutesig are provided, you do not need to provide bam file")
+parser.add_argument('--rbam_file','-rbam', help = "reads bam file for reads signature extraction; if both read_signature_dir and pre_cutesig are provided, you do not need to provide bam file")
 parser.add_argument('--reference','-ref', help ="only needed when presig is not provided")
 
 
@@ -17,8 +19,10 @@ parser.add_argument('--read_signature_dir','-rdsig', help = "pre-extracted reads
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
 
 ## optional
-parser.add_argument('--n_thread','-t',type = int, default = 11)
-parser.add_argument('--n_thread_align','-ta',type = int, default = 10)
+parser.add_argument('--n_thread','-t',type = int, help = "number of threads",
+					default = 11)
+parser.add_argument('--n_thread_align','-ta',help = "number of threads for contig alignment",
+					type = int, default = 10)
 parser.add_argument('--mem_per_thread','-mempt', default = '768M',help = "Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M")
 
 args = parser.parse_args()
@@ -72,18 +76,6 @@ def split_reference(input_path,output_dir):
         cmd = "samtools faidx "+path
         os.system(cmd)
     return 
-
-
-logger.info("split reference by chromosome...")
-ref_dir = output_dir+"/ref_by_chr/"
-split_reference(reference, ref_dir)
-
-if data_type == "CCS":
-	fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
-else:
-	fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
-ref_list = [ref_dir + "/chr"+str(i+1)+"/" for i in range(22)]
-
 def run_one_chrom(i):
 	ref_one_chr = ref_list[i]
 	logger.info("process chromosome %d..."%(i+1))
@@ -119,9 +111,19 @@ def run_one_chrom(i):
 	return 
 
 
+
+
+ref_dir = output_dir+"/ref_by_chr/"
+
+fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
+
+
+logger.info("split reference by chromosome...")
+split_reference(reference, ref_dir)
+
+
 results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(i) for i in tqdm(range(22)))
-
-
 
 ### collect all result to be one 
 
@@ -162,6 +164,8 @@ else:
 		-ref {reference} \
 		-dtype {data_type} \
 		-t {n_thread}'''
+      
+print(cmd)
 Popen(cmd, shell = True).wait()
 
 
