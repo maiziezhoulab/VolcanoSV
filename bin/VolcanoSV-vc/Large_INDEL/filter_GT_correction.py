@@ -8,6 +8,10 @@ parser.add_argument('--bamfile','-bam', help ="only needed when presig is not pr
 parser.add_argument('--reference','-ref', help ="only needed when presig is not provided")
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
 parser.add_argument('--dtype','-dtype', choices = ['CCS','CLR','ONT'])
+parser.add_argument('--chr_num','-chr',type = int, 
+					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+					default= None,
+					help = "chrmosome number;Optional; if not provided, will assume input_dir contain chr1-chr22 results")
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 args = parser.parse_args()
 
@@ -17,6 +21,7 @@ bamfile=args.bamfile
 reference=args.reference
 pre_cutesig= args.pre_cutesig
 dtype= args.dtype
+chr_num = args.chr_num
 t = args.n_thread
 
 ft_vtype='DEL'
@@ -43,7 +48,7 @@ from subprocess import Popen
 filtered_vcf = os.path.join(os.path.dirname(vcffile), f"{os.path.basename(vcffile)[:-4]}_filter_{ft_vtype}.vcf")
 dtype_lc = dtype.lower()
 gtdir = os.path.join(os.path.dirname(vcffile), "GT_Correction")
-final_vcf = os.path.join(os.path.dirname(vcffile), f"volcanosv_large_indel.vcf")
+final_vcf = os.path.join(os.path.dirname(vcffile), f"variants_filtered_GT_corrected.vcf")
 workdir = os.path.dirname(vcffile)
 
 script_dir = os.path.dirname(__file__)  # Assuming this script is in the same directory as your Python script
@@ -60,7 +65,22 @@ if pre_cutesig is None:
     if os.path.exists(new_cutesig):
         os.system("rm -r " + new_cutesig)
 
-        os.system("mkdir -p "+ new_cutesig)
+    os.system("mkdir -p "+ new_cutesig)
+    
+
+    if chr_num is None:
+        bed_para = " "
+    else:
+        # get chromosome length
+        fai_file = reference + ".fai"
+        with open(fai_file,'r') as f:
+            chr_len = int(f.readlines()[chr_num -1 ].split()[1])
+        bed_file = new_cutesig + "/sample.bed"
+        with open(bed_file, 'w') as f:
+            f.write("chr"+str(chr_num)+"\t1\t"+str(chr_len)+'\n')
+        
+        bed_para = " -include_bed " + bed_file
+
 
     if  dtype == "CCS":
         para ='''--max_cluster_bias_INS      1000 \
@@ -86,7 +106,7 @@ if pre_cutesig is None:
     {new_cutesig}/test.vcf \
     {new_cutesig} \
     {para} \
-    --retain_work_dir -t {t}'''
+    {bed_para} --retain_work_dir -t {t}'''
     print(cmd)
     Popen(cmd, shell = True).wait()
 
@@ -96,14 +116,17 @@ else:
 
 
 
-
+if chr_num is None:
+    chr_para = " "
+else:
+    chr_para = " -chr " + str(chr_num)
 
 # calculate signature support for each variant based on cuteSV signature
 logger.info("------------------Calculate signature support for each variant")
 
 cmd = f'''python3 {script_dir}/calculate_signature_support.py  \
     -v {vcffile} \
-    -ct {sigdir} '''
+    -ct {sigdir} {chr_para}'''
 Popen(cmd, shell = True).wait()
 
 # Use empirical threshold to filter SV

@@ -19,6 +19,10 @@ parser.add_argument('--read_signature_dir','-rdsig', help = "pre-extracted reads
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
 
 ## optional
+parser.add_argument('--chr_num','-chr',type = int, 
+					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+					default= None,
+					help = "chrmosome number; Optional; if not provided, will assume input_dir contain chr1-chr22 results")
 parser.add_argument('--n_thread','-t',type = int, help = "number of threads",
 					default = 11)
 parser.add_argument('--n_thread_align','-ta',help = "number of threads for contig alignment",
@@ -37,6 +41,7 @@ input_dir = args.input_dir
 output_dir = args.output_dir
 data_type = args.data_type
 ## optional
+chr_num = args.chr_num
 n_thread = args.n_thread
 n_thread_align = args.n_thread_align
 mem_per_thread = args.mem_per_thread
@@ -111,22 +116,6 @@ def run_one_chrom(i):
 	return 
 
 
-
-
-ref_dir = output_dir+"/ref_by_chr/"
-
-fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
-ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
-
-
-logger.info("split reference by chromosome...")
-split_reference(reference, ref_dir)
-
-
-results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(i) for i in tqdm(range(22)))
-
-### collect all result to be one 
-
 def read_vcf(vcf_path):
 	with open(vcf_path,'r') as f:
 		header = []
@@ -139,16 +128,79 @@ def read_vcf(vcf_path):
 
 	return header,body 
 
-logger.info("collect all chromosome result")
-body_wgs = []
-for i in range(22):
-	vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(i+1)
-	header,body = read_vcf(vcf_path)
-	body_wgs.extend(body)
 
-with open(output_dir+"/variants.vcf",'w') as f:
-	f.writelines(header + body_wgs)
+def phase_vcf(infile, outfile):
+	header = []
+	body = []
+	with open(infile,'r') as fin:
+		for line in fin:
+			if line[0]=='#':
+				header.append(line)
+			else:
+				body.append(line)
 
+	### process header
+	info_add = '##INFO=<ID=PS,Number=.,Type=Integer,Description="phase block name">\n'	
+	header[-3] = info_add
+	with open(outfile,'w') as fout:
+		fout.writelines(header)
+		for line in body:
+			data = line.split()
+			info = data[7].split('TIG_REGION=')[1].split(';')[0]
+			hps = info.split(',')
+			ps = hps[0].split('_')[0][2:]
+			if data[-1] == '0/1':
+				if 'hp1' in hps[0]:
+					phased_gt = "1|0"
+				else:
+					phased_gt = "0|1"
+			else:
+				phased_gt = "1|1"
+			data[7] = data[7]+';PS='+ps 
+			data[-1] = phased_gt 
+			line = '\t'.join(data)+'\n'
+			fout.write(line)
+
+				
+
+
+
+
+logger.info("split reference by chromosome...")
+ref_dir = output_dir+"/ref_by_chr/"
+# split_reference(reference, ref_dir)
+
+fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
+
+
+if chr_num is None:
+	# wgs mode
+	results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(i) for i in tqdm(range(22)))
+	### collect all result to be one 
+	logger.info("collect all chromosome result")
+	body_wgs = []
+	for i in range(22):
+		vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(i+1)
+		header,body = read_vcf(vcf_path)
+		body_wgs.extend(body)
+
+	with open(output_dir+"/variants.vcf",'w') as f:
+		f.writelines(header + body_wgs)
+else:
+	run_one_chrom(chr_num -1 )
+	vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(chr_num)
+	out_file = output_dir+"/variants.vcf"
+	cmd = "cp " + vcf_path + " " + out_file
+	Popen(cmd, shell = True).wait()
+
+
+
+
+if chr_num is None:
+	chr_para = " "
+else:
+	chr_para = " -chr "+str(chr_num)
 
 logger.info("Filter VCF and correct genotype...")
 if pre_cutesig is not None:
@@ -156,21 +208,21 @@ if pre_cutesig is not None:
 		-vcf {output_dir}/variants.vcf \
 		-presig {pre_cutesig} \
 		-dtype {data_type} \
-		-t {n_thread}'''
+		-t {n_thread} {chr_para}'''
 else:
 	cmd = f'''python3 {code_dir}/filter_GT_correction.py \
 		-vcf {output_dir}/variants.vcf \
 		-bam {rbam_file} \
 		-ref {reference} \
 		-dtype {data_type} \
-		-t {n_thread}'''
+		-t {n_thread} {chr_para}'''
       
 print(cmd)
 Popen(cmd, shell = True).wait()
 
 
 
-
-
-
+infile = f"{output_dir}/variants_filtered_GT_corrected.vcf"
+outfile = f"{output_dir}/volcanosv_large_indel.vcf"
+phase_vcf(infile, outfile)
 

@@ -57,7 +57,7 @@ def vcf2fasta(vcffile,ofile):
                         gt = data[-1].split(':')[0]
                         fo.write('>'+svid+'\n')
                         fo.write(ins_seq+'\n')
-                        ins_dc[svid] = (chrom, pos, len(ins_seq),gt)
+                        ins_dc[svid] = (chrom, pos, len(ins_seq),gt,line)
     
     return ins_dc
 
@@ -82,7 +82,7 @@ def extract_baminfo(bamfile):
 def is_dup(info_aln, info_var, min_mapq, min_size_sim, max_shift, max_shift_ratio):
     ''' max_shift_ratio: shift / svlen  '''
     chrom_aln, start_aln, end_aln, mapq_aln = info_aln
-    chrom_var, bnd_var, svlen_var, _ = info_var 
+    chrom_var, bnd_var, svlen_var, _, line = info_var 
     svlen_aln = end_aln - start_aln 
 
     size_sim = min(svlen_aln, svlen_var)/ max(svlen_var, svlen_aln)
@@ -91,10 +91,10 @@ def is_dup(info_aln, info_var, min_mapq, min_size_sim, max_shift, max_shift_rati
 
     if (chrom_aln == chrom_var) & ( mapq_aln >= min_mapq) & (size_sim >= min_size_sim ) & ( shift <= max_shift) & ( shift_ratio <= max_shift_ratio):
         # is dup
-        return 1, size_sim, shift, shift_ratio
+        return 1, size_sim, shift, shift_ratio, line
     else:
         # is not dup
-        return 0, size_sim, shift, shift_ratio
+        return 0, size_sim, shift, shift_ratio, line
 
 def is_dup_one_var(aln_list, info_var, min_mapq, min_size_sim, max_shift, max_shift_ratio):
 
@@ -116,7 +116,7 @@ def is_dup_one_var(aln_list, info_var, min_mapq, min_size_sim, max_shift, max_sh
         
         for i in range(len(dec_list)):
             if dec_list[i][0]:
-                _, size_sim, shift, shift_ratio = dec_list[i]
+                _, size_sim, shift, shift_ratio, line = dec_list[i]
                 aln_info = aln_list[i]
                 candidate_list.append(aln_info)
                 candidate_info_list.append([size_sim,  - shift,  - shift_ratio])
@@ -166,11 +166,12 @@ def write_dup(ofile,dc_var, dc_final, og_vcffile):
 
         for svid in dc_final:
             chrom, start, end , mapq = dc_final[svid]
-            _,_,_,gt = dc_var[svid ]
+            _,_,_,gt,line = dc_var[svid ]
+            reads = line.split('TIG_REGION=')[1].split(';')[0]
             cnt+=1
             line = '\t'.join([chrom,str(start),\
-                              'volcanosv.DUP.%d'%cnt,'.','<DUP>',\
-                              '20', 'PASS','SVTYPE=DUP;END=%d;SVLEN=%d'%(end, end-start),'GT',gt])+'\n'
+                              'volcanosv.DUP.recover.%d'%cnt,'.','<DUP>',\
+                              '20', 'PASS','SVTYPE=DUP;END=%d;SVLEN=%d;READS=%s'%(end, end-start,reads),'GT',gt,])+'\n'
 
             f.write(line)
     

@@ -63,11 +63,44 @@ def merge_fasta(input_dir,outdir):
    fhp2.close()
    return 
 
+def phase_vcf(infile, outfile):
+	header = []
+	body = []
+	with open(infile,'r') as fin:
+		for line in fin:
+			if line[0]=='#':
+				header.append(line)
+			else:
+				body.append(line)
+
+	### process header
+	info_add = '##INFO=<ID=PS,Number=.,Type=Integer,Description="phase block name">\n'	
+	header[-6] = header[-6]+info_add
+	with open(outfile,'w') as fout:
+		fout.writelines(header)
+		for line in body:
+			data = line.split()
+			info = data[7].split('READS=')[1].split(';')[0]
+			hps = info.split(',')
+			ps = hps[0].split('_')[0][2:]
+			gt = data[-1].split(':')[0]
+			if gt in ['0/1','1/0','1/1']:
+				phased_gt = gt.replace("/","|")
+			else:
+				phased_gt = gt
+
+			data[7] = data[7]+';PS='+ps 
+			data[-2] = 'GT'
+			data[-1] = phased_gt 
+			line = '\t'.join(data)+'\n'
+			fout.write(line)
+			
+
 hp1fa = out_dir+"/hp1.fa"
 hp2fa = out_dir+"/hp2.fa"
 raw_dir = out_dir+"/Raw_Detection/"
 
-logger.info("-------------------------------Merge contigs")
+# logger.info("-------------------------------Merge contigs")
 merge_fasta(input_dir,out_dir)
 
 logger.info("-------------------------------Extract raw complex SV")
@@ -88,7 +121,7 @@ samtools index -@ {n_thread} {raw_dir}/assembly_hp2.bam'''
 Popen(cmd, shell = True).wait()
 
 cmd = f'''python3 {code_dir}/svim-asm-1.0.2/src/svim_asm/svim-asm diploid {raw_dir}/ \
-    {raw_dir}/assembly_hp1.bam  {raw_dir}/assembly_hp2.bam {reference}'''
+    {raw_dir}/assembly_hp1.bam  {raw_dir}/assembly_hp2.bam {reference} --query_names'''
 Popen(cmd, shell = True).wait()
 
 
@@ -115,10 +148,18 @@ Popen(cmd, shell = True).wait()
 
 
 logger.info("-------------------------------Merge DUP TRA INV")
-cmd = f"cat {out_dir}/DUP/DUP_final.vcf {out_dir}/TRA/TRA_final.vcf {out_dir}/INV/INV_final.vcf > {out_dir}/volcanosv_complex_SV.vcf "
+cmd = f"cat {out_dir}/TRA/TRA_final.vcf |grep '#' > {out_dir}/variants.vcf "
 Popen(cmd, shell = True).wait()
 
- 
+cmd = f"cat {out_dir}/DUP/DUP_final.vcf {out_dir}/TRA/TRA_final.vcf {out_dir}/INV/INV_final.vcf|grep -v '#' >> {out_dir}/variants.vcf "
+Popen(cmd, shell = True).wait()
+
+cmd = f'''sed -i "s/svim_asm/volcanosv/g;s/SVIM-asm-v1.0.2/VolcanoSV/g"  {out_dir}/variants.vcf'''
+Popen(cmd, shell = True).wait()
+
+infile = out_dir + "/variants.vcf"
+outfile = out_dir + "/volcanosv_complex_SV.vcf"
+phase_vcf(infile, outfile )
 
 
 
