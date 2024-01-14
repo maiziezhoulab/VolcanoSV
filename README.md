@@ -1,40 +1,7 @@
 # :milky_way: VolcanoSV 🌋
 
 
-## Dependencies for Github installation:
-VolcanoSV utilizes Python3.8.3. 
-The dependencies include
 
-```
-collections
-edlib
-joblib
-math
-multiprocessing
-pysam
-random
-scipy
-sklearn
-statistics
-subprocess
-tqdm
-argparse
-edlib
-gzip
-jellyfish
-logging
-matplotlib
-networkx
-numpy
-pandas
-pickle
-pysam
-subprocess
-pyvcf
-longshot
-flye
-```
-You need to run `conda install <packagename>` to install all the above dependencies.
 
 # Install through Github:
 
@@ -42,7 +9,16 @@ You need to run `conda install <packagename>` to install all the above dependenc
 git clone https://github.com/maiziex/VolcanoSV.git
 ```
 
+## Dependencies for Github installation:
+VolcanoSV utilizes Python3.8.3. To set up the environment, you need to have conda installed. Then, simply run
+```
+conda env create -f VolcanoSV/requirement.yml
+```
 
+Then you will have a virtual environment called "volcano” created. Before running any VolcanoSV commands, please activate this environment first.
+```
+conda activate volcano
+```
 
 
 ## Running The Code:
