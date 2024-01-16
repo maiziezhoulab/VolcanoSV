@@ -46,7 +46,7 @@ The VolcanoSV assembly is designed to be run by chromosomes. The main code is `b
 
 
 
-After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contigs.fa` (for CLR and ONT data) or `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contig.p_ctg.fa` (for Hifi data).
+After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contigs.fa`.
 
 
 ### VolcanoSV Variant Call: 
