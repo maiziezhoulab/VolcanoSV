@@ -247,12 +247,17 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 #### Memory/Time Usage For VolcanoSV-asm
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
 --- | --- | --- | ---|--- | --- | 
-CCS | 60X | 168GB | 30| 2-01:07:59| 1474 |
-CLR | 58x | 259GB | 20 | 5-09:05:59 | 2582|
-ONT | 50x | 85GB| 30 | 6-02:33:59| 4397|
+CCS | 56X | 168GB | 30| 2-01:07:59| 1474 |
+CLR | 89x | 259GB | 20 | 5-09:05:59 | 2582|
+ONT | 48x | 85GB| 30 | 6-02:33:59| 4397|
 
 
-
+#### Memory/Time Usage For VolcanoSV-VC-large-indel
+Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
+--- | --- | --- | ---|--- | --- | 
+CCS | 56X | 21GB | 50| 00:25:11| 21 |
+CLR | 89x | 215GB | 50 | 02:27:35 | 123|
+ONT | 48x | 34GB| 50 | 00:38:24| 32|
 
 
 ## Troubleshooting:
