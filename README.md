@@ -1,6 +1,6 @@
 # :milky_way: VolcanoSV 🌋
 
-
+#wgs-mode
 
 
 # Install through Github:
@@ -110,7 +110,7 @@ If the volcanosv-vc-large-indel pipeline is executed successfully and completely
 Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.
 
 
-##WGS mode
+## WGS mode
 
 ### VolcanoSV Assembly 
 
