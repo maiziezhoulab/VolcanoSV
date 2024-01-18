@@ -8,8 +8,11 @@ Content
 - [wgs mode](#wgs-mode)
   -  [wgs mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly)
   -  [wgs mode Large Indel detection](#wgs-mode-Large-Indel-detection)
+  -  [wgs mode Complex SV detection](#wgs-mode-complex-sv-detection)
+  -  [wgs mode Small Indel detection](#wgs-mode-small-Indel-detection)
 
-
+- [Computation recourse usage](#Computation-recourse-usage)
+  
 # Install through Github:
 
 ```
@@ -250,6 +253,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 
 
+## Computation recourse usage
 
 #### Memory/Time Usage For VolcanoSV-asm
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
