@@ -248,9 +248,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
 --- | --- | --- | ---|--- | --- | 
 CCS | 60X | 168GB | 30| 2-01:07:59| 1474 |
---- | --- | --- | ---|--- | --- | 
 CLR | 58x | 259GB | 20 | 5-09:05:59 | 2582|
---- | --- | --- | ---|--- | --- |
 ONT | 50x | 85GB| 30 | 6-02:33:59| 4397|
 
 
