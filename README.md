@@ -2,7 +2,7 @@
 # :milky_way: VolcanoSV 🌋
 Content
 - [Installation](#install-through-github)
-- [Single chromosome mode](#single-chromosome-mode)
+- [Single chromosome mode(test example included)](#single-chromosome-mode-(test-example-included))
 - [wgs mode](#wgs-mode)
 
 
