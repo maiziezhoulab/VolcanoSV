@@ -4,8 +4,10 @@ Content
 - [Installation](#install-through-github)
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly)
+    - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection)
 - [wgs mode](#wgs-mode)
   -  [wgs mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly)
+  -  [wgs mode Large Indel detection](#wgs-mode-Large-Indel-detection)
 
 
 # Install through Github:
