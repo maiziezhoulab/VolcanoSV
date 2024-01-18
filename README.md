@@ -2,7 +2,7 @@
 # :milky_way: VolcanoSV 🌋
 Content
 - [Installation](#install-through-github)
-- [Single chromosome mode](#single-chromosome-mode-(test-example-included))
+- [Single chromosome mode (test example included)](#single-chromosome-mode)
 - [wgs mode](#wgs-mode)
 
 
@@ -28,7 +28,7 @@ Or just use the full path of "**volcanosv-asm.py**", "**volcanosv-vc-large-indel
 
 # Running The Code:
 
-## Single chromosome mode (test example included)
+## Single chromosome mode
 
 For the single chromosome mode, we provided the chr10 BAM file, contigs file and VCF file for Hifi, CLR and ONT data. You can download them from zenode xxxxxxxxxxxxxxxxxxx .
 In the following sessions, we will provide the code to run the Hifi data. If you wish to reproduce the result for CLR data or ONT data, you can just simply change the input BAM file and the argument "dtype" to the corresponding data type (CLR/ONT).
