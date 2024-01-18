@@ -12,6 +12,7 @@ Content
   -  [wgs mode Small Indel detection](#wgs-mode-small-Indel-detection)
 
 - [Computation recourse usage](#Computation-recourse-usage)
+- [Troubleshooting](#Troubleshooting)
   
 # Install through Github:
 
