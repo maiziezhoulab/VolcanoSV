@@ -1,6 +1,6 @@
 # :milky_way: VolcanoSV 🌋
 
-#wgs-mode
+[wgs mode]#wgs-mode
 
 
 # Install through Github:
