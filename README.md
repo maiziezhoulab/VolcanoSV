@@ -254,7 +254,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 
 
-## Computation resurce usage
+## Computation resource usage
 
 #### Memory/Time Usage For VolcanoSV-asm
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
