@@ -1,6 +1,6 @@
 
 # :milky_way: VolcanoSV 🌋
-Content
+## ** Table of Content **
 - [Installation](#install-through-github)
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly)
