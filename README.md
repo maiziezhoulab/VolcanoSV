@@ -125,7 +125,7 @@ If the volcanosv-vc-large-indel pipeline is executed successfully and completely
 Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.
 
 
-#### Single chromosome mode Small Indel detection
+### Single chromosome mode Small Indel detection
 
 The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
 
@@ -202,9 +202,8 @@ The chr1-chr22 will be saved under `volcanosv_asm_output`. This is slower but ca
 
 
 
-### VolcanoSV Variant Call: 
 
-#### WGS mode Large Indel detection
+### WGS mode Large Indel detection
 
 The main code is `bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. This code is designed for both single chromosome mode and wgs mode. To run it in wgs mode, you should first finish running the volcanosv-asm pipeline and provide the assembly output folder as the input folder for this code. You should **not** provide the `chr' argument in WGS mode.
 
@@ -221,7 +220,7 @@ python3 bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 After running the above code, you will have output VCF in `volcanosv_large_indel_output/volcanosv_large_indel.vcf`.
 
 
-#### WGS mode Complex SV detection
+### WGS mode Complex SV detection
 
 The main code is `bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The input arguments for this code are explained below:
 
@@ -252,7 +251,7 @@ python3 bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py \
 After running the above code, you will have output VCF in `volcanosv_complex_sv/volcanosv_complex_SV.vcf`.
 
 
-#### WGS mode Small Indel detection
+### WGS mode Small Indel detection
 
 The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
 
@@ -303,7 +302,7 @@ p=0.5 P=0.5 r=500 S=30 O=0.01
 
 ## Computation resource usage
 
-#### Memory/Time Usage For VolcanoSV-asm
+### Memory/Time Usage For VolcanoSV-asm
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
 --- | --- | --- | ---|--- | --- | 
 CCS | 56X | 168GB | 30| 2-01:07:59| 1474 |
@@ -311,7 +310,7 @@ CLR | 89x | 259GB | 20 | 5-09:05:59 | 2582|
 ONT | 48x | 85GB| 30 | 6-02:33:59| 4397|
 
 
-#### Memory/Time Usage For VolcanoSV-VC-large-indel
+### Memory/Time Usage For VolcanoSV-VC-large-indel
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
 --- | --- | --- | ---|--- | --- | 
 CCS | 56X | 21GB | 50| 00:25:11| 21 |
