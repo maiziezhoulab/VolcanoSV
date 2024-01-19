@@ -5,11 +5,13 @@
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection)
+    - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection)
 - [wgs mode](#wgs-mode)
   -  [wgs mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly)
   -  [wgs mode Large Indel detection](#wgs-mode-Large-Indel-detection)
   -  [wgs mode Complex SV detection](#wgs-mode-complex-sv-detection)
   -  [wgs mode Small Indel detection](#wgs-mode-small-Indel-detection)
+-  [Truvari evaluation](# Truvari evaluation)
 
 - [Computation resource usage](#Computation-resource-usage)
 - [Troubleshooting](#Troubleshooting)
@@ -47,6 +49,7 @@ wget https://cf.10xgenomics.com/supp/genome/refdata-hg19-2.1.0.tar.gz
 tar -xzvf refdata-hg19-2.1.0.tar.gz
 ```
 
+Note: since translocation detection requires WGS BAM file as support, it does not make sense to run it on single chromsome level. Therefore, we only provide the complex SV pipeline in WGS mode.
 
 ### Single chromosome mode VolcanoSV Assembly 
 
@@ -120,6 +123,44 @@ The VCF file will be `volcanosv_large_indel_output/volcanosv_large_indel.vcf`.
 If the volcanosv-vc-large-indel pipeline is executed successfully and completely, your VCF file should have roughly the same number of variants as the Hifi_L2_variants.vcf from zenodo.
 Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.
 
+
+#### Single chromosome mode Small Indel detection
+
+The main code is `bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
+
+
+```
+  --input_dir INPUT_DIR, -i INPUT_DIR
+  --read_bam READ_BAM, -rbam READ_BAM
+  --output_dir OUTPUT_DIR, -o OUTPUT_DIR
+  --reference REFERENCE, -ref REFERENCE
+  --bedfile BEDFILE, -bed BEDFILE
+                        optional; a high confidence bed file (default: None)
+  --region REGION, -r REGION
+                        optional; exmaple: chr21:2000000-2100000 (default: None)
+  --n_thread N_THREAD, -t N_THREAD
+  --kmer_size KMER_SIZE, -k KMER_SIZE
+  --ratio RATIO, -rt RATIO
+                        maximum bad kmer ratio (default: 0.3)
+  --min_support MIN_SUPPORT, -ms MIN_SUPPORT
+                        maximum support for bad kmer (default: 5)
+
+```
+
+The input directory should be the output directory of VolcaoSV-asm.
+
+The example code is as below:
+```
+python3 bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
+-i volcanosv_asm_output/ \
+-o volcanosv_small_indel \
+-dtype CCS \
+-rbam Hifi_L2_hg19_minimap2_chr10.bam \
+-ref refdata-hg19-2.1.0/fasta/genome.fa \
+-r chr10 \
+-t 30
+```
+After running the above code, you will have output VCF in `volcanosv_small_indel/volcanosv_small_indel.vcf`.
 
 ## WGS mode
 
@@ -250,7 +291,12 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 
 
+## Truvari evaluation
 
+We use truvari4.0.0 to performa benchmarking against genome in a bottle gold standard set in high confidence region. The parameter we use is 
+```
+p=0.5 P=0.5 r=500 S=30 O=0.01
+```
 
 
 
