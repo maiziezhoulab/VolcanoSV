@@ -43,7 +43,9 @@ Or just use the full path of "**volcanosv-asm.py**", "**volcanosv-vc-large-indel
 For the single chromosome mode, we provided the chr10 BAM file, contigs file and VCF file for Hifi, CLR and ONT data. You can download them from [zenodo](https://zenodo.org/records/10520476) .
 In the following sessions, we will provide the code to run the Hifi data. If you wish to reproduce the result for CLR data or ONT data, you can just simply change the input BAM file and the argument "dtype" to the corresponding data type (CLR/ONT).
 
-The example data is aligned to hg19 reference. You can download the reference file using the command below
+The example data is aligned to hg19 reference. You can download the reference files(genome.fa and genome.fa.fai) from zenode(https://zenodo.org/records/10520476).
+
+Alternatively, you can download the more complete reference data (including more indexing and meta data) using the command below
 ```
 wget https://cf.10xgenomics.com/supp/genome/refdata-hg19-2.1.0.tar.gz
 tar -xzvf refdata-hg19-2.1.0.tar.gz
