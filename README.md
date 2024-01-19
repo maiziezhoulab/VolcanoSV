@@ -11,8 +11,7 @@
   -  [WGS mode Large Indel detection](#wgs-mode-Large-Indel-detection)
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection)
--  [Truvari evaluation](#-Truvari-evaluation)
-
+- [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
 - [Troubleshooting](#Troubleshooting)
   
