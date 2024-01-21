@@ -168,7 +168,7 @@ def phase_vcf(infile, outfile):
 
 logger.info("split reference by chromosome...")
 ref_dir = output_dir+"/ref_by_chr/"
-# split_reference(reference, ref_dir)
+split_reference(reference, ref_dir)
 
 fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
 ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
