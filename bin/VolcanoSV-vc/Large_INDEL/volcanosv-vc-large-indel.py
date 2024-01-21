@@ -67,20 +67,23 @@ datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(" ")
 
 
-def split_reference(input_path,output_dir):
-    logger.info("load reference...")
-    with open(input_path,'r') as f:
-        s = f.read()
-    chr_list = s.split('>')[1:]
-    if not os.path.exists(output_dir):
-        os.system("mkdir -p "+output_dir)
-    for i in tqdm(range(22),desc = "write by chromosome ref"):
-        path = output_dir+'/chr%d.fa'%(i+1)
-        with open(path, 'w') as f:
-            f.write('>'+chr_list[i])
-        cmd = "samtools faidx "+path
-        os.system(cmd)
-    return 
+def split_reference(input_path,output_dir, chr_num):
+	logger.info("load reference...")
+	with open(input_path,'r') as f:
+		s = f.read()
+	chr_list = s.split('>')[1:]
+	if not os.path.exists(output_dir):
+		os.system("mkdir -p "+output_dir)
+	for i in tqdm(range(22),desc = "write by chromosome ref"):
+		if (chr_num is None) or ( int(i+1) == chr_num):
+			path = output_dir+'/chr%d.fa'%(i+1)
+			with open(path, 'w') as f:
+				f.write('>'+chr_list[i])
+			cmd = "samtools faidx "+path
+			os.system(cmd)
+	return 
+
+
 def run_one_chrom(i):
 	ref_one_chr = ref_list[i]
 	logger.info("process chromosome %d..."%(i+1))
@@ -165,10 +168,10 @@ def phase_vcf(infile, outfile):
 
 
 
-
+# split reference
 logger.info("split reference by chromosome...")
 ref_dir = output_dir+"/ref_by_chr/"
-split_reference(reference, ref_dir)
+split_reference(reference, ref_dir, chr_num)
 
 fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
 ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
