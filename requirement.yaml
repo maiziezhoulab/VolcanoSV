@@ -1,126 +1,30 @@
 name: volcano
 channels:
-- conda-forge
-- bioconda
-- defaults
+  - conda-forge
+  - bioconda
+  - defaults
 dependencies:
-- bcftools=1.17=h3cc50cf_1
-- cigar=0.1.3=pyh864c0ab_1
-- flye=2.9.1=py38hf4f3596_0
-- htslib=1.17=h6bc39ce_1
-- k8=0.2.5=hdcf5f25_4
-- longshot=0.4.1=hc4ca7c3_2
-- minimap2=2.24=h7132678_1
-- perl-vcftools-vcf=0.1.16=pl5321hdfd78af_4
-- pysam=0.21.0=py38h1c8baaf_0
-- samtools=1.13=h8c37831_0
-- _libgcc_mutex=0.1=conda_forge
-- _openmp_mutex=4.5=2_gnu
-- biopython=1.78=py38h497a2fe_2
-- brotli=1.0.9=h166bdaf_8
-- brotli-bin=1.0.9=h166bdaf_8
-- bzip2=1.0.8=h7f98852_4
-- c-ares=1.18.1=h7f98852_0
-- ca-certificates=2022.9.24=ha878542_0
-- certifi=2022.9.24=pyhd8ed1ab_0
-- colorama=0.4.6=pyhd8ed1ab_0
-- cycler=0.11.0=pyhd8ed1ab_0
-- dbus=1.13.6=hfdff14a_1
-- edlib=1.3.9=py38h43d8883_2
-- expat=2.5.0=h27087fc_0
-- fontconfig=2.14.1=hc2a2eb6_0
-- fonttools=4.38.0=py38h0a891b7_1
-- freetype=2.12.1=hca18f0e_0
-- gettext=0.21.1=h27087fc_0
-- giflib=5.2.1=h36c2ea0_2
-- glib=2.66.3=h58526e2_0
-- gsl=2.7=he838d99_0
-- gst-plugins-base=1.14.5=h0935bb2_2
-- gstreamer=1.14.5=h36ae1b5_2
-- icu=64.2=he1b5a44_1
-- jbig=2.1=h7f98852_2003
-- jellyfish=0.9.0=py38h0a891b7_2
-- joblib=1.1.0=pyhd8ed1ab_0
-- jpeg=9e=h166bdaf_2
-- keyutils=1.6.1=h166bdaf_0
-- kiwisolver=1.4.4=py38h43d8883_1
-- krb5=1.19.3=h3790be6_0
-- lcms2=2.12=hddcbb42_0
-- ld_impl_linux-64=2.39=hc81fddc_0
-- lerc=4.0.0=h27087fc_0
-- libblas=3.9.0=16_linux64_openblas
-- libbrotlicommon=1.0.9=h166bdaf_8
-- libbrotlidec=1.0.9=h166bdaf_8
-- libbrotlienc=1.0.9=h166bdaf_8
-- libcblas=3.9.0=16_linux64_openblas
-- libclang=9.0.1=default_hb4e5071_5
-- libdeflate=1.13=h166bdaf_0
-- libedit=3.1.20191231=he28a2e2_2
-- libev=4.33=h516909a_1
-- libffi=3.2.1=he1b5a44_1007
-- libgcc-ng=12.2.0=h65d4601_19
-- libgfortran-ng=12.2.0=h69a702a_19
-- libgfortran5=12.2.0=h337968e_19
-- libglib=2.66.3=hbe7bbb4_0
-- libgomp=12.2.0=h65d4601_19
-- libiconv=1.17=h166bdaf_0
-- liblapack=3.9.0=16_linux64_openblas
-- libllvm9=9.0.1=default_hc23dcda_7
-- libnghttp2=1.47.0=hdcd2b5c_1
-- libnsl=2.0.0=h7f98852_0
-- libopenblas=0.3.21=pthreads_h78a6416_3
-- libpng=1.6.38=h753d276_0
-- libsqlite=3.40.0=h753d276_0
-- libssh2=1.10.0=haa6b8db_3
-- libstdcxx-ng=12.2.0=h46fd767_19
-- libtiff=4.4.0=h0e0dad5_3
-- libuuid=2.32.1=h7f98852_1000
-- libwebp=1.2.4=h522a892_0
-- libwebp-base=1.2.4=h166bdaf_0
-- libxcb=1.13=h7f98852_1004
-- libxkbcommon=0.10.0=he1b5a44_0
-- libxml2=2.9.10=hee79883_0
-- libzlib=1.2.13=h166bdaf_4
-- matplotlib=3.5.3=py38h578d9bd_2
-- matplotlib-base=3.5.3=py38h38b5ce0_2
-- munkres=1.1.4=pyh9f0ad1d_0
-- ncurses=6.2=h58526e2_4
-- networkx=2.8.6=pyhd8ed1ab_0
-- nspr=4.32=h9c3ff4c_1
-- nss=3.78=h2350873_0
-- numpy=1.21.5=py38h1d589f8_1
-- openjpeg=2.5.0=h7d73246_0
-- packaging=21.3=pyhd8ed1ab_0
-- pandas=1.4.4=py38h47df419_0
-- pcre=8.45=h9c3ff4c_0
-- perl=5.32.1=2_h7f98852_perl5
-- pillow=9.1.1=py38h0ee0e06_1
-- pip=22.3.1=pyhd8ed1ab_0
-- pthread-stubs=0.4=h36c2ea0_1001
-- pyparsing=3.0.9=pyhd8ed1ab_0
-- pyqt=5.12.3=py38ha8c2ead_3
-- python=3.8.3=cpython_he5300dc_0
-- python-dateutil=2.8.2=pyhd8ed1ab_0
-- python_abi=3.8=2_cp38
-- pytz=2022.6=pyhd8ed1ab_0
-- pyvcf=0.6.8=py38h32f6830_1002
-- qt=5.12.5=hd8c4c69_1
-- readline=8.1=h46c0cb4_0
-- scipy=1.9.1=py38hea3f02b_0
-- setuptools=65.3.0=pyhd8ed1ab_1
-- six=1.16.0=pyh6c4a22f_0
-- tk=8.6.12=h27826a3_0
-- tornado=6.2=py38h0a891b7_1
-- tqdm=4.64.1=pyhd8ed1ab_0
-- unicodedata2=15.0.0=py38h0a891b7_0
-- wheel=0.38.4=pyhd8ed1ab_0
-- xorg-libxau=1.0.9=h7f98852_0
-- xorg-libxdmcp=1.1.3=h7f98852_0
-- xz=5.2.6=h166bdaf_0
-- zlib=1.2.13=h166bdaf_4
-- zstd=1.5.2=h6239696_4
-- curl=7.87.0=h5eee18b_0
-- libcurl=7.87.0=h91b91d3_0
-- openssl=1.1.1w=h7f8727e_0
-- sqlite=3.40.1=h5082296_0
-
+  - bcftools=1.17=h3cc50cf_1
+  - cigar=0.1.3=pyh864c0ab_1
+  - edlib=1.3.9=py38h43d8883_2
+  - flye=2.9.1=py38hf4f3596_0
+  - longshot=0.4.1=hc4ca7c3_2
+  - minimap2=2.24=h7132678_1
+  - perl-vcftools-vcf=0.1.16=pl5321hdfd78af_4
+  - pysam=0.21.0=py38h1c8baaf_0
+  - samtools=1.13=h8c37831_0
+  - biopython=1.78=py38h497a2fe_2
+  - jellyfish=0.9.0=py38h0a891b7_2
+  - joblib=1.1.0=pyhd8ed1ab_0
+  - matplotlib=3.5.3=py38h578d9bd_2
+  - networkx=2.8.6=pyhd8ed1ab_0
+  - numpy=1.21.5=py38h1d589f8_1
+  - pandas=1.4.4=py38h47df419_0
+  - pip
+  - pip:
+    - scikit_learn
+  - python=3.8.3
+  - pyvcf=0.6.8=py38h32f6830_1002
+  - scipy=1.9.1=py38hea3f02b_0
+  - setuptools=65.3.0=pyhd8ed1ab_1
+  - tqdm=4.64.1=pyhd8ed1ab_0
