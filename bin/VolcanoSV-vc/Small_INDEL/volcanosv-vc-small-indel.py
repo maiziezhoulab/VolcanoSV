@@ -2,13 +2,15 @@
 '''ml GCC/10.2.0 BCFtools/1.16'''
 
 
-def merge_fasta(input_dir,outdir):
-    test_path = input_dir+"/chr"+str(1)+"/assembly/final_contigs/final_contig.p_ctg.fa"
+def merge_fasta(input_dir,outdir, chr_num= None):
+    # test_path = input_dir+"/chr"+str(1)+"/assembly/final_contigs/final_contig.p_ctg.fa"
     # if os.path.exists(test_path):
     # fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
     # else:
-
-    fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+    if chr_num is None:
+        fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+    else:
+        fasta_list =  [input_dir+"/chr"+str(chr_num)+"/assembly/final_contigs/final_contigs.fa" ]
 
     if not os.path.exists(outdir):
         os.system("mkdir -p " + outdir)
@@ -113,8 +115,8 @@ def call_var(
 
     # align contig
     logger.info(stars0 + "align contigs to reference" + stars1)
-    # align_fa(reference, hp1_fa, 'hp1', output_dir,n_thread)
-    # align_fa(reference, hp2_fa, 'hp2', output_dir,n_thread)
+    align_fa(reference, hp1_fa, 'hp1', output_dir,n_thread)
+    align_fa(reference, hp2_fa, 'hp2', output_dir,n_thread)
     hp1_bam = f'{output_dir}/hp1.bam'
     hp2_bam = f'{output_dir}/hp2.bam'
 
@@ -124,7 +126,7 @@ def call_var(
         {reference} \
             {hp1_bam} {hp2_bam} -w 20 -r {region}  | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.pair.vcf.gz'''
     logger.info(cmd)
-    # Popen(cmd, shell = True).wait()
+    Popen(cmd, shell = True).wait()
 
 
     # pair
@@ -134,28 +136,30 @@ def call_var(
         {output_dir}/var_raw.pair.vcf.gz | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.dip.vcf.gz
     '''
     logger.info(cmd)
-    # Popen(cmd, shell = True).wait()
+    Popen(cmd, shell = True).wait()
 
 
     # reformat vcf; seperate multi-alt 
     logger.info(stars0 + "seperate multi-alt-allele"+ stars1)
-    # reformat_raw_vcf(f'{output_dir}/var_raw.dip.vcf.gz', f'{output_dir}/var_raw_rf.dip.vcf' )
+    reformat_raw_vcf(f'{output_dir}/var_raw.dip.vcf.gz', f'{output_dir}/var_raw_rf.dip.vcf' )
 
 
     # filter vcf by size and bed
     logger.info(stars0 + f"filter 2-49 bp indel within {bedfile} region"+ stars1)
-    # filter_vcf_by_size_bed(f'{output_dir}/var_raw_rf.dip.vcf',  output_dir,  bedfile)
+    filter_vcf_by_size_bed(f'{output_dir}/var_raw_rf.dip.vcf',  output_dir,  bedfile)
 
-    if bedfile is not None:
-        filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted_filtered_by_bed.vcf' )
-    else:
-        filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted.vcf' )
+    # if bedfile is not None:
+    #     filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted_filtered_by_bed.vcf' )
+    # else:
+    #     filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted.vcf' )
+
+    filtered_vcf_path = os.path.join(output_dir, 'volcanosv_small_indel.vcf' )
 
 
 
     # extract indel context from contig
     logger.info(stars0 + "extract indel context"+ stars1)
-    # extract_indel_context(f'{filtered_vcf_path}', f'{output_dir}/indel_2_49_context.txt'  )
+    extract_indel_context(f'{filtered_vcf_path}', f'{output_dir}/indel_2_49_context.txt'  )
 
 
     # check kmer support from reads bam file
@@ -219,7 +223,10 @@ if __name__ == '__main__':
     logger = logging.getLogger(" ")
 
     logger.info("-------------------------------Merge contigs")
-    # merge_fasta(input_dir,output_dir)
+    if region is None:
+        merge_fasta(input_dir,output_dir)
+    else:
+        merge_fasta(input_dir,output_dir, int(region.split(':')[0][3:]))
 
     hp1_fa = output_dir+"/hp1.fa"
     hp2_fa = output_dir+"/hp2.fa"

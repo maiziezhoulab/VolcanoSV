@@ -1,5 +1,5 @@
-
-from cuteSV.cuteSV_Description import Generation_VCF_header
+#from cuteSV.cuteSV_Description import Generation_VCF_header
+from cuteSV_Description import Generation_VCF_header
 from math import log10
 import numpy as np
 

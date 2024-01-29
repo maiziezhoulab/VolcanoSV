@@ -1,6 +1,7 @@
 import numpy as np
 import logging
-from cuteSV.cuteSV_genotype import cal_GL, threshold_ref_count, count_coverage
+#from cuteSV.cuteSV_genotype import cal_GL, threshold_ref_count, count_coverage
+from cuteSV_genotype import cal_GL, threshold_ref_count, count_coverage
 
 '''
 *******************************************
