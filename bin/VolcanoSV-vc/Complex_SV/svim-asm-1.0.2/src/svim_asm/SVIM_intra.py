@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 
-from svim_asm.SVCandidate import CandidateDeletion, CandidateInsertion
+from SVCandidate import CandidateDeletion, CandidateInsertion
 
 
 def analyze_cigar_indel(tuples, min_length):

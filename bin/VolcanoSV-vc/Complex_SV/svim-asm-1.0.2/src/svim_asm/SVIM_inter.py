@@ -6,7 +6,7 @@ import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster
 
 
-from svim_asm.SVCandidate import CandidateDeletion, CandidateInsertion, CandidateInversion, CandidateBreakend, CandidateDuplicationTandem, CandidateDuplicationInterspersed
+from SVCandidate import CandidateDeletion, CandidateInsertion, CandidateInversion, CandidateBreakend, CandidateDuplicationTandem, CandidateDuplicationInterspersed
 
 
 def is_similar(chr1, start1, end1, chr2, start2, end2):

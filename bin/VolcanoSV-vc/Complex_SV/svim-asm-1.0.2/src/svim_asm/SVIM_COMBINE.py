@@ -10,7 +10,7 @@ from edlib import align
 import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster
 
-from svim_asm.SVCandidate import CandidateInversion, CandidateDuplicationTandem, CandidateDuplicationInterspersed, CandidateDeletion, CandidateInsertion, CandidateBreakend
+from SVCandidate import CandidateInversion, CandidateDuplicationTandem, CandidateDuplicationInterspersed, CandidateDeletion, CandidateInsertion, CandidateBreakend
 
 def form_partitions(sv_candidates_with_haplotype, max_distance):
     """Form partitions of signatures using mean distance."""

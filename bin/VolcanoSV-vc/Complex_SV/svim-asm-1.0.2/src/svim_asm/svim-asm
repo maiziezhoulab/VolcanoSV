@@ -14,10 +14,10 @@ import pysam
 from time import strftime, localtime
 from pysam import FastaFile
 
-from svim_asm.SVIM_input_parsing import parse_arguments
-from svim_asm.SVIM_COLLECT import analyze_alignment_file_coordsorted
-from svim_asm.SVIM_COMBINE import pair_candidates, write_final_vcf
-from svim_asm.SVIM_plot import plot_sv_lengths
+from SVIM_input_parsing import parse_arguments
+from SVIM_COLLECT import analyze_alignment_file_coordsorted
+from SVIM_COMBINE import pair_candidates, write_final_vcf
+from SVIM_plot import plot_sv_lengths
 
 
 def main():

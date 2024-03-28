@@ -1,8 +1,8 @@
 import logging
 import pysam
 
-from svim_asm.SVIM_intra import analyze_alignment_indel
-from svim_asm.SVIM_inter import analyze_read_segments
+from SVIM_intra import analyze_alignment_indel
+from SVIM_inter import analyze_read_segments
 
 
 def retrieve_other_alignments(main_alignment, bam):
