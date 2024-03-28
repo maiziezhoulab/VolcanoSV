@@ -22,10 +22,8 @@ min_support = args.min_support
 min_mapq = args.min_mapq
 max_dist = args.max_dist
 
-import pysam
+
 import numpy as np
-from joblib import Parallel, delayed
-from tqdm import tqdm
 import os
 from collections import defaultdict
 
@@ -98,7 +96,6 @@ def merge_bnd(dc,output_path, header, max_dist,bnd_list1, bnd_list2):
 
 
     dc_merged = defaultdict(list)
-    raw_bnd_list = list(dc.keys())
     dc_map1 = cluster_bnd(bnd_list1, max_dist)
     dc_map2 = cluster_bnd(bnd_list2, max_dist)
     dc_map1.update(dc_map2)
@@ -123,27 +120,17 @@ def merge_bnd(dc,output_path, header, max_dist,bnd_list1, bnd_list2):
 
 
 
-def merge_raw_vcf(vcffile, output_dir, max_dist):
+def merge_raw_vcf(vcffile, output_path, max_dist):
     
 
     if not os.path.exists(output_dir):
         os.system("mkdir -p " + output_dir)
-    # print("RAW VCF Evaluation")
-    # cmd = f'''python3 /data/maiziezhou_lab/CanLuo/long_reads_project_lio/Read_Simulation/bin/Evaluation_tools/eval_tra.py \
-    #     -callvcf {vcffile} \
-    #         -o {output_dir}/eval_raw'''
-    # os.system(cmd)
 
-    output_path = output_dir+'/TRA_merged.vcf'
     dc_var, header,bnd_list1, bnd_list2 = load_raw_vcf(vcffile)
 
     merge_bnd(dc_var,output_path , header, max_dist,bnd_list1, bnd_list2)
 
-    # print("Merged VCF Evaluation")
-    # cmd = f'''python3 /data/maiziezhou_lab/CanLuo/long_reads_project_lio/Read_Simulation/bin/Evaluation_tools/eval_tra.py \
-    #     -callvcf {output_path} \
-    #         -o {output_dir}/eval_merged'''
-    # os.system(cmd)
+
     return 
 
 
@@ -168,117 +155,14 @@ def load_merged_vcf(vcffile):
     return dc, header
 
 
-
-# def is_tra(bamfile, var, flanking, min_support, min_mapq):
-#     chrom1,pos1,chrom2, pos2,_ = var
-#     samfile = pysam.AlignmentFile(bamfile)
-#     dc1 = []
-#     try:
-#         for read in samfile.fetch(chrom1,pos1-flanking, pos1+flanking):
-#             if read.mapq>= min_mapq:
-#                 dc1.append(read.qanme)
-#                 # if read.qname in dc1:
-#                 #     if read.mapq > dc1[read.qname]:
-#                 #         dc1[read.qname] = read.mapq
-#                 # else:
-#                 #     dc1[read.qname] = read.mapq 
-#     except:
-#         pass
-
-#     dc2 = []
-#     try:
-#         for read in samfile.fetch(chrom2,pos2-flanking, pos2+flanking):
-#             if read.mapq>= min_mapq:
-#                 dc2.append(read.qname)
-#             # if read.qname in dc2:
-#             #     if read.mapq > dc2[read.qname]:
-#             #         dc2[read.qname] = read.mapq
-#             # else:
-#             #     dc2[read.qname] = read.mapq 
-#     except:
-#         pass
-
-#     # dc = {}
-#     # for qname in dc1:
-#     #     if qname in dc2:
-#     #         dc[qname] = (dc1[qname], dc2[qname])
-#     dc = set(dc1) & set(dc2)
-#     if len(dc)>= min_support:
-#         return 1
-#     else:
-#         return 0 
-
-def is_tra(bamfile, var, flanking, min_support, min_mapq):
-    chrom1,pos1,chrom2, pos2,_ = var
-    samfile = pysam.AlignmentFile(bamfile)
-    dc1 = {}
-    for read in samfile.fetch(chrom1,pos1-flanking, pos1+flanking):
-        if read.mapq>= min_mapq:
-            if read.qname in dc1:
-                if read.mapq > dc1[read.qname]:
-                    dc1[read.qname] = read.mapq
-            else:
-                dc1[read.qname] = read.mapq 
-
-    dc2 = {}
-    for read in samfile.fetch(chrom2,pos2-flanking, pos2+flanking):
-        if read.mapq>= min_mapq:
-            if read.qname in dc2:
-                if read.mapq > dc2[read.qname]:
-                    dc2[read.qname] = read.mapq
-            else:
-                dc2[read.qname] = read.mapq 
-
-    dc = {}
-    for qname in dc1:
-        if qname in dc2:
-            dc[qname] = (dc1[qname], dc2[qname])
-    if len(dc)>= min_support:
-        return 1
-    else:
-        return 0 
-
-
-def write_vcf(var_list, is_tra_list, header, ofile):
-    
-    with open(ofile,'w') as f:
-        f.writelines(header)
-        for i in range(len(is_tra_list)):
-            if is_tra_list[i]:
-                line = var_list[i][-1]
-                f.write(line)
-    
-    is_tra_list = np.array(is_tra_list)
-    print(f"Before filter: {len(is_tra_list)} TRA")
-    print(f"After filter: {(is_tra_list).sum()} TRA")
-    print(f"filter out {len(is_tra_list)-is_tra_list.sum()}({np.round((1-(is_tra_list).mean())*100,2)}%) TRA")
-
-
-
-
 ### create output folder
 if not os.path.exists(output_dir):
     os.system("mkdir -p "+output_dir)
 
 ###### merge vcf
-merge_raw_vcf(vcffile, output_dir, max_dist)
-
-###### filter vcf
-merged_vcf = output_dir+'/TRA_merged.vcf'
-dc_var, header = load_merged_vcf(merged_vcf)
-var_list = list(dc_var.values())
-is_tra_list = Parallel(n_jobs=n_thread)(delayed(is_tra)(bamfile, 
-                                                        var, flanking, min_support, min_mapq) 
-                                                        for var in tqdm(var_list))
-output_path = output_dir+'/TRA_final.vcf'
-write_vcf(var_list, is_tra_list, header, output_path)
-
-###### evaluation 
-# print("Filtered VCF Evaluation")      
-# cmd = f'''python3 /data/maiziezhou_lab/CanLuo/long_reads_project_lio/Read_Simulation/bin/Evaluation_tools/eval_tra.py \
-#     -callvcf {output_path} \
-#         -o {output_dir}/eval_filtered'''
-# os.system(cmd)
+# merged_vcf = output_dir+'/TRA_merged.vcf'
+merged_vcf = output_dir+'/TRA_final.vcf'
+merge_raw_vcf(vcffile, merged_vcf , max_dist)
 
 
 

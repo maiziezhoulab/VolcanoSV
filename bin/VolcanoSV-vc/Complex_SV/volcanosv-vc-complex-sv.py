@@ -100,7 +100,7 @@ hp1fa = out_dir+"/hp1.fa"
 hp2fa = out_dir+"/hp2.fa"
 raw_dir = out_dir+"/Raw_Detection/"
 
-# logger.info("-------------------------------Merge contigs")
+logger.info("-------------------------------Merge contigs")
 merge_fasta(input_dir,out_dir)
 
 logger.info("-------------------------------Extract raw complex SV")
