@@ -305,7 +305,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 ## Truvari evaluation
 
-We use truvari4.0.0 to performa benchmarking against genome in a bottle gold standard set in high confidence region. The parameter we use is 
+We use truvari4.0.0 to perform benchmarking against genome in a bottle gold standard set in high confidence region. The parameter we use is 
 ```
 p=0.5 P=0.5 r=500 S=30 O=0.01
 ```
