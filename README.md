@@ -66,7 +66,7 @@ tar -xzvf refdata-hg19-2.1.0.tar.gz
 
 Note: since translocation detection requires WGS BAM file as support, it does not make sense to run it on single chromsome level. Therefore, we only provide the complex SV pipeline in WGS mode.
 
-### Single chromosome mode VolcanoSV Assembly 
+### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
 
 The VolcanoSV assembly pipeline is designed to run by chromosomes. The main code is `$path_to_volcano/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
@@ -101,7 +101,7 @@ If the volcanosv-asm pipeline is executed successfully and completely, your fina
 
 
 
-### Single chromosome mode Large Indel detection
+### Single chromosome mode Large Indel detection (VolcanoSV-vc) 
 
 The main code is `$path_to_volcano/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The input arguments for this code are explained below:
 
