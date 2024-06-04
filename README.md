@@ -178,7 +178,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 ## WGS mode
 
-### WGS mode VolcanoSV Assembly 
+### WGS mode VolcanoSV Assembly (VolcanoSV-asm) 
 
 The VolcanoSV assembly is designed to run by chromosomes. If you have a distributed computing system that allows you to submit multiple jobs, we recommend that you submit one job per chromosome and let them run simultaneously. You can follow the template below to construct your job script:
 ```
@@ -216,7 +216,7 @@ The chr1-chr22 will be saved under `volcanosv_asm_output`. This is slower but ca
 
 
 
-### WGS mode Large Indel detection
+### WGS mode Large Indel detection (VolcanoSV-vc) 
 
 The main code is `$path_to_volcano/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. This code is designed for both single chromosome mode and wgs mode. To run it in wgs mode, you should first finish running the volcanosv-asm pipeline and provide the assembly output folder as the input folder for this code. You should **not** provide the `chr' argument in WGS mode.
 
@@ -233,7 +233,7 @@ python3 $path_to_volcano/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 After running the above code, you will have output VCF in `volcanosv_large_indel_output/volcanosv_large_indel.vcf`.
 
 
-### WGS mode Complex SV detection
+### WGS mode Complex SV detection (VolcanoSV-vc) 
 
 The main code is `$path_to_volcano/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The input arguments for this code are explained below:
 
@@ -264,7 +264,7 @@ python3 $path_to_volcano/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py \
 After running the above code, you will have output VCF in `volcanosv_complex_sv/volcanosv_complex_SV.vcf`.
 
 
-### WGS mode Small Indel detection
+### WGS mode Small Indel detection (VolcanoSV-vc) 
 
 The main code is `$path_to_volcano/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
 
