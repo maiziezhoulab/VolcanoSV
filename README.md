@@ -69,7 +69,7 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 ### Single chromosome mode VolcanoSV Assembly 
 
 
-The VolcanoSV assembly pipeline is designed to be run by chromosomes. The main code is `$path_to_volcano/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+The VolcanoSV assembly pipeline is designed to run by chromosomes. The main code is `$path_to_volcano/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
   --inbam INBAM, -i INBAM, could be either wgs bam or single-chromosome bam file
