@@ -180,7 +180,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 ### WGS mode VolcanoSV Assembly 
 
-The VolcanoSV assembly is designed to be run by chromosomes. If you have a distributed computing system that allows you to submit multiple jobs, we recommend that you submit one job per chromosome and let them run simultaneously. You can follow the template below to construct your job script:
+The VolcanoSV assembly is designed to run by chromosomes. If you have a distributed computing system that allows you to submit multiple jobs, we recommend that you submit one job per chromosome and let them run simultaneously. You can follow the template below to construct your job script:
 ```
 python3 $path_to_volcano/VolcanoSV-asm/volcanosv-asm.py \
 -i <wgs_bam> \
