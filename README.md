@@ -139,7 +139,7 @@ If the volcanosv-vc-large-indel pipeline is executed successfully and completely
 Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.
 
 
-### Single chromosome mode Small Indel detection
+### Single chromosome mode Small Indel detection (VolcanoSV-vc) 
 
 The main code is `$path_to_volcano/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
 
