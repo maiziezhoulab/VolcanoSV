@@ -74,9 +74,9 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
-  --inbam INBAM, -i INBAM, could be either wgs bam or single-chromosome bam file
+  --bam_file INBAM, -bam INBAM, could be either wgs bam or single-chromosome bam file
   --out_dir OUT_DIR, -o OUT_DIR
-  --reference REFERENCE, -r REFERENCE
+  --reference REFERENCE, -ref REFERENCE
   --n_thread N_THREAD, -t N_THREAD
   --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
   --assembler {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}, -asm {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}
@@ -94,9 +94,9 @@ For example, if you want to use hifiasm for hifi data, you can use the below scr
 
 ```
 python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
--i Hifi_L2_hg19_minimap2_chr10.bam \
+-bam Hifi_L2_hg19_minimap2_chr10.bam \
 -o volcanosv_asm_output \
--r refdata-hg19-2.1.0/fasta/genome.fa \
+-ref refdata-hg19-2.1.0/fasta/genome.fa \
 -t 10 \
 -chr 10 \
 -dtype Hifi \
@@ -114,9 +114,9 @@ For example, if you provide a 'segdups.bed`, and want to use hicanu for the segd
 
 ```
 python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm_hybrid.py \
--i Hifi_L2_hg19_minimap2_chr10.bam \
+-bam Hifi_L2_hg19_minimap2_chr10.bam \
 -o volcanosv_asm_output \
--r refdata-hg19-2.1.0/fasta/genome.fa \
+-ref refdata-hg19-2.1.0/fasta/genome.fa \
 -bed segdups.bed \
 -inasm hicanu \
 -outasm hifiasm \
@@ -138,7 +138,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-lar
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --data_type DATA_TYPE, -dtype DATA_TYPE
                         Hifi;CLR;ONT
-  --rbam_file RBAM_FILE, -rbam RBAM_FILE
+  --bam_file RBAM_FILE, -bam RBAM_FILE
                         reads bam file for reads signature extraction
   --reference REFERENCE, -ref REFERENCE
                         wgs reference file
@@ -159,7 +159,7 @@ python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.p
 -i volcanosv_asm_output/ \
 -o volcanosv_large_indel_output/ \
 -dtype Hifi \
--rbam Hifi_L2_hg19_minimap2_chr10.bam \
+-bam Hifi_L2_hg19_minimap2_chr10.bam \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
 -chr 10 -t 10 \
 -px Hifi_L2
@@ -176,7 +176,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-sma
 
 ```
   --input_dir INPUT_DIR, -i INPUT_DIR
-  --read_bam READ_BAM, -rbam READ_BAM
+  --bam_file READ_BAM, -bam READ_BAM
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --reference REFERENCE, -ref REFERENCE
   --bedfile BEDFILE, -bed BEDFILE
@@ -201,7 +201,7 @@ The example code is as below:
 python3 ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_small_indel \
--rbam Hifi_L2_hg19_minimap2_chr10.bam \
+-bam Hifi_L2_hg19_minimap2_chr10.bam \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
 -r chr10 \
 -t 30 \
@@ -216,9 +216,9 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 The VolcanoSV assembly is designed to run by chromosomes. If you have a distributed computing system that allows you to submit multiple jobs, we recommend that you submit one job per chromosome and let them run simultaneously. You can follow the template below to construct your job script:
 ```
 python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
--i <wgs_bam> \
+-bam <wgs_bam> \
 -o volcanosv_asm_output \
--r <reference_file> \
+-ref <reference_file> \
 -t 10 \
 -chr <chromosome_number> \
 -dtype <datatype> \
@@ -233,9 +233,9 @@ for i in {1..22}
 do
 echo "***********************assembly for chr${i}*******************"
 python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
--i <wgs_bam> \
+-bam <wgs_bam> \
 -o volcanosv_asm_output \
--r <reference_file> \
+-ref <reference_file> \
 -t 10 \
 -chr ${i} \
 -dtype <datatype> \
@@ -259,7 +259,7 @@ python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.p
 -i volcanosv_asm_output/ \
 -o volcanosv_large_indel_output/ \
 -dtype <datatype> \
--rbam <wgs_reads_bamfile> \
+-bam <wgs_reads_bamfile> \
 -ref <reference> \
 -t 11 \
 -px <prefix>
@@ -306,7 +306,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-sma
 
 ```
   --input_dir INPUT_DIR, -i INPUT_DIR
-  --read_bam READ_BAM, -rbam READ_BAM
+  --bam_file READ_BAM, -bam READ_BAM
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --reference REFERENCE, -ref REFERENCE
   --bedfile BEDFILE, -bed BEDFILE
@@ -331,7 +331,7 @@ The example code is as below:
 python3 ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_small_indel \
--rbam <wgs_reads_bamfile> \
+-bam <wgs_reads_bamfile> \
 -ref <reference> \
 -t 30 \
 -px <prefix>
