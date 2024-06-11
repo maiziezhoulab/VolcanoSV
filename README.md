@@ -80,7 +80,7 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated
   --n_thread N_THREAD, -t N_THREAD
   --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
   --assembler {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}, -asm {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}
-  --data_type {CLR,ONT,Hifi}, -d {CLR,ONT,Hifi}
+  --data_type {CLR,ONT,Hifi}, -dtype {CLR,ONT,Hifi}
   --pacbio_subtype {CLR-rs,CLR-sq}, -pb {CLR-rs,CLR-sq}
                         must provide when using wtdbg2 on CLR data (default: None)
   --shasta_ont_config {Nanopore-OldGuppy-Sep2020}, -shacon {Nanopore-OldGuppy-Sep2020}
@@ -99,7 +99,7 @@ python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
 -r refdata-hg19-2.1.0/fasta/genome.fa \
 -t 10 \
 -chr 10 \
--d Hifi \
+-dtype Hifi \
 -px Hifi_L2 \
 -asm hifiasm
 ```
@@ -122,7 +122,7 @@ python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
 -outasm hifiasm \
 -t 10 \
 -chr 10 \
--d Hifi \
+-dtype Hifi \
 -px Hifi_L2 
 ```
 The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
@@ -216,7 +216,7 @@ python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
 -r <reference_file> \
 -t 10 \
 -chr <chromosome_number> \
--d <datatype> \
+-dtype <datatype> \
 -px <prefix>
 ```
 For different chromosomes, you just need to simply change the `<chromosome_number>` to make different job scripts. All scripts share the same output folder. After all jobs are finished, you will see 22 subfolders under the output folder you specified, which are the chr1-chr22 assembly results. This is the most efficient way to run volcanosv-asm pipeline on a distributed system.
@@ -233,7 +233,7 @@ python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
 -r <reference_file> \
 -t 10 \
 -chr ${i} \
--d <datatype> \
+-dtype <datatype> \
 -px <prefix>
 done
 ```
@@ -271,7 +271,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-comp
   --indelvcf INDELVCF, -vcf INDELVCF
   --bamfile BAMFILE, -bam BAMFILE
   --reference REFERENCE, -ref REFERENCE
-  --datatype {Hifi,CLR,ONT}, -d {Hifi,CLR,ONT}
+  --datatype {Hifi,CLR,ONT}, -dtype {Hifi,CLR,ONT}
   --out_dir OUT_DIR, -o OUT_DIR
   --n_thread N_THREAD, -t N_THREAD
 
