@@ -388,7 +388,7 @@ The main code is `General_Assembly_Workflow.py`. The arguments are:
 Example Usage:
 
 ```
-python3 General_Assembly_Workflow.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/General_Assembly_Workflow.py \
 -hap <sample>_<lib>_collapsed_hp_namex.txt \
 -fqds <volcanosv_output>/chr*/Assembly/fastq_by_hap \
 -o  <volcanosv_output>/SD_recovery
@@ -402,7 +402,7 @@ You will have a `<volcanosv_output>/SD_recovery/final_contigs/final_contigs.fa` 
 Use the newly generated contigs to replace the previously collapsed contigs.
 
 ```
-python3 Replace_Collapsed_Contigs.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Replace_Collapsed_Contigs.py \
 -og <volcanosv_output>/SD_recovery/assemblies.fa \
 -new <volcanosv_output>/SD_recovery/final_contigs/final_contigs.fa \
 -o <volcanosv_output>/SD_recovery/SD_recovered.fa \
