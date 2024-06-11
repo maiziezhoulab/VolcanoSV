@@ -6,7 +6,7 @@
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly)
     - [Single assembler mode](#Single-assembler-mode)
     - [Hybrid assembly mode](#hybrid-assembly-mode)
-    - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection)
+    - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
     - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection)
 - [WGS mode](#wgs-mode)
   -  [WGS mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly)
