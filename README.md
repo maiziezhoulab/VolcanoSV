@@ -137,7 +137,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-lar
   --input_dir INPUT_DIR, -i INPUT_DIR
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --data_type DATA_TYPE, -dtype DATA_TYPE
-                        CCS;CLR;ONT
+                        Hifi;CLR;ONT
   --rbam_file RBAM_FILE, -rbam RBAM_FILE
                         reads bam file for reads signature extraction
   --reference REFERENCE, -ref REFERENCE
@@ -157,7 +157,7 @@ For example, if you want to reproduce the large indel VCF file for Hifi_L2 data,
 python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_large_indel_output/ \
--dtype CCS \
+-dtype Hifi \
 -rbam Hifi_L2_hg19_minimap2_chr10.bam \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
 -chr 10 -t 10
@@ -271,7 +271,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-comp
   --indelvcf INDELVCF, -vcf INDELVCF
   --bamfile BAMFILE, -bam BAMFILE
   --reference REFERENCE, -ref REFERENCE
-  --datatype {CCS,CLR,ONT}, -d {CCS,CLR,ONT}
+  --datatype {Hifi,CLR,ONT}, -d {Hifi,CLR,ONT}
   --out_dir OUT_DIR, -o OUT_DIR
   --n_thread N_THREAD, -t N_THREAD
 
@@ -345,7 +345,7 @@ p=0.5 P=0.5 r=500 S=30 O=0.01
 ### Memory/Time Usage For VolcanoSV-asm
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
 --- | --- | --- | ---|--- | --- | 
-CCS | 56X | 168GB | 30| 2-01:07:59| 1474 |
+Hifi | 56X | 168GB | 30| 2-01:07:59| 1474 |
 CLR | 89x | 259GB | 20 | 5-09:05:59 | 2582|
 ONT | 48x | 85GB| 30 | 6-02:33:59| 4397|
 
@@ -353,7 +353,7 @@ ONT | 48x | 85GB| 30 | 6-02:33:59| 4397|
 ### Memory/Time Usage For VolcanoSV-VC-large-indel
 Data Type| Coverage| Memory| ncpu | Run time | CPU hours |
 --- | --- | --- | ---|--- | --- | 
-CCS | 56X | 21GB | 50| 00:25:11| 21 |
+Hifi | 56X | 21GB | 50| 00:25:11| 21 |
 CLR | 89x | 215GB | 50 | 02:27:35 | 123|
 ONT | 48x | 34GB| 50 | 00:38:24| 32|
 
