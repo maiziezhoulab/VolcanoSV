@@ -4,8 +4,8 @@
 - [Installation](#install-through-github)
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly-volcanosv-asm)
-    - [Single chromosome mode VolcanoSV Assembly-Single assembler](#Single-chromosome-mode-Single-assembler)
-    - [Single chromosome mode VolcanoSV Assembly-hybrid](#Single-chromosome-mode-hybrid)
+    - [Single chromosome mode VolcanoSV Assembly-Single assembler](#Single-chromosome-mode-VolcanoSV-Assembly-Single-assembler)
+    - [Single chromosome mode VolcanoSV Assembly-hybrid](#Single-chromosome-VolcanoSV-Assembly-mode-hybrid)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
     - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection-volcanosv-vc)
 - [WGS mode](#wgs-mode)
@@ -70,7 +70,7 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
-#### Single chromosome mode-Single assembler
+#### Single chromosome mode VolcanoSV Assembly-Single assembler
 The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
@@ -106,7 +106,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 For more detailed information of the assemblers, you can [click here](Assemblers.md).
-#### Single chromosome mode-Hybrid
+#### Single chromosome mode VolcanoSV Assembly-Hybrid
 Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
 For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup region and hifiasm for the other regions, you can use the code below:
