@@ -13,6 +13,7 @@
   -  [WGS mode Large Indel detection](#wgs-mode-Large-Indel-detection-volcanosv-vc)
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection-volcanosv-vc)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
+- [SD recovery](#sd-recovery)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
 - [Troubleshooting](#Troubleshooting)
@@ -343,6 +344,71 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 After running the above code, you will have output VCF in `volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`.
 
 
+## SD Recovery
+
+After assembly, if you want to get better accuracy in SD rich regions, you can run this SD recovery pipeline, which includes 3 steps. 
+
+### Step1
+We first align the reads to the contig file, and then integrates [Flagger](https://github.com/mobinasri/flagger) to annotate collapsed SD regions.
+To run this step, you need java and docker in your system.
+'''
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
+  --input_dir <volcanosv_output> \
+  --output_dir <SD_recovery_dir> \
+  --fastq_file <raw_reads_fastq> \
+  --data_type <DATA_TYPE> \
+  --n_thread <t> \
+  --mem_per_thread <mem> \
+  --sample_name <sample> \
+  --lib_name <lib>
+'''
+
+After that, you will have a <sample>_<lib>_collapsed_hp_namex.txt file generated in the output folder, which contained the haplotyp names that contain collapsed SDs.
+
+### Step2
+We perform assembly only in that collapsed region using a specified assembler.
+The main code is `General_Assembly_Workflow.py`. The arguments are:
+'''
+  --hap_file HAP_FILE, -haps HAP_FILE
+  --fastq_dirs FASTQ_DIRS [FASTQ_DIRS ...], -fqds FASTQ_DIRS [FASTQ_DIRS ...]
+                        the folders that includes FASTQ files. (default: None)
+  --output_dir OUTPUT_DIR, -o OUTPUT_DIR
+  --assemblers {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} [{wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} ...], -asms {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} [{wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} ...]
+                        the assemblers used for fastq_dirs; order corresponds to the order of fastq_dirs (default: None)
+  --data_type {CLR,ONT,Hifi}, -d {CLR,ONT,Hifi}
+  --pacbio_subtype {rs,sq}, -pb {rs,sq}
+                        must provide when using wtdbg2 on CLR data (default: None)
+  --shasta_ont_config {Nanopore-OldGuppy-Sep2020}, -shacon {Nanopore-OldGuppy-Sep2020}
+  --n_thread N_THREAD, -t N_THREAD
+  --asm_thread ASM_THREAD, -ta ASM_THREAD
+  --clean, -cl
+  --prefix PREFIX, -px PREFIX
+                        file prefix in the output folder (default: Sample)
+'''
+Example Usage:
+
+```
+python3 General_Assembly_Workflow.py \
+-hap <sample>_<lib>_collapsed_hp_namex.txt \
+-fqds <volcanosv_output>/chr*/Assembly/fastq_by_hap \
+-o  <volcanosv_output>/SD_recovery
+-asms <your_pick_assembler> \
+-d <type> \
+-t <t> 
+```
+You will have a `<volcanosv_output>/SD_recovery/final_contigs/final_contigs.fa` generated.
+### Step3
+
+Use the newly generated contigs to replace the previously collapsed contigs.
+
+```
+python3 Replace_Collapsed_Contigs.py \
+-og <volcanosv_output>/SD_recovery/assemblies.fa \
+-new <volcanosv_output>/SD_recovery/final_contigs/final_contigs.fa \
+-o <volcanosv_output>/SD_recovery/SD_recovered.fa \
+-hap  <sample>_<lib>_collapsed_hp_namex.txt 
+```
+<volcanosv_output>/SD_recovery/SD_recovered.fa is the SD recovered contig file.
 
 ## Truvari evaluation
 
