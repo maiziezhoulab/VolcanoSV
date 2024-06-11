@@ -3,7 +3,7 @@
 ## Table of Content 
 - [Installation](#install-through-github)
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
-    - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly)
+    - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly-volcanosv-asm)
     - [Single assembler mode](#Single-assembler-mode)
     - [Hybrid assembly mode](#hybrid-assembly-mode)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
