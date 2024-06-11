@@ -71,7 +71,7 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
 #### Single chromosome mode VolcanoSV Assembly-Single assembler
-The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta',[nextdenovo](#https://github.com/Nextomics/NextDenovo),'hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta',[NextDenovo](https://github.com/Nextomics/NextDenovo),'hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
   --bam_file INBAM, -bam INBAM, could be either wgs bam or single-chromosome bam file
