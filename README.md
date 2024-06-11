@@ -36,10 +36,10 @@ conda activate volcanosv
 
 <!-- Add VolcanoSV to `PATH` by
 ```
-path_to_volcanosv=/path/to/VolcanoSV/bin
-PATH+=":${path_to_volcanosv}/VolcanoSV-asm"
-for i in ${path_to_volcanosv}/VolcanoSV-vc/*/; do PATH+=":$i"; done
-chmod +x ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py ${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py
+path_to_volcanosv=/path/to/VolcanoSV
+PATH+=":${path_to_volcanosv}/bin/VolcanoSV-asm"
+for i in ${path_to_volcanosv}/bin/VolcanoSV-vc/*/; do PATH+=":$i"; done
+chmod +x ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py ${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py
 ```
 You can also add the line above to `~/.bashrc` if you don't want to do it everytime you start a shell -->
 <!-- Next, put the "VolcanoSV/bin" in the ".bashrc" file, and source the ".bashrc" file <br /> -->
@@ -48,7 +48,7 @@ You can set
 ```
 path_to_volcanosv=/path/to/VolcanoSV/bin
 ```
-for convenience or just use the full path of `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py`, `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`, `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py` and `${path_to_volcanosv}/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py`.
+for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py` and `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py`.
 
 
 # Running The Code:
@@ -71,7 +71,7 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
 #### Single chromosome mode-Single assembler
-The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
   --bam_file INBAM, -bam INBAM, could be either wgs bam or single-chromosome bam file
@@ -93,7 +93,7 @@ After running the above code, you will have output contigs in `<ouput_folder>/ch
 For example, if you want to use hifiasm for hifi data, you can use the below scripts
 
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 -bam Hifi_L2_hg19_minimap2_chr10.bam \
 -o volcanosv_asm_output \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
@@ -107,13 +107,13 @@ The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 For more detailed information of the assemblers, you can [click here](Assemblers.md).
 #### Single chromosome mode-Hybrid
-Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
+Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
 For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup region and hifiasm for the other regions, you can use the code below:
 
 
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm_hybrid.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py \
 -bam Hifi_L2_hg19_minimap2_chr10.bam \
 -o volcanosv_asm_output \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
@@ -131,7 +131,7 @@ If the volcanosv-asm pipeline is executed successfully and completely, your fina
 
 ### Single chromosome mode Large Indel detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The input arguments for this code are explained below:
+The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. The input arguments for this code are explained below:
 
 ```
   --input_dir INPUT_DIR, -i INPUT_DIR
@@ -155,7 +155,7 @@ After running the above code, you will have output VCF in `<ouput_folder>/volcan
 
 For example, if you want to reproduce the large indel VCF file for Hifi_L2 data, you can use the following command:
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_large_indel_output/ \
 -dtype Hifi \
@@ -171,7 +171,7 @@ Note that, due to the randomness in assembly and alignment procedure, your VCF f
 
 ### Single chromosome mode Small Indel detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
+The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
 
 
 ```
@@ -198,7 +198,7 @@ The input directory should be the output directory of volcanoSV-asm.
 
 The example code is as below:
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_small_indel \
 -bam Hifi_L2_hg19_minimap2_chr10.bam \
@@ -215,7 +215,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 The VolcanoSV assembly is designed to run by chromosomes. If you have a distributed computing system that allows you to submit multiple jobs, we recommend that you submit one job per chromosome and let them run simultaneously. You can follow the template below to construct your job script:
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 -bam <wgs_bam> \
 -o volcanosv_asm_output \
 -ref <reference_file> \
@@ -232,7 +232,7 @@ However, if you do not have a distributed computing system, you may write a for 
 for i in {1..22}
 do
 echo "***********************assembly for chr${i}*******************"
-python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 -bam <wgs_bam> \
 -o volcanosv_asm_output \
 -ref <reference_file> \
@@ -251,11 +251,11 @@ The chr1-chr22 will be saved under `volcanosv_asm_output`. This is slower but ca
 
 ### WGS mode Large Indel detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. This code is designed for both single chromosome mode and wgs mode. To run it in wgs mode, you should first finish running the volcanosv-asm pipeline and provide the assembly output folder as the input folder for this code. You should **not** provide the `chr' argument in WGS mode.
+The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. This code is designed for both single chromosome mode and wgs mode. To run it in wgs mode, you should first finish running the volcanosv-asm pipeline and provide the assembly output folder as the input folder for this code. You should **not** provide the `chr' argument in WGS mode.
 
 An example command is as below:
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_large_indel_output/ \
 -dtype <datatype> \
@@ -269,7 +269,7 @@ After running the above code, you will have output VCF in `volcanosv_large_indel
 
 ### WGS mode Complex SV detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The input arguments for this code are explained below:
+The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py`. The input arguments for this code are explained below:
 
 
 ```
@@ -286,7 +286,7 @@ The input directory should be the output directory of volcanoSV-asm.
 
 The example code is as below:
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py \
 -i volcanosv_asm_output/ \
 -vcf volcanosv_large_indel_output/volcanosv_large_indel.vcf \
 -o volcanosv_complex_sv \
@@ -301,7 +301,7 @@ After running the above code, you will have output VCF in `volcanosv_complex_sv/
 
 ### WGS mode Small Indel detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
+The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
 
 
 ```
@@ -328,7 +328,7 @@ The input directory should be the output directory of volcanoSV-asm.
 
 The example code is as below:
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_small_indel \
 -bam <wgs_reads_bamfile> \
