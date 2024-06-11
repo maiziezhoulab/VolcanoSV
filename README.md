@@ -80,6 +80,7 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated
   --n_thread N_THREAD, -t N_THREAD
   --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
   --assembler {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}, -asm {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}
+        optional; if not set, VolcanoSV use hifiasm for Hifi data and flye for CLR and ONT data by default.
   --data_type {CLR,ONT,Hifi}, -dtype {CLR,ONT,Hifi}
   --pacbio_subtype {CLR-rs,CLR-sq}, -pb {CLR-rs,CLR-sq}
                         must provide when using wtdbg2 on CLR data (default: None)
