@@ -29,7 +29,7 @@ VolcanoSV utilizes Python3.8.3. To set up the environment, you need to have cond
 conda env create -f VolcanoSV/requirement.yaml
 ```
 
-Then you will have a virtual environment called "volcano” created. Before running any VolcanoSV commands, please activate this environment first.
+Then you will have a virtual environment called `volcanosv` created. Before running any VolcanoSV commands, please activate this environment first.
 ```
 conda activate volcanosv
 ```
