@@ -48,7 +48,7 @@ You can set
 ```
 path_to_volcanosv=/path/to/VolcanoSV/bin
 ```
-for convenience or just use the full path of "**volcanosv-asm.py**", "**volcanosv-vc-large-indel.py**", "**volcanosv-vc-complex-sv.py**" and "**volcanosv-vc-small-indel.py**"
+for convenience or just use the full path of "**${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py**", "**${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py**", "**${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py**" and "**${path_to_volcanosv}/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py**"
 
 
 # Running The Code:
@@ -107,7 +107,7 @@ The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 For more detailed information of the assemblers, you can [click here](Assemblers.md).
 #### Hybrid assembly mode
-Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is **volcanosv-asm_hybrid.py**.
+Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is **${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm_hybrid.py**.
 
 For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup region and hifiasm for the other regions, you can use the code below:
 
