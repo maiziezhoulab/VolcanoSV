@@ -31,7 +31,7 @@ conda env create -f VolcanoSV/requirement.yaml
 
 Then you will have a virtual environment called "volcano” created. Before running any VolcanoSV commands, please activate this environment first.
 ```
-conda activate volcano
+conda activate volcanosv
 ```
 
 <!-- Add VolcanoSV to `PATH` by
