@@ -351,7 +351,7 @@ After assembly, if you want to get better accuracy in SD rich regions, you can r
 ### Step1
 We first align the reads to the contig file, and then integrates [Flagger](https://github.com/mobinasri/flagger) to annotate collapsed SD regions.
 To run this step, you need java and docker in your system.
-'''
+```
 python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
   --input_dir <volcanosv_output> \
   --output_dir <SD_recovery_dir> \
@@ -361,7 +361,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
   --mem_per_thread <mem> \
   --sample_name <sample> \
   --lib_name <lib>
-'''
+```
 
 After that, you will have a <sample>_<lib>_collapsed_hp_namex.txt file generated in the output folder, which contained the haplotyp names that contain collapsed SDs.
 
