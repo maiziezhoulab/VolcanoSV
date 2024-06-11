@@ -368,7 +368,7 @@ After that, you will have a `<sample>_<lib>_collapsed_hp_namex.txt` file generat
 ### Step2
 We perform assembly only in that collapsed region using a specified assembler.
 The main code is `General_Assembly_Workflow.py`. The arguments are:
-'''
+```
   --hap_file HAP_FILE, -haps HAP_FILE
   --fastq_dirs FASTQ_DIRS [FASTQ_DIRS ...], -fqds FASTQ_DIRS [FASTQ_DIRS ...]
                         the folders that includes FASTQ files. (default: None)
@@ -384,7 +384,7 @@ The main code is `General_Assembly_Workflow.py`. The arguments are:
   --clean, -cl
   --prefix PREFIX, -px PREFIX
                         file prefix in the output folder (default: Sample)
-'''
+```
 Example Usage:
 
 ```
