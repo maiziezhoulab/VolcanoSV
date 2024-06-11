@@ -1,4 +1,4 @@
-name: volcano
+name: volcanosv
 channels:
   - conda-forge
   - bioconda
@@ -23,6 +23,7 @@ dependencies:
   - pip
   - pip:
     - scikit_learn
+    - paralleltask
   - python=3.8.3
   - pyvcf=0.6.8=py38h32f6830_1002
   - scipy=1.9.1=py38hea3f02b_0
