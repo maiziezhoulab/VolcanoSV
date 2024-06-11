@@ -363,7 +363,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
   --lib_name <lib>
 ```
 
-After that, you will have a <sample>_<lib>_collapsed_hp_namex.txt file generated in the output folder, which contained the haplotyp names that contain collapsed SDs.
+After that, you will have a `<sample>_<lib>_collapsed_hp_namex.txt` file generated in the output folder, which contained the haplotyp names that contain collapsed SDs.
 
 ### Step2
 We perform assembly only in that collapsed region using a specified assembler.
