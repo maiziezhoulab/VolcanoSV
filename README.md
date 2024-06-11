@@ -71,7 +71,7 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
 #### Single assembler mode
-The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is **${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py**. The input arguments for this code are explained below:
 
 ```
   --inbam INBAM, -i INBAM, could be either wgs bam or single-chromosome bam file
@@ -107,17 +107,17 @@ The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 For more detailed information of the assemblers, you can [click here](Assemblers.md).
 #### Hybrid assembly mode
-Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is 'volcanosv-asm_hybrid.py'.
+Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is **volcanosv-asm_hybrid.py**.
 
 For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup region and hifiasm for the other regions, you can use the code below:
 
 
 ```
-python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py \
+python3 ${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm_hybrid.py \
 -i Hifi_L2_hg19_minimap2_chr10.bam \
 -o volcanosv_asm_output \
 -r refdata-hg19-2.1.0/fasta/genome.fa \
--bed segdup.bed \
+-bed segdups.bed \
 -inasm hicanu \
 -outasm hifiasm \
 -t 10 \
