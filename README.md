@@ -150,7 +150,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-lar
   --prefix PREFIX, -px PREFIX
 
 ```
-The input directory should be the output directory of VolcaoSV-asm. This code is compatible with either single chromosome mode or wgs mode: when the argument "chrnum" is provided, it will execute in single chromosome mode, otherwise it will assume the input_dir contains chr1-chr22 contigs and execute in wgs mode. Please note that, **prefix** should keep consistent with what is set in volcanosv-asm.
+The input directory should be the output directory of volcanoSV-asm. This code is compatible with either single chromosome mode or wgs mode: when the argument "chrnum" is provided, it will execute in single chromosome mode, otherwise it will assume the input_dir contains chr1-chr22 contigs and execute in wgs mode. Please note that, **prefix** should keep consistent with what is set in volcanosv-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_large_indel.vcf`.
 
 For example, if you want to reproduce the large indel VCF file for Hifi_L2 data, you can use the following command:
@@ -194,7 +194,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-sma
 
 ```
 
-The input directory should be the output directory of VolcaoSV-asm.
+The input directory should be the output directory of volcanoSV-asm.
 
 The example code is as below:
 ```
@@ -282,7 +282,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-comp
   --n_thread N_THREAD, -t N_THREAD
   --prefix PREFIX, -px PREFIX
 ```
-The input directory should be the output directory of VolcaoSV-asm.
+The input directory should be the output directory of volcanoSV-asm.
 
 The example code is as below:
 ```
@@ -324,7 +324,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-sma
 
 ```
 
-The input directory should be the output directory of VolcaoSV-asm.
+The input directory should be the output directory of volcanoSV-asm.
 
 The example code is as below:
 ```
