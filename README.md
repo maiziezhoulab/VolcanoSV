@@ -120,7 +120,6 @@ python3 $path_to_volcano/VolcanoSV-asm/volcanosv-asm.py \
 -bed segdup.bed \
 -inasm hicanu \
 -outasm hifiasm \
--in
 -t 10 \
 -chr 10 \
 -d Hifi \
