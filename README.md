@@ -111,7 +111,7 @@ For more detailed information of the assemblers, you can [click here](Assemblers
 #### Single chromosome mode VolcanoSV Assembly-Hybrid
 Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify an "in-BED" assembler and an "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
-For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup regions and hifiasm for the other regions, you can use the code below:
+For example, if you provide a `segdups.bed`, and want to use hicanu for the segdup regions and hifiasm for the other regions, you can use the code below:
 
 
 ```
