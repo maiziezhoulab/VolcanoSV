@@ -147,9 +147,10 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-lar
   --n_thread_align N_THREAD_ALIGN, -ta N_THREAD_ALIGN
   --mem_per_thread MEM_PER_THREAD, -mempt MEM_PER_THREAD
                         Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M
+  --prefix PREFIX, -px PREFIX
 
 ```
-The input directory should be the output directory of VolcaoSV-asm. This code is compatible with either single chromosome mode or wgs mode: when the argument "chrnum" is provided, it will execute in single chromosome mode, otherwise it will assume the input_dir contains chr1-chr22 contigs and execute in wgs mode.
+The input directory should be the output directory of VolcaoSV-asm. This code is compatible with either single chromosome mode or wgs mode: when the argument "chrnum" is provided, it will execute in single chromosome mode, otherwise it will assume the input_dir contains chr1-chr22 contigs and execute in wgs mode. Please note that, **prefix** should keep consistent with what is set in volcanosv-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_large_indel.vcf`.
 
 For example, if you want to reproduce the large indel VCF file for Hifi_L2 data, you can use the following command:
@@ -160,9 +161,10 @@ python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.p
 -dtype Hifi \
 -rbam Hifi_L2_hg19_minimap2_chr10.bam \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
--chr 10 -t 10
+-chr 10 -t 10 \
+-px Hifi_L2
 ```
-The VCF file will be `volcanosv_large_indel_output/volcanosv_large_indel.vcf`. 
+The VCF file will be `volcanosv_large_indel_output/Hifi_L2_volcanosv_large_indel.vcf`. 
 If the volcanosv-vc-large-indel pipeline is executed successfully and completely, your VCF file should have roughly the same number of variants as the Hifi_L2_variants.vcf from zenodo.
 Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.
 
@@ -187,6 +189,8 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-sma
                         maximum bad kmer ratio (default: 0.3)
   --min_support MIN_SUPPORT, -ms MIN_SUPPORT
                         maximum support for bad kmer (default: 5)
+  --prefix PREFIX, -px PREFIX
+
 
 ```
 
@@ -200,9 +204,10 @@ python3 ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.p
 -rbam Hifi_L2_hg19_minimap2_chr10.bam \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
 -r chr10 \
--t 30
+-t 30 \
+-px Hifi_L2
 ```
-After running the above code, you will have output VCF in `volcanosv_small_indel/volcanosv_small_indel.vcf`.
+After running the above code, you will have output VCF in `volcanosv_small_indel/Hifi_L2_volcanosv_small_indel.vcf`.
 
 ## WGS mode
 
@@ -253,12 +258,13 @@ An example command is as below:
 python3 ${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 -i volcanosv_asm_output/ \
 -o volcanosv_large_indel_output/ \
--dtype <dtype> \
+-dtype <datatype> \
 -rbam <wgs_reads_bamfile> \
 -ref <reference> \
--t 11
+-t 11 \
+-px <prefix>
 ```
-After running the above code, you will have output VCF in `volcanosv_large_indel_output/volcanosv_large_indel.vcf`.
+After running the above code, you will have output VCF in `volcanosv_large_indel_output/<prefix>_volcanosv_large_indel.vcf`.
 
 
 ### WGS mode Complex SV detection (VolcanoSV-vc) 
@@ -274,7 +280,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-comp
   --datatype {Hifi,CLR,ONT}, -dtype {Hifi,CLR,ONT}
   --out_dir OUT_DIR, -o OUT_DIR
   --n_thread N_THREAD, -t N_THREAD
-
+  --prefix PREFIX, -px PREFIX
 ```
 The input directory should be the output directory of VolcaoSV-asm.
 
@@ -284,12 +290,13 @@ python3 ${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py 
 -i volcanosv_asm_output/ \
 -vcf volcanosv_large_indel_output/volcanosv_large_indel.vcf \
 -o volcanosv_complex_sv \
--dtype <dtype> \
+-dtype <datatype> \
 -bam <wgs_reads_bamfile> \
 -ref <reference> \
--t 11
+-t 11 \
+-px <prefix>
 ```
-After running the above code, you will have output VCF in `volcanosv_complex_sv/volcanosv_complex_SV.vcf`.
+After running the above code, you will have output VCF in `volcanosv_complex_sv/<prefix>_volcanosv_complex_SV.vcf`.
 
 
 ### WGS mode Small Indel detection (VolcanoSV-vc) 
@@ -312,6 +319,8 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-sma
                         maximum bad kmer ratio (default: 0.3)
   --min_support MIN_SUPPORT, -ms MIN_SUPPORT
                         maximum support for bad kmer (default: 5)
+  --prefix PREFIX, -px PREFIX
+
 
 ```
 
@@ -324,10 +333,11 @@ python3 ${path_to_volcanosv}/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.p
 -o volcanosv_small_indel \
 -rbam <wgs_reads_bamfile> \
 -ref <reference> \
--t 30
+-t 30 \
+-px <prefix>
 ```
 
-After running the above code, you will have output VCF in `volcanosv_small_indel/volcanosv_small_indel.vcf`.
+After running the above code, you will have output VCF in `volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`.
 
 
 
