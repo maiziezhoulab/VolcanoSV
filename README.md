@@ -90,7 +90,7 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated
 ```
 Please select from hifiasm and hicanu for Hifi data, and the rest of the assemblers are for CLR and ONT data.
 By default, VolcanoSV use hifiasm for Hifi data and flye for CLR and ONT data.
-After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contigs.fa`.
+After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/<prefix>_final_contigs.fa`.
 
 For example, if you want to use hifiasm for hifi data, you can use the below scripts
 
@@ -109,9 +109,9 @@ The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 For more detailed information of the assemblers, you can [click here](Assemblers.md).
 #### Single chromosome mode VolcanoSV Assembly-Hybrid
-Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
+Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify an "in-BED" assembler and an "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
-For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup region and hifiasm for the other regions, you can use the code below:
+For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup regions and hifiasm for the other regions, you can use the code below:
 
 
 ```
