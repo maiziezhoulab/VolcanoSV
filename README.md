@@ -75,7 +75,7 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated
 
 ```
   --bam_file INBAM, -bam INBAM, could be either wgs bam or single-chromosome bam file
-  --out_dir OUT_DIR, -o OUT_DIR
+  --output_dir output_dir, -o output_dir
   --reference REFERENCE, -ref REFERENCE
   --n_thread N_THREAD, -t N_THREAD
   --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
@@ -278,7 +278,7 @@ The main code is `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-comp
   --bamfile BAMFILE, -bam BAMFILE
   --reference REFERENCE, -ref REFERENCE
   --datatype {Hifi,CLR,ONT}, -dtype {Hifi,CLR,ONT}
-  --out_dir OUT_DIR, -o OUT_DIR
+  --output_dir output_dir, -o output_dir
   --n_thread N_THREAD, -t N_THREAD
   --prefix PREFIX, -px PREFIX
 ```
