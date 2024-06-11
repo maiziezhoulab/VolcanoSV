@@ -107,7 +107,8 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 ```
 The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
-For more detailed information of the assemblers, you can [click here](Assemblers.md).
+VolcanoSV-asm already includes the executable version of all assemblers, so you do not need to install them one by one.
+However, if you are looking for more detailed information on the assemblers, you can [click here](Assemblers.md).
 #### Single chromosome mode VolcanoSV Assembly-Hybrid
 Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify an "in-BED" assembler and an "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
