@@ -5,6 +5,9 @@
 	- [Flye (2019)](#Flye-2019)
 	- [wtdbg2 (2020)](#wtdbg2-2020)
 	- [Shasta (2020)](#Shasta-2020)
+   	- [miniasm (2016)](#miniasm-2016)
+   	- [NextDenovo (2024)](#nextdenovo-2024)
+  
 
 
 # Assemblers
@@ -354,8 +357,112 @@ ${shasta} --input ${reads} --config Nanopore-UL-Dec2019
 1. Shasta provided many predefined configurations. Choose proper configuration accroding to the feature of your sequencing data (like guppy version etc.). To list all available configurations, use `${shasta} --command listConfigurations`. To check the detail of a specific configure, use `${shasta} --command listConfiguration --config Nanopore-May2022`, replace Nanopore-May2022 with the config name you want.
 2. Memory requirement: 
    >Memory requirements for optimal performance are roughly proportional to genome size and coverage and are around 4 to 6 bytes per input base. This only counts input bases that are used in the assembly - that is, excluding reads that were discarded because they were too short or for other reasons. For a human-size genome (≈3 Gb) at coverage 60x, this works out to around 1 TB of memory.
-   
-   for more details, please see [here](https://paoloshasta.github.io/shasta/Running.html#MemoryRequirements).
-   We ran Shasta on the Nanopore Promethion data (~45x) with 1000G
+
+## miniasm (2016)
+### Project Links
+#### Github Repo:
+[https://github.com/lh3/miniasm](https://github.com/lh3/miniasm)
+
+#### Publication:
+[Minimap and miniasm: fast mapping and de novo assembly for noisy long sequences](https://academic.oup.com/bioinformatics/article/32/14/2103/1742895) 
+##### BibTeX
+```
+@article{10.1093/bioinformatics/btw152,
+    author = {Li, Heng},
+    title = "{Minimap and miniasm: fast mapping and de novo assembly for noisy long sequences}",
+    journal = {Bioinformatics},
+    volume = {32},
+    number = {14},
+    pages = {2103-2110},
+    year = {2016},
+    month = {03},
+    issn = {1367-4803},
+    doi = {10.1093/bioinformatics/btw152},
+    url = {https://doi.org/10.1093/bioinformatics/btw152},
+    eprint = {https://academic.oup.com/bioinformatics/article-pdf/32/14/2103/49019917/bioinformatics\_32\_14\_2103.pdf},
+}
+
+```
+### Installation & Dependencies
+#### Installation Methods
+1. Install from release
+```
+# Install minimap and miniasm (requiring gcc and zlib)
+git clone https://github.com/lh3/minimap2 && (cd minimap2 && make)
+git clone https://github.com/lh3/miniasm  && (cd miniasm  && make)
+```
+#### Dependencies
+```
+None, just use the downloaded release
+```
+### Inputs & Outputs
+#### Inputs
+CLR or ONT fastq file(s)
+#### Outputs
+The main assembly output is a gfa file, of which the path is specified by the user.
+### Commands used
+
+```
+# Overlap for PacBio reads (or use "-x ava-ont" for nanopore read overlapping)
+minimap2/minimap2 -x ava-pb -t8 pb-reads.fq pb-reads.fq | gzip -1 > reads.paf.gz
+# Layout
+miniasm/miniasm -f reads.fq reads.paf.gz > reads.gfa
+```
+
+
+## NextDenovo (2024)
+### Project Links
+#### Github Repo:
+[https://github.com/Nextomics/NextDenovo](https://github.com/Nextomics/NextDenovo)
+
+#### Full documentation
+
+https://nextdenovo.readthedocs.io/en/latest/QSTART.html
+#### Publication:
+Hu J, Wang Z, Sun Z, et al. NextDenovo: an efficient error correction and accurate assembly tool for noisy long reads[J]. Genome Biology, 2024, 25(1): 1-19.
+
+https://doi.org/10.1186/s13059-024-03252-4
+
+##### BibTeX
+```
+@article{hu2024nextdenovo,
+  title={NextDenovo: an efficient error correction and accurate assembly tool for noisy long reads},
+  author={Hu, Jiang and Wang, Zhuo and Sun, Zongyi and Hu, Benxia and Ayoola, Adeola Oluwakemi and Liang, Fan and Li, Jingjing and Sandoval, Jos{\'e} R and Cooper, David N and Ye, Kai and others},
+  journal={Genome Biology},
+  volume={25},
+  number={1},
+  pages={107},
+  year={2024},
+  publisher={Springer}
+}
+```
+### Installation & Dependencies
+#### Installation Methods
+1. Install from release
+```
+ wget https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz
+ tar -vxzf NextDenovo.tgz && cd NextDenovo
+```
+#### Dependencies
+```
+Python (Support python 2 and 3):
+- Paralleltask (pip install paralleltask)
+```
+### Inputs & Outputs
+#### Inputs
+Hfi, CLR or ONT fastq file
+#### Outputs
+Sequence: 01_rundir/03.ctg_graph/nd.asm.fasta
+Statistics: 01_rundir/03.ctg_graph/nd.asm.fasta.stat
+### Commands used
+
+```
+# Prepare input.fofn
+ls reads1.fasta reads2.fastq reads3.fasta.gz reads4.fastq.gz ... > input.fofn
+# Create run.cfg
+cp doc/run.cfg ./
+# Run NextDenovo
+nextDenovo run.cfg
+```
 
 
