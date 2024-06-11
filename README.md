@@ -68,8 +68,8 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
-
-The VolcanoSV assembly pipeline is designed to run by chromosomes. The main code is `$path_to_volcano/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+#### Single assembler mode
+The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `$path_to_volcano/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
   --inbam INBAM, -i INBAM, could be either wgs bam or single-chromosome bam file
@@ -77,14 +77,18 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. The main code
   --reference REFERENCE, -r REFERENCE
   --n_thread N_THREAD, -t N_THREAD
   --chrnum {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}, -chr {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22}
-  --dtype {CCS,CLR,ONT}, -d {CCS,CLR,ONT}
+  --assembler {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}, -asm {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye}
+  --data_type {CLR,ONT,Hifi}, -d {CLR,ONT,Hifi}
+  --pacbio_subtype {CLR-rs,CLR-sq}, -pb {CLR-rs,CLR-sq}
+                        must provide when using wtdbg2 on CLR data (default: None)
+  --shasta_ont_config {Nanopore-OldGuppy-Sep2020}, -shacon {Nanopore-OldGuppy-Sep2020}
   --prefix PREFIX, -px PREFIX
 
 ```
 
 After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/final_contigs.fa`.
 
-For example, you can reproduce contigs file for Hifi data using the below scripts
+For example, if you want to use hifiasm for hifi data, you can use the below scripts
 
 ```
 python3 $path_to_volcano/VolcanoSV-asm/volcanosv-asm.py \
@@ -93,12 +97,35 @@ python3 $path_to_volcano/VolcanoSV-asm/volcanosv-asm.py \
 -r refdata-hg19-2.1.0/fasta/genome.fa \
 -t 10 \
 -chr 10 \
--d CCS \
--px Hifi_L2
+-d Hifi \
+-px Hifi_L2 \
+-asm hifiasm
 ```
-The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/final_contigs.fa`. 
+The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
 If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 
+#### Hybrid assembly mode
+Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify a "in-BED" assembler and a "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is 'volcanosv-asm_hybrid.py'.
+
+For example, if you provide a 'segdups.bed`, and want to use hicanu for the segdup region and hifiasm for the other regions, you can use the code below:
+
+
+```
+python3 $path_to_volcano/VolcanoSV-asm/volcanosv-asm.py \
+-i Hifi_L2_hg19_minimap2_chr10.bam \
+-o volcanosv_asm_output \
+-r refdata-hg19-2.1.0/fasta/genome.fa \
+-bed segdup.bed \
+-inasm hicanu \
+-outasm hifiasm \
+-in
+-t 10 \
+-chr 10 \
+-d Hifi \
+-px Hifi_L2 
+```
+The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
+If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 
 
 ### Single chromosome mode Large Indel detection (VolcanoSV-vc) 
