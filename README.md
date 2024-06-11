@@ -48,7 +48,7 @@ You can set
 ```
 path_to_volcanosv=/path/to/VolcanoSV/bin
 ```
-for convenience or just use the full path of "**${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py**", "**${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py**", "**${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py**" and "**${path_to_volcanosv}/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py**"
+for convenience or just use the full path of `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py`, `${path_to_volcanosv}/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`, `${path_to_volcanosv}/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py` and `${path_to_volcanosv}/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py`.
 
 
 # Running The Code:
@@ -71,7 +71,7 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
 #### Single assembler mode
-The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is **${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py**. The input arguments for this code are explained below:
+The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-art assemblers into the pipeline, including 'wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'. You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
 
 ```
   --inbam INBAM, -i INBAM, could be either wgs bam or single-chromosome bam file
