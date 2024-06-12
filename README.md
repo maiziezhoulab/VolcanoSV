@@ -344,12 +344,12 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 After running the above code, you will have output VCF in `volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`.
 
 
-## SD Recovery
+## Assembly for regions enriched in segmental duplications (SDs)
 
-After assembly, if you want to get better accuracy in SD rich regions, you can run this SD recovery pipeline, which includes 3 steps. 
+After WGS assembly, if you would like to evaluate assembly for SDs and achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
 
 ### Step1
-We first align the reads to the contig file, and then integrates [Flagger](https://github.com/mobinasri/flagger) to annotate collapsed SD regions.
+Align reads to the contig fasta file, and then utilize [Flagger](https://github.com/mobinasri/flagger) to annotate assembly for collapse components (collapsed SD regions).
 To run this step, you need java and docker in your system.
 ```
 python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
@@ -363,15 +363,15 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
   --lib_name <lib>
 ```
 
-After that, you will have a `<sample>_<lib>_collapsed_hp_namex.txt` file generated in the output folder, which contained the haplotyp names that contain collapsed SDs.
+After this step, you will have a `<sample>_<lib>_collapsed_hp_namex.txt` file generated in the output folder, which contains the haplotype names that contain collapsed SDs.
 
 ### Step2
-We perform assembly only in that collapsed region using a specified assembler.
-The main code is `General_Assembly_Workflow.py`. The arguments are:
+Perform assembly only in those collapsed regions using a specified assembler.
+The main script is `General_Assembly_Workflow.py`. The arguments are:
 ```
   --hap_file HAP_FILE, -haps HAP_FILE
   --fastq_dirs FASTQ_DIRS [FASTQ_DIRS ...], -fqds FASTQ_DIRS [FASTQ_DIRS ...]
-                        the folders that includes FASTQ files. (default: None)
+                        the folder that includes FASTQ files. (default: None)
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --assemblers {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} [{wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} ...], -asms {wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} [{wtdbg2,canu,miniasm,shasta,nextdenovo,hifiasm,hicanu,flye} ...]
                         the assemblers used for fastq_dirs; order corresponds to the order of fastq_dirs (default: None)
@@ -397,8 +397,8 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/General_Assembly_Workflow.py \
 -t <t> 
 ```
 You will have a `<volcanosv_output>/SD_recovery/final_contigs/final_contigs.fa` generated.
-### Step3
 
+### Step3
 Use the newly generated contigs to replace the previously collapsed contigs.
 
 ```
@@ -412,7 +412,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Replace_Collapsed_Contigs.py \
 
 ## Truvari evaluation
 
-We use truvari4.0.0 to perform benchmarking against genome in a bottle gold standard set in high confidence region. The parameter we use is 
+We use truvari4.0.0 to perform benchmarking against the Genome in a Bottle (GIAB) gold standard set in a high confidence region. The parameter we use is 
 ```
 p=0.5 P=0.5 r=500 S=30 O=0.01
 ```
