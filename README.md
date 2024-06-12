@@ -71,8 +71,8 @@ Note: since translocation detection requires WGS BAM file as support, it does no
 
 ### Single chromosome mode VolcanoSV Assembly (VolcanoSV-asm) 
 
-#### Single chromosome mode VolcanoSV Assembly-Single assembler
-The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-the-art assemblers into the pipeline, including [wtdbg2](https://github.com/ruanjue/wtdbg2),[miniasm](https://github.com/lh3/miniasm),[Shasta](https://github.com/paoloshasta/shasta),[NextDenovo](https://github.com/Nextomics/NextDenovo),[hifiasm](https://github.com/chhylp123/hifiasm),[canu/hicanu](https://github.com/marbl/canu),[flye](https://github.com/fenderglass/Flye). You can pick your favorite assembler for the whole pipeline.  The main code is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this code are explained below:
+#### Single chromosome mode VolcanoSV Assembly - Single assembler
+The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated multiple state-of-the-art assemblers into the pipeline, including [wtdbg2](https://github.com/ruanjue/wtdbg2),[miniasm](https://github.com/lh3/miniasm),[Shasta](https://github.com/paoloshasta/shasta),[NextDenovo](https://github.com/Nextomics/NextDenovo),[hifiasm](https://github.com/chhylp123/hifiasm),[canu/hicanu](https://github.com/marbl/canu),[flye](https://github.com/fenderglass/Flye). Users can select the appropriate assembler based on the needs. The main script is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`. The input arguments for this script are explained below:
 
 ```
   --bam_file INBAM, -bam INBAM, could be either wgs bam or single-chromosome bam file
@@ -90,7 +90,7 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated
 
 ```
 Please select from hifiasm and hicanu for Hifi data, and the rest of the assemblers are for CLR and ONT data.
-By default, VolcanoSV use hifiasm for Hifi data and flye for CLR and ONT data.
+By default, VolcanoSV uses hifiasm for Hifi data and flye for CLR and ONT data.
 After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/<prefix>_final_contigs.fa`.
 
 For example, if you want to use hifiasm for hifi data, you can use the below scripts
@@ -107,14 +107,13 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 -asm hifiasm
 ```
 The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
-If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
-VolcanoSV-asm already includes the executable version of all assemblers, so you do not need to install them one by one.
-However, if you are looking for more detailed information on the assemblers, you can [click here](Assemblers.md).
-#### Single chromosome mode VolcanoSV Assembly-Hybrid
-Different assemblers have different power for recovering segmental duplications or other complex regions. It is sometimes better to use different assemblers for different regions. We provide a hybrid mode: you can input a BED file, and specify an "in-BED" assembler and an "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The code for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
+If the volcanosv-asm pipeline is executed successfully, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
+VolcanoSV-asm already includes the executable version of all assemblers, so you do not need to install them individually.
+However, if you want more detailed information on these assemblers, you can [click here](Assemblers.md).
+#### Single chromosome mode VolcanoSV Assembly - Hybrid mode
+Different assemblers vary in their ability to assemble regions enriched in segmental duplications (SDs) and other complex regions. Therefore, it is often advantageous to utilize different assemblers for different genomic regions. We thus also provide a hybrid mode: users can input a BED file, and specify an "in-BED" assembler and an "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The script for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
-For example, if you provide a `segdups.bed`, and want to use hicanu for the segdup regions and hifiasm for the other regions, you can use the code below:
-
+For example, if you provide a `segdups.bed`, and want to use hicanu for the segdup regions and hifiasm for the other rest regions, you can use the code below:
 
 ```
 python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py \
@@ -130,7 +129,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py \
 -px Hifi_L2 
 ```
 The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi_L2_final_contigs.fa`. 
-If the volcanosv-asm pipeline is executed successfully and completely, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
+If the volcanosv-asm pipeline is executed successfully, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 
 
 ### Single chromosome mode Large Indel detection (VolcanoSV-vc) 
@@ -154,10 +153,10 @@ The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc
   --prefix PREFIX, -px PREFIX
 
 ```
-The input directory should be the output directory of volcanoSV-asm. This code is compatible with either single chromosome mode or wgs mode: when the argument "chrnum" is provided, it will execute in single chromosome mode, otherwise it will assume the input_dir contains chr1-chr22 contigs and execute in wgs mode. Please note that, `prefix` should keep consistent with what is set in volcanosv-asm.
+The input directory should be the output directory of volcanoSV-asm. This code is compatible with either single chromosome mode or wgs mode: when the argument "chrnum" is provided, it will execute in single chromosome mode, otherwise, it will assume the input_dir contains chr1-chr22 contigs and execute in wgs mode. Please note that `prefix` should remain consistent with what is set in volcanosv-asm.
 After running the above code, you will have output VCF in `<ouput_folder>/volcanosv_large_indel.vcf`.
 
-For example, if you want to reproduce the large indel VCF file for Hifi_L2 data, you can use the following command:
+For example, if you want to reproduce the VCF file for large indels on Hifi_L2 data, you can use the following command:
 ```
 python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py \
 -i volcanosv_asm_output/ \
@@ -169,13 +168,13 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-ind
 -px Hifi_L2
 ```
 The VCF file will be `volcanosv_large_indel_output/Hifi_L2_volcanosv_large_indel.vcf`. 
-If the volcanosv-vc-large-indel pipeline is executed successfully and completely, your VCF file should have roughly the same number of variants as the Hifi_L2_variants.vcf from zenodo.
+If the volcanosv-vc-large-indel pipeline is executed successfully, your VCF file should have roughly the same number of variants as the Hifi_L2_variants.vcf from zenodo.
 Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.
 
 
 ### Single chromosome mode Small Indel detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this code are explained below:
+The main script is `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-indel.py`. The input arguments for this script are explained below:
 
 
 ```
@@ -217,7 +216,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 ### WGS mode VolcanoSV Assembly (VolcanoSV-asm) 
 
-The VolcanoSV assembly is designed to run by chromosomes. If you have a distributed computing system that allows you to submit multiple jobs, we recommend that you submit one job per chromosome and let them run simultaneously. You can follow the template below to construct your job script:
+The VolcanoSV assembly is designed to operate on a per-chromosome basis. If you have access to a distributed computing system that supports multiple job submissions, we recommend submitting one job per chromosome and running them concurrently. You can follow the template below to construct your job script:
 ```
 python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 -bam <wgs_bam> \
@@ -228,7 +227,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py \
 -dtype <datatype> \
 -px <prefix>
 ```
-For different chromosomes, you just need to simply change the `<chromosome_number>` to make different job scripts. All scripts share the same output folder. After all jobs are finished, you will see 22 subfolders under the output folder you specified, which are the chr1-chr22 assembly results. This is the most efficient way to run volcanosv-asm pipeline on a distributed system.
+To create job scripts for different chromosomes, simply change the <chromosome_number> in each script. All scripts share the same output folder. After all jobs are finished, you will see 22 subfolders under the output folder you specified, which are the chr1-chr22 assembly results. This is the most efficient way to run volcanosv-asm pipeline on a distributed system.
 
 
 However, if you do not have a distributed computing system, you may write a for loop to run different chromosomes:
@@ -255,7 +254,7 @@ The chr1-chr22 will be saved under `volcanosv_asm_output`. This is slower but ca
 
 ### WGS mode Large Indel detection (VolcanoSV-vc) 
 
-The main code is `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. This code is designed for both single chromosome mode and wgs mode. To run it in wgs mode, you should first finish running the volcanosv-asm pipeline and provide the assembly output folder as the input folder for this code. You should **not** provide the `chr' argument in WGS mode.
+The main script is `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`. This script is designed for both single chromosome mode and wgs mode. To run it in WGS mode, you should first finish running the volcanosv-asm pipeline and provide the assembly output folder as the input folder for this code. You should **not** provide the `chr' argument in WGS mode.
 
 An example command is as below:
 ```
@@ -346,7 +345,7 @@ After running the above code, you will have output VCF in `volcanosv_small_indel
 
 ## Improve assembly for regions enriched in segmental duplications (SDs)
 
-After WGS assembly, if you would like to evaluate assembly for SDs and achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
+After WGS assembly, if you would like to evaluate assembly for SDs and further achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
 
 ### Step1
 Align reads to the contig fasta file, and then utilize [Flagger](https://github.com/mobinasri/flagger) to annotate assembly for collapse components (collapsed SD regions).
