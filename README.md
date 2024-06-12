@@ -392,7 +392,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/General_Assembly_Workflow.py \
 -hap <sample>_<lib>_collapsed_hp_namex.txt \
 -fqds <volcanosv_output>/chr*/Assembly/fastq_by_hap \
 -o  <volcanosv_output>/SD_recovery
--asms <your_pick_assembler> \
+-asms <your_specified_assembler> \
 -d <type> \
 -t <t> 
 ```
