@@ -13,7 +13,7 @@
   -  [WGS mode Large Indel detection](#wgs-mode-Large-Indel-detection-volcanosv-vc)
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection-volcanosv-vc)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
-- [SD recovery](#sd-recovery)
+- [Improve assembly for regions enriched in segmental duplications](#sd-recovery)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
 - [Troubleshooting](#Troubleshooting)
@@ -344,7 +344,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 After running the above code, you will have output VCF in `volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`.
 
 
-## Assembly for regions enriched in segmental duplications (SDs)
+## Improve assembly for regions enriched in segmental duplications (SDs)
 
 After WGS assembly, if you would like to evaluate assembly for SDs and achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
 
