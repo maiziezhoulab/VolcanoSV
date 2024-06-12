@@ -90,7 +90,7 @@ The VolcanoSV assembly pipeline is designed to run by chromosomes. We integrated
 
 ```
 Please select from hifiasm and hicanu for Hifi data, and the rest of the assemblers are for CLR and ONT data.
-By default, VolcanoSV uses hifiasm for Hifi data and flye for CLR and ONT data.
+By default, VolcanoSV uses hifiasm for Hifi data and Flye for CLR and ONT data.
 After running the above code, you will have output contigs in `<ouput_folder>/chr<chrnum>/assembly/final_contigs/<prefix>_final_contigs.fa`.
 
 For example, if you want to use hifiasm for hifi data, you can use the below scripts
