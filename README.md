@@ -4,8 +4,8 @@
 - [Installation](#install-through-github)
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly-volcanosv-asm)
-    - [Single chromosome mode VolcanoSV Assembly-Single assembler](#Single-chromosome-mode-VolcanoSV-Assembly-Single-assembler)
-    - [Single chromosome mode VolcanoSV Assembly-hybrid](#Single-chromosome-mode-VolcanoSV-Assembly-hybrid)
+    - [Single chromosome mode VolcanoSV Assembly (Single assembler)](#Single-chromosome-mode-VolcanoSV-Assembly-Single-assembler)
+    - [Single chromosome mode VolcanoSV Assembly (hybrid)](#Single-chromosome-mode-VolcanoSV-Assembly-hybrid)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
     - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection-volcanosv-vc)
 - [WGS mode](#wgs-mode)
@@ -110,7 +110,7 @@ The final contig will be `volcanosv_asm_output/chr10/assembly/final_contigs/Hifi
 If the volcanosv-asm pipeline is executed successfully, your final contig file should have roughly the same size as the Hifi_L2_contigs.fa from zenodo.
 VolcanoSV-asm already includes the executable version of all assemblers, so you do not need to install them individually.
 However, if you want more detailed information on these assemblers, you can [click here](Assemblers.md).
-#### Single chromosome mode VolcanoSV Assembly - Hybrid mode
+#### Single chromosome mode VolcanoSV Assembly (Hybrid mode)
 Different assemblers vary in their ability to assemble regions enriched in segmental duplications (SDs) and other complex regions. Therefore, it is often advantageous to utilize different assemblers for different genomic regions. We thus also provide a hybrid mode: users can input a BED file, and specify an "in-BED" assembler and an "out-BED" assembler. The phase blocks that overlap with the BED file will be assembled using the in-BED assembler, while the rest will be assembled by the out-BED assembler. The script for this mode is `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py`.
 
 For example, if you provide a `segdups.bed`, and want to use hicanu for the segdup regions and hifiasm for the other rest regions, you can use the code below:
