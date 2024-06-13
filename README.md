@@ -402,11 +402,13 @@ Use the newly generated contigs to replace the previously collapsed contigs.
 
 ```
 python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Replace_Collapsed_Contigs.py \
--og <volcanosv_output>/SD_recovery/assemblies.fa \
+-og <SD_recovery_dir>/assemblies.fa \
 -new <volcanosv_output>/SD_recovery/final_contigs/final_contigs.fa \
 -o <volcanosv_output>/SD_recovery/SD_recovered.fa \
 -hap  <sample>_<lib>_collapsed_hp_namex.txt 
 ```
+
+<SD_recovery_dir>/assemblies.fa is generated in Step1.
 <volcanosv_output>/SD_recovery/SD_recovered.fa is the SD recovered contig file.
 
 ## Truvari evaluation
