@@ -25,12 +25,12 @@ git clone https://github.com/maiziezhoulab/VolcanoSV.git
 ```
 
 ## Dependencies for Github installation:
-VolcanoSV utilizes Python3.8.3. To set up the environment, you need to have conda installed. Then, simply run
+VolcanoSV utilizes **Python3.8.3** To set up the environment, you need to have conda installed. Then, simply run
 ```
 conda env create -f VolcanoSV/requirement.yaml
 ```
 
-Then you will have a virtual environment called `volcanosv` created. Before running any VolcanoSV commands, please activate this environment first.
+Then you will have a virtual environment called **`volcanosv`** created. Before running any VolcanoSV commands, please activate this environment first.
 ```
 conda activate volcanosv
 ```
@@ -121,8 +121,8 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm_hybrid.py \
 -o volcanosv_asm_output \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
 -bed segdups.bed \
--inasm hicanu \
--outasm hifiasm \
+--inbed_assembler hicanu \
+--outbed_assembler hifiasm \
 -t 10 \
 -chr 10 \
 -dtype Hifi \
@@ -362,7 +362,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/Evaluate_Assembly.py \
   --lib_name <lib>
 ```
 
-After this step, you will have a `<sample>_<lib>_collapsed_hp_namex.txt` file generated in the output folder, which contains the haplotype names that contain collapsed SDs.
+After this step, you will have a `<sample>_<lib>_collapsed_hp_namex.txt` file generated in the output folder. `<sample>_<lib>_collapsed_hp_namex.txt` file contains the collapsed phase block names. **In step2, you will use this file as input to perform assembly only focusing on these collapsed phase blocks.**
 
 ### Step2
 Perform assembly only in those collapsed regions using a specified assembler.
@@ -387,9 +387,9 @@ The main script is `General_Assembly_Workflow.py`. The arguments are:
 Example Usage:
 
 ```
-python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/General_Assembly_Workflow.py \
+python3 ${path_to_volcanosv}/bin/VolcanoSV-asm/General_Assembly_Workflow_SD.py \
 -hap <sample>_<lib>_collapsed_hp_namex.txt \
--fqds <volcanosv_output>/chr*/Assembly/fastq_by_hap \
+-i <volcanosv_output>/ \
 -o  <volcanosv_output>/SD_recovery
 -asms <your_specified_assembler> \
 -d <type> \
