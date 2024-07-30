@@ -100,13 +100,20 @@ if pre_cutesig is None:
     
 
 
-    cmd = f'''python3 {script_dir}/cuteSV/cuteSV \
+    #cmd = f'''python3 {script_dir}/cuteSV/cuteSV \
+    #{bamfile} \
+    #{reference} \
+    #{new_cutesig}/test.vcf \
+    #{new_cutesig} \
+    #{para} \
+    #{bed_para} --retain_work_dir -t {t}'''
+
+    cmd = f'''python3 {script_dir}/sig_extract.py \
     {bamfile} \
     {reference} \
-    {new_cutesig}/test.vcf \
     {new_cutesig} \
     {para} \
-    {bed_para} --retain_work_dir -t {t}'''
+    {bed_para} -t {t}'''
     print(cmd)
     Popen(cmd, shell = True).wait()
 
