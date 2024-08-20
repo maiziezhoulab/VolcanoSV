@@ -1,0 +1,26 @@
+[General]
+job_type = local # local, slurm, sge, pbs, lsf
+job_prefix = nextDenovo
+task = all # all, correct, assemble
+rewrite = yes # yes/no
+deltmp = yes
+parallel_jobs = <ta> # number of tasks used to run in parallel
+input_type = raw # raw, corrected
+read_type = <dtype> # clr, ont, hifi
+input_fofn = <asm_dir>/input.fofn
+workdir = <out_dir>
+
+[correct_option]
+read_cutoff = 1k
+genome_size = <gsize> # estimated genome size
+sort_options = -m 5g -t <ta>
+minimap2_options_raw = -t <ta>
+pa_correction = 3 # number of corrected tasks used to run in parallel, each corrected task requires ~TOTAL_INPUT_BASES/4 bytes of memory usage.
+correction_options = -p <ta>
+
+[assemble_option]
+minimap2_options_cns = -t <ta>
+nextgraph_options = -a 1
+
+# see https://nextdenovo.readthedocs.io/en/latest/OPTION.html for a detailed introduction about all the parameters
+# grep ">" nextdenovo_config_template.txt |cut -d ">" -f 1|cut -d "<" -f 2|sort|uniq

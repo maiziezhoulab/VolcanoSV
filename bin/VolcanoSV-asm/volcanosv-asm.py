@@ -3,31 +3,39 @@ from argparse import ArgumentParser
 parser = ArgumentParser(description="",
 	usage='use "python3 %(prog)s --help" for more information',
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--inbam','-i')
-parser.add_argument('--out_dir','-o')
-parser.add_argument('--reference','-r')
+parser.add_argument('--bam_file','-bam')
+parser.add_argument('--output_dir','-o')
+parser.add_argument('--reference','-ref')
 parser.add_argument('--chrnum','-chr', type = int, choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] )
-parser.add_argument('--dtype','-d', choices = ['CCS','CLR','ONT'])
+parser.add_argument('--assembler','-asm', choices = ['wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'])
+parser.add_argument('--data_type','-dtype', choices = ['CLR','ONT','Hifi'])
+parser.add_argument('--pacbio_subtype','-pb', choices = ['CLR-rs','CLR-sq'], help = "must provide when using wtdbg2 on CLR data")
+parser.add_argument('--shasta_ont_config','-shacon', choices = ['Nanopore-OldGuppy-Sep2020'], help = "must provide when using shasta")
 parser.add_argument('--n_thread','-t', required = True,type = int, help = "number of threads", default =10 )
 parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
+parser.add_argument('--clean','-cl', action='store_true')
 args = parser.parse_args()
 
 
 
-inbam=args.inbam
+inbam=args.bam_file
 prefix=args.prefix
 reference=args.reference
 chrnum = args.chrnum
-out_dir= args.out_dir + "/chr"+str(chrnum)+"/"
-dtype=args.dtype
+out_dir= args.output_dir + "/chr"+str(chrnum)+"/"
+dtype=args.data_type
+pacbio_subtype = args.pacbio_subtype
 n_thread = args.n_thread
-
+assembler = args.assembler
+shasta_ont_config = args.shasta_ont_config
 tkc=n_thread
 tka=n_thread
 tA=n_thread
-ta=2
+ta=8
+# canu and hicanu has minimum threads requirement
+clean = args.clean
 
-
+# prefix = "sample"
 import logging
 ## set logger
 logging.basicConfig(
@@ -37,8 +45,8 @@ datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(" ")
 
 from subprocess import Popen
-
-
+from General_Assembly_Workflow import run_assembly
+from write_fastq_asm_general import write_fastqs_general
 import os
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
@@ -90,20 +98,29 @@ Popen(cmd, shell = True).wait()
 ######
 
 
+
+# write fastq
+
+logger.info("write fastq...")
+
+
+write_fastqs_general(f"{out_dir}/{prefix}.bam", f"{out_dir}/assembly/", f"{out_dir}/kmer_assign/", None, None)
+
+
+
 logger.info("By haplotype assembly...")
-cmd = f'''python3 {code_dir}/assembly.py \
-    -bam {out_dir}/{prefix}.bam  \
-    -dc_og {out_dir}/kmer_assign/phasing_info/read_hp_og.p \
-    -dc_up {out_dir}/kmer_assign/unphased_reads_assignment_dippav_norm_asg.p \
-    -pinf {out_dir}/kmer_assign/phasing_info/pb_info.csv \
-    -o {out_dir}/assembly/ \
-    -dtype {dtype} -t {tA} -ta {ta}'''
-Popen(cmd, shell = True).wait()
+fq_dir =  f"{out_dir}/assembly/fastq_by_hap/"
+run_assembly(None, [fq_dir], out_dir+"/assembly", [assembler], 
+                 n_thread, ta, clean, dtype, shasta_ont_config,
+                  pacbio_subtype, prefix )
+
+
 
 ####### remove bam, fastq file####
-cmd = f'''rm -r {out_dir}/assembly/fastq_by_hap
-rm {out_dir}/phasing_result/{prefix}_phased.bam*
-rm {out_dir}/{prefix}.bam*'''
-Popen(cmd, shell = True).wait()
+if clean:
+    cmd = f'''rm -r {out_dir}/assembly/fastq_by_hap
+    rm {out_dir}/phasing_result/{prefix}_phased.bam*
+    rm {out_dir}/{prefix}.bam*'''
+    Popen(cmd, shell = True).wait()
 
 

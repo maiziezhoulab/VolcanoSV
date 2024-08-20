@@ -1,0 +1,10 @@
+{
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.fai": "<fai_file>",
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.suffix": "<suffix>",
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.assemblyFastaGz": "<fasta_file>",
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.readAlignmentBam": "<bam_file>",
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.sampleName": "<sampleName>",
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.maxReadDivergence": "<max_rd>",
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.flagger.windowSize": 150000,
+  "FlaggerEndToEndNoVariantCallingNoRefNoSecphase.threadCount": <t>
+}
