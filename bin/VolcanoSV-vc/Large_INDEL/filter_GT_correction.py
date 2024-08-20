@@ -7,7 +7,7 @@ parser.add_argument('--vcffile','-vcf')
 parser.add_argument('--bamfile','-bam', help ="only needed when presig is not provided")
 parser.add_argument('--reference','-ref', help ="only needed when presig is not provided")
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
-parser.add_argument('--dtype','-dtype', choices = ['CCS','CLR','ONT'])
+parser.add_argument('--dtype','-dtype', choices = ['Hifi','CLR','ONT'])
 parser.add_argument('--chr_num','-chr',type = int, 
 					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 					default= None,
@@ -82,7 +82,7 @@ if pre_cutesig is None:
         bed_para = " -include_bed " + bed_file
 
 
-    if  dtype == "CCS":
+    if  dtype == "Hifi":
         para ='''--max_cluster_bias_INS      1000 \
         --diff_ratio_merging_INS    0.9 \
         --max_cluster_bias_DEL  1000 \

@@ -10,7 +10,7 @@ parser.add_argument('--sig_file','-sig')
 parser.add_argument('--bamfile','-bam')
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 # parser.add_argument('--delete_temp_file','-d', action='store_true')
-parser.add_argument('--dtype','-d',choices=['ONT','CCS','CLR'])
+parser.add_argument('--dtype','-d',choices=['ONT','Hifi','CLR'])
 parser.add_argument('--vtype','-v',choices=['INS','DEL'])
 args = parser.parse_args()
 input_path = args.input_path

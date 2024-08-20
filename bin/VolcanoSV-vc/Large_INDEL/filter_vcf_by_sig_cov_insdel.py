@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 parser = ArgumentParser(description="",usage='use "python3 %(prog)s --help" for more information')
 parser.add_argument('--input_path','-i')
-parser.add_argument('--dtype','-d',help = 'ccs/ont/clr')
+parser.add_argument('--dtype','-d',help = 'hifi/ont/clr')
 parser.add_argument('--asm','-a',help ='other/volcano')
 parser.add_argument('--vtype','-v',help ='apply filter to which variants, INS/DEL/INSDEL, default = INSDEL',choices=['INS','DEL','INSDEL'], default = 'INSDEL')
 

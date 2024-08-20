@@ -9,9 +9,9 @@ parser = ArgumentParser(description="",
 
 parser.add_argument('--input_dir','-i')
 parser.add_argument('--output_dir','-o')
-parser.add_argument('--data_type','-dtype',help='CCS;CLR;ONT')
+parser.add_argument('--data_type','-dtype',help='Hifi;CLR;ONT')
 
-parser.add_argument('--rbam_file','-rbam', help = "reads bam file for reads signature extraction; if both read_signature_dir and pre_cutesig are provided, you do not need to provide bam file")
+parser.add_argument('--bam_file','-bam', help = "reads bam file for reads signature extraction; if both read_signature_dir and pre_cutesig are provided, you do not need to provide bam file")
 parser.add_argument('--reference','-ref', help ="only needed when presig is not provided")
 
 
@@ -28,13 +28,13 @@ parser.add_argument('--n_thread','-t',type = int, help = "number of threads",
 parser.add_argument('--n_thread_align','-ta',help = "number of threads for contig alignment",
 					type = int, default = 10)
 parser.add_argument('--mem_per_thread','-mempt', default = '768M',help = "Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M")
-
+parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
 args = parser.parse_args()
 
 # fasta_pattern = args.fasta_pattern
 # ref_pattern = args.ref_pattern
 read_signature_dir = args.read_signature_dir
-rbam_file = args.rbam_file
+rbam_file = args.bam_file
 reference=args.reference
 pre_cutesig= args.pre_cutesig
 input_dir = args.input_dir
@@ -45,8 +45,7 @@ chr_num = args.chr_num
 n_thread = args.n_thread
 n_thread_align = args.n_thread_align
 mem_per_thread = args.mem_per_thread
-
-
+prefix=args.prefix
 
 import os
 from joblib import Parallel, delayed
@@ -103,7 +102,7 @@ def run_one_chrom(i):
 	else:
 		cmd = "python3 "+code_dir+"/Raw_variant_call.py \
 		-contig %s -ref %s \
-		-sigd %s, -o %s -dtype %s -t %d -chr %d"%(
+		-sigd %s -o %s -dtype %s -t %d -chr %d"%(
 			fasta_list[i],
 			ref_one_chr,
 			read_signature_dir,
@@ -173,7 +172,7 @@ logger.info("split reference by chromosome...")
 ref_dir = output_dir+"/ref_by_chr/"
 split_reference(reference, ref_dir, chr_num)
 
-fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
 ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
 
 
@@ -226,6 +225,6 @@ Popen(cmd, shell = True).wait()
 
 
 infile = f"{output_dir}/variants_filtered_GT_corrected.vcf"
-outfile = f"{output_dir}/volcanosv_large_indel.vcf"
+outfile = f"{output_dir}/{prefix}_volcanosv_large_indel.vcf"
 phase_vcf(infile, outfile)
 

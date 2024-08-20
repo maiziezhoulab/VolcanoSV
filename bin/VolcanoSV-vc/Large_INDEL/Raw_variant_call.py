@@ -7,7 +7,7 @@ parser.add_argument('--reference_path','-ref')
 parser.add_argument('--signature_dir','-sigd', help = "pre-extracted reads signatures; can only specify either signature_dir or bamfile")
 parser.add_argument('--rbam_file','-rbam', help = "reads bam file for reads signature extraction; can only specify either signature_dir or bamfile")
 parser.add_argument('--output_dir','-o')
-parser.add_argument('--data_type','-dtype',help="CCS;CLR;ONT")
+parser.add_argument('--data_type','-dtype',help="Hifi;CLR;ONT")
 parser.add_argument('--chr_num','-chr')
 ###optional
 parser.add_argument('--header_file','-header',help='optional;if not set, will use the default header')
@@ -27,6 +27,7 @@ header_file = args.header_file
 n_thread = args.n_thread
 mem_per_thread = args.mem_per_thread
 
+print("\n\nraw ", signature_dir)
 import logging
 ## set logger
 logging.basicConfig(
