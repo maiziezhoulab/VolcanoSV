@@ -1,0 +1,3 @@
+[submodule "bin/VolcanoSV-asm/miniasm"]
+	path = bin/VolcanoSV-asm/miniasm
+	url = https://github.com/lh3/miniasm.git
