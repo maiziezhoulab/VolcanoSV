@@ -21,7 +21,7 @@
 # Install through Github:
 
 ```
-git clone https://github.com/maiziezhoulab/VolcanoSV.git
+git clone --recurse-submodules https://github.com/maiziezhoulab/VolcanoSV.git
 ```
 
 ## Dependencies for Github installation:
