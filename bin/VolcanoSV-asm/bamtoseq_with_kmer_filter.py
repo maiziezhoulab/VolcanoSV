@@ -48,13 +48,17 @@ for read in samiter:
 	if cnt%10000 ==0:
 		logger.info("processed %d reads"%cnt)
 	cnt +=1
-	if (len(seq)>=(kmer)) and ('N' not in seq):
-		i+=1
-		line_list.append("%d\t"%i+read_name+'\t'+seq+'\n')
-		write_name.append(read_name+'\n')
+	if seq is not None:
+		if (len(seq)>=(kmer)) and ('N' not in seq):
+			i+=1
+			line_list.append("%d\t"%i+read_name+'\t'+seq+'\n')
+			write_name.append(read_name+'\n')
+		else:
+			j+=1
+			filter_list.append("%d\t"%j+read_name+'\t'+seq+'\n')
 	else:
 		j+=1
-		filter_list.append("%d\t"%j+read_name+'\t'+seq+'\n')
+		filter_list.append("%d\t"%j+read_name+'\n')
 
 with open(output_path,'w') as f:
 	f.writelines(line_list)

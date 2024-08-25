@@ -97,6 +97,10 @@ def write_fastqs_general(bam_path, work_dir, kmer_dir, bed_file, chrom):
 	samiter = samfile.fetch()
 	for i in tqdm(range(num_reads), desc = "writing progress",miniters=2000):
 		read = next(samiter)
+
+		if read.seq is None:
+			continue
+		
 		if read.qname in dc_og:
 			hp = dc_og[read.qname]
 			pb = '_'.join(hp.split('_')[:-1])
