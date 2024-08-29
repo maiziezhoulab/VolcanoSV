@@ -26,7 +26,7 @@ max_shift = args.max_shift
 max_shift_ratio = args.max_shift_ratio
 
 dc = {
-    "CCS":'hifi',
+    "Hifi":'hifi',
     "CLR":'pb',
     "ONT":'ont'
 }

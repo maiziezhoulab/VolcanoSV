@@ -5,21 +5,22 @@ parser = ArgumentParser(description="",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--input_dir','-i')
 parser.add_argument('--indelvcf','-vcf')
-parser.add_argument('--bamfile','-bam')
+parser.add_argument('--bam_file','-bam')
 parser.add_argument('--reference','-ref')
-parser.add_argument('--datatype','-d', choices=['CCS','CLR','ONT'])
-parser.add_argument('--out_dir','-o')
+parser.add_argument('--data_type','-dtype', choices=['Hifi','CLR','ONT'])
+parser.add_argument('--output_dir','-o')
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
+parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
 # parser.add_argument('--delete_temp_file','-d', action='store_true')
 args = parser.parse_args()
 input_dir = args.input_dir
 indelvcf = args.indelvcf
-bamfile = args.bamfile
-out_dir = args.out_dir
+bamfile = args.bam_file
+out_dir = args.output_dir
 reference = args.reference
 n_thread = args.n_thread
-datatype = args.datatype
-
+datatype = args.data_type
+prefix=args.prefix
 
 import logging
 ## set logger
@@ -42,7 +43,7 @@ def merge_fasta(input_dir,outdir):
    #    fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
    # else:
    
-   fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+   fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
 
    if not os.path.exists(outdir):
       os.system("mkdir -p " + outdir)
@@ -158,7 +159,7 @@ cmd = f'''sed -i "s/svim_asm/volcanosv/g;s/SVIM-asm-v1.0.2/VolcanoSV/g"  {out_di
 Popen(cmd, shell = True).wait()
 
 infile = out_dir + "/variants.vcf"
-outfile = out_dir + "/volcanosv_complex_SV.vcf"
+outfile = out_dir + f"/{prefix}_volcanosv_complex_SV.vcf"
 phase_vcf(infile, outfile )
 
 
