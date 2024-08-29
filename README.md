@@ -344,7 +344,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 After running the above code, you will have output VCF in **`volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`**.
 
 
-## Improve assembly for regions enriched in segmental duplications (SDs)
+## Improve assembly for regions enriched in segmental duplications (SDs) （Optional)
 
 After WGS assembly, if you would like to evaluate assembly for SDs and further achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
 
