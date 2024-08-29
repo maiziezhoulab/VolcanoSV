@@ -178,7 +178,7 @@ def load_summary(eval_dir):
             dc[key]= val 
     return dc
 
-def filter_indel( vcffile, indel_kmer_file, reads_bamfile, output_folder, 
+def filter_indel( prefix,vcffile, indel_kmer_file, reads_bamfile, output_folder, 
                   eval_dir = None,
                   kmer_size = 15,
                    n_thread = 30, ratio = 0.3, min_support = 5, restart = False ):
@@ -253,7 +253,7 @@ def filter_indel( vcffile, indel_kmer_file, reads_bamfile, output_folder,
     if vcffile:
         cnt = 0
         with open(vcffile,'r') as f:
-            with open(output_folder+"/volcanosv_small_indel.vcf",'w') as fw:
+            with open(output_folder+f"/{prefix}_volcanosv_small_indel.vcf",'w') as fw:
                 for line in f:
                     
                     if line[0]=='#':
@@ -290,6 +290,7 @@ formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--n_thread",'-t', type = int, default = 50)
     parser.add_argument("--ratio",'-r', type = float, default = 0.3, help = "kmer support ratio")
     parser.add_argument('--min_support','-ms', type = int, default = 5, help = "min kmer support per base")
+    parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
     parser.add_argument('--restart','-rs', action='store_true', help = "restart mode; assume there is kmer support file already.")
     args = parser.parse_args()
 
@@ -305,8 +306,9 @@ formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     ratio = args.ratio
     min_support = args.min_support
     restart = args.restart
+    prefix=args.prefix
 
-    filter_indel( vcffile, indel_kmer_file, reads_bamfile, output_folder, 
+    filter_indel( prefix,vcffile, indel_kmer_file, reads_bamfile, output_folder, 
                   eval_dir ,
                   kmer_size ,
                    n_thread , ratio , min_support , restart  )

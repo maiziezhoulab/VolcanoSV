@@ -8,9 +8,9 @@ def merge_fasta(input_dir,outdir, chr_num= None):
     # fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
     # else:
     if chr_num is None:
-        fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contigs.fa" for i in range(22)]
+        fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
     else:
-        fasta_list =  [input_dir+"/chr"+str(chr_num)+"/assembly/final_contigs/final_contigs.fa" ]
+        fasta_list =  [input_dir+"/chr"+str(chr_num)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" ]
 
     if not os.path.exists(outdir):
         os.system("mkdir -p " + outdir)
@@ -160,7 +160,7 @@ def call_var(
 
     # check kmer support from reads bam file
     logger.info(stars0 + "check kmer support and remove false call"+ stars1)
-    filter_indel( filtered_vcf_path , f'{output_dir}/indel_2_49_context.txt' , read_bam, 
+    filter_indel(prefix, filtered_vcf_path , f'{output_dir}/indel_2_49_context.txt' , read_bam, 
                 output_dir, 
                     None,
                     kmer_size ,
@@ -176,7 +176,7 @@ if __name__ == '__main__':
         usage='use "python3 %(prog)s --help" for more information',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--input_dir','-i')
-    parser.add_argument('--read_bam','-rbam')
+    parser.add_argument('--bam_file','-bam')
     parser.add_argument('--output_dir','-o')
     parser.add_argument('--reference','-ref')
 
@@ -188,11 +188,12 @@ if __name__ == '__main__':
     parser.add_argument('--min_support','-ms', type = int, default = 5, help = "maximum support for bad kmer")
     parser.add_argument('--restart','-rs', action='store_true', help = "restart mode; assume there is kmer support file already.")
     parser.add_argument('--eval','-e', action='store_true')
+    parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
     args = parser.parse_args()
 
     reference = args.reference
     bedfile = args.bedfile
-    read_bam = args.read_bam
+    read_bam = args.bam_file
     region = args.region
     input_dir = args.input_dir
     output_dir = args.output_dir
@@ -202,6 +203,8 @@ if __name__ == '__main__':
     min_support = args.min_support
     restart = args.restart
     eval = args.eval
+    global prefix
+    prefix=args.prefix
 
     import logging
     import subprocess
