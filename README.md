@@ -443,6 +443,6 @@ ONT | 48x | 34GB| 50 | 00:38:24| 32|
 ##### Please submit issues on the github page for <a href="https://github.com/maiziezhoulab/VolcanoSV/issues">VolcanoSV</a>. 
 
 ## Cite VolcanoSV:
-#### VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing. C. Luo, Y. H. Liu, X. M. Zhou. Nature Communications (2024) 15:6956.
+#### VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing.  C. Luo, Y. H. Liu, X. M. Zhou. Nature Communications (2024) 15:6956.
 
 
