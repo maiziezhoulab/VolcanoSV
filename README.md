@@ -344,7 +344,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 After running the above code, you will have output VCF in **`volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`**.
 
 
-## Improve assembly for regions enriched in segmental duplications (SDs)
+## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
 
 After WGS assembly, if you would like to evaluate assembly for SDs and further achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
 
@@ -441,5 +441,8 @@ ONT | 48x | 34GB| 50 | 00:38:24| 32|
 
 ## Troubleshooting:
 ##### Please submit issues on the github page for <a href="https://github.com/maiziezhoulab/VolcanoSV/issues">VolcanoSV</a>. 
+
+## Cite VolcanoSV:
+#### Luo C, Liu YH, Zhou XM. VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing. Nat Commun. 2024 Aug 13;15(1):6956. PubMed PMID: 39138168.
 
 
