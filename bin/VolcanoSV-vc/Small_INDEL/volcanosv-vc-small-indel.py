@@ -1,6 +1,11 @@
 
 '''ml GCC/10.2.0 BCFtools/1.16'''
 
+'''
+Note: by default using hs37d5.par.bed
+hs38.bed also exists but not used
+'''
+
 
 def merge_fasta(input_dir,outdir, chr_num= None):
     # test_path = input_dir+"/chr"+str(1)+"/assembly/final_contigs/final_contig.p_ctg.fa"
@@ -132,7 +137,7 @@ def call_var(
     # pair
     logger.info(stars0 + "pair SNP, indel"+ stars1)
     cmd = f'''
-    {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair  -p /data/maiziezhou_lab/CanLuo/Software/dipcall/hs37d5.PAR.bed \
+    {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair  -p {code_dir}/dipcall/data/hs37d5.PAR.bed \
         {output_dir}/var_raw.pair.vcf.gz | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.dip.vcf.gz
     '''
     logger.info(cmd)
