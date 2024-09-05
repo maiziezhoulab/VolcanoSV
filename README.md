@@ -55,7 +55,7 @@ path_to_volcanosv=/path/to/VolcanoSV
 ```
 for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py` and `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py`.
 
-**Note: To ensure you have installed VolcanoSV successfully, we highly recommend using the provided [test data](#Single-chromosome-mode) and checking whether you have the correct result before trying the tool on your data.**
+**Note: To ensure you have installed VolcanoSV successfully, we highly recommend using the provided [test data](https://zenodo.org/records/10520476) and checking whether you have the correct result before trying the tool on your data. For the guide on how to run the pipeline, please refer to [Single chromosome mode (test example included)](#single-chromosome-mode).**
 
 # Running The Code:
 
