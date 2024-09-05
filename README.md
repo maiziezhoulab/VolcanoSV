@@ -15,7 +15,7 @@
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection-volcanosv-vc)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
   -  [WGS mode SNP detection](#wgs-mode-SNP-detection-volcanosv-vc)
-- [Improve assembly for regions enriched in segmental duplications](#sd-recovery)
+- [Improve assembly for regions enriched in segmental duplications](#Optional-Improve-assembly-for-regions-enriched-in-segmental-duplications-SDs)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
 - [Troubleshooting](#Troubleshooting)
