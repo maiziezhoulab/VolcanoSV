@@ -213,6 +213,9 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 ```
 After running the above code, you will have output VCF in **`volcanosv_small_indel/Hifi_L2_volcanosv_small_indel.vcf`**.
 
+### Single chromosome mode SNP detection (VolcanoSV-vc) 
+We adopt Longshot's SNP call result as the final SNP call. After successfully running the assembly pipeline, you will have the phased SNP VCF file: `volcanosv_asm_output/<chromosome_name>/phasing_result/<prefix>_phased.vcf`.
+
 ## WGS mode
 
 ### WGS mode VolcanoSV Assembly (VolcanoSV-asm) 
