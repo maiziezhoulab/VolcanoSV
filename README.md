@@ -8,7 +8,7 @@
     - [Single chromosome mode VolcanoSV Assembly (hybrid mode)](#Single-chromosome-mode-VolcanoSV-Assembly-hybrid-mode)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
     - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection-volcanosv-vc)
-    - [Single chromosome mode SNP detection](#Single-chromosome-mode-SNP-volcanosv-vc)
+    - [Single chromosome mode SNP detection](#Single-chromosome-mode-SNP-detection-volcanosv-vc)
 - [WGS mode](#wgs-mode)
   -  [WGS mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly-volcanosv-asm)
   -  [WGS mode Large Indel detection](#wgs-mode-Large-Indel-detection-volcanosv-vc)
