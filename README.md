@@ -8,11 +8,13 @@
     - [Single chromosome mode VolcanoSV Assembly (hybrid mode)](#Single-chromosome-mode-VolcanoSV-Assembly-hybrid-mode)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
     - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection-volcanosv-vc)
+    - [Single chromosome mode SNP detection](#Single-chromosome-mode-SNP-volcanosv-vc)
 - [WGS mode](#wgs-mode)
   -  [WGS mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly-volcanosv-asm)
   -  [WGS mode Large Indel detection](#wgs-mode-Large-Indel-detection-volcanosv-vc)
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection-volcanosv-vc)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
+  -  [WGS mode SNP detection](#wgs-mode-SNP-detection-volcanosv-vc)
 - [Improve assembly for regions enriched in segmental duplications](#sd-recovery)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
@@ -48,7 +50,7 @@ You can also add the line above to `~/.bashrc` if you don't want to do it every 
 
 You can set
 ```
-path_to_volcanosv=/path/to/VolcanoSV/bin
+path_to_volcanosv=/path/to/VolcanoSV
 ```
 for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py` and `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py`.
 
@@ -345,6 +347,9 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 ```
 
 After running the above code, you will have output VCF in **`volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`**.
+
+### WGS mode SNP detection (VolcanoSV-vc) 
+We adopt Longshot's SNP call result as the final SNP call. After successfully running the assembly pipeline, you will have the phased SNP VCF file: `volcanosv_asm_output/<chromosome_name>/phasing_result/<prefix>_phased.vcf`.
 
 
 ## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
