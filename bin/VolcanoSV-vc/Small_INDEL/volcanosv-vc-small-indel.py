@@ -117,6 +117,12 @@ def call_var(
     stars1 = '\n\n' + '*'*40
     os.makedirs(output_dir, exist_ok = True)
 
+    # set file path
+    if bedfile is not None:
+        filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted_filtered_by_bed.vcf' )
+    else:
+        filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted.vcf' )
+
 
     # align contig
     logger.info(stars0 + "align contigs to reference" + stars1)
@@ -152,11 +158,6 @@ def call_var(
     # filter vcf by size and bed
     logger.info(stars0 + f"filter 2-49 bp indel within {bedfile} region"+ stars1)
     filter_vcf_by_size_bed(f'{output_dir}/var_raw_rf.dip.vcf',  output_dir,  bedfile)
-
-    if bedfile is not None:
-        filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted_filtered_by_bed.vcf' )
-    else:
-        filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted.vcf' )
 
     # extract indel context from contig
     logger.info(stars0 + "extract indel context"+ stars1)

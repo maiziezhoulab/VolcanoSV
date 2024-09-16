@@ -257,6 +257,11 @@ def filter_indel( prefix,vcffile, indel_kmer_file, reads_bamfile, output_folder,
                 for line in f:
                     
                     if line[0]=='#':
+                        ### add PS tag ================== to do !!
+                        if "ID=CONTEXT" in line :
+                            line += '''##INFO=<ID=PS,Number=.,Type=Integer,Description="phase block name">\n'''
+                        elif "#CHROM" in line:
+                            line = line.replace("syndip",prefix)
                         fw.write(line)
                     else:
                         # svid = line.split()[2]
@@ -266,6 +271,23 @@ def filter_indel( prefix,vcffile, indel_kmer_file, reads_bamfile, output_folder,
                         cnt+=1
                         zero_rate = ((np.array(cnt_list)<= min_support )).mean()
                         if zero_rate <= ratio:
+                            data = line.split()
+                            gt_og = data[-1].split(':')[0]
+                            gt_ele = set(gt_og.split('|'))
+                            if gt_ele - {0,1,'.'}:
+                                # multi-ale
+                                if "hp1" in data[7]:
+                                    gt = "1|0"
+                                else:
+                                    gt = "0|1"
+                            else:
+                                gt = gt_og 
+                            
+                            data[-1] = gt 
+                            data[-2] = 'GT'
+                            ps = line.split("TIG_REGION=PS")[1].split('_')[0]
+                            data[7]= data[7]+";PS=" + ps 
+                            line = "\t".join(data)+'\n'
                             fw.write(line)
 
 
