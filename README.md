@@ -8,14 +8,17 @@
     - [Single chromosome mode VolcanoSV Assembly (hybrid mode)](#Single-chromosome-mode-VolcanoSV-Assembly-hybrid-mode)
     - [Single chromosome mode Large Indel detection](#Single-chromosome-mode-Large-Indel-detection-volcanosv-vc)
     - [Single chromosome mode Small Indel detection](#Single-chromosome-mode-Small-Indel-detection-volcanosv-vc)
+    - [Single chromosome mode SNP detection](#Single-chromosome-mode-SNP-detection-volcanosv-vc)
 - [WGS mode](#wgs-mode)
   -  [WGS mode VolcanoSV Assembly](#wgs-mode-VolcanoSV-Assembly-volcanosv-asm)
   -  [WGS mode Large Indel detection](#wgs-mode-Large-Indel-detection-volcanosv-vc)
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection-volcanosv-vc)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
-- [Improve assembly for regions enriched in segmental duplications](#sd-recovery)
+  -  [WGS mode SNP detection](#wgs-mode-SNP-detection-volcanosv-vc)
+- [Improve assembly for regions enriched in segmental duplications](#Optional-Improve-assembly-for-regions-enriched-in-segmental-duplications-SDs)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
+- [Citation](#cite-volcanosv)
 - [Troubleshooting](#Troubleshooting)
   
 # Install through Github:
@@ -48,16 +51,20 @@ You can also add the line above to `~/.bashrc` if you don't want to do it every 
 
 You can set
 ```
-path_to_volcanosv=/path/to/VolcanoSV/bin
+path_to_volcanosv=/path/to/VolcanoSV
 ```
 for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV-asm/volcanosv-asm.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel.py`, `${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv.py` and `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_Indel/volcanosv-vc-small-indel.py`.
 
+**Note: To ensure you have installed VolcanoSV successfully, we highly recommend trying the tool on the provided [test data](https://zenodo.org/records/10520476) and checking whether you have the correct result before trying it on your data. For the guide on how to run the pipeline, please refer to [Single chromosome mode (test example included)](#single-chromosome-mode).**
 
 # Running The Code:
 
 ## Single chromosome mode
 
 For the single chromosome mode, we provided the chr10 BAM file, contigs file and VCF file for Hifi, CLR and ONT data. You can download them from [zenodo](https://zenodo.org/records/10520476).
+
+
+
 In the following sessions, we will provide the code to run the Hifi data. **If you wish to reproduce the result for CLR data or ONT data, you can just simply change the input BAM file and the argument "dtype" to the corresponding data type (CLR/ONT)**.
 
 The example data is aligned to hg19 reference. You can download the reference files(genome.fa and genome.fa.fai) from zenode(https://zenodo.org/records/10520476).
@@ -213,6 +220,9 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 ```
 After running the above code, you will have output VCF in **`volcanosv_small_indel/Hifi_L2_volcanosv_small_indel.vcf`**.
 
+### Single chromosome mode SNP detection (VolcanoSV-vc) 
+We adopt Longshot's SNP call result as the final SNP call. After successfully running the assembly pipeline, you will have the phased SNP VCF file: `volcanosv_asm_output/<chromosome_name>/phasing_result/<prefix>_phased.vcf`.
+
 ## WGS mode
 
 ### WGS mode VolcanoSV Assembly (VolcanoSV-asm) 
@@ -343,6 +353,9 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 
 After running the above code, you will have output VCF in **`volcanosv_small_indel/<prefix>_volcanosv_small_indel.vcf`**.
 
+### WGS mode SNP detection (VolcanoSV-vc) 
+We adopt Longshot's SNP call result as the final SNP call. After successfully running the assembly pipeline, you will have the phased SNP VCF file: `volcanosv_asm_output/<chromosome_name>/phasing_result/<prefix>_phased.vcf`.
+
 
 ## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
 
@@ -438,11 +451,12 @@ Hifi | 56X | 21GB | 50| 00:25:11| 21 |
 CLR | 89x | 215GB | 50 | 02:27:35 | 123|
 ONT | 48x | 34GB| 50 | 00:38:24| 32|
 
+## Cite VolcanoSV
+
+Luo C, Liu YH, Zhou XM. VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing. Nat Commun. 2024 Aug 13;15(1):6956. PubMed PMID: 39138168. https://doi.org/10.5281/zenodo.12671886
 
 ## Troubleshooting:
 ##### Please submit issues on the github page for <a href="https://github.com/maiziezhoulab/VolcanoSV/issues">VolcanoSV</a>. 
 
-## Cite VolcanoSV:
-#### Luo C, Liu YH, Zhou XM. VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing. Nat Commun. 2024 Aug 13;15(1):6956. PubMed PMID: 39138168.
 
 
