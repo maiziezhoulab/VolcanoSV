@@ -71,31 +71,31 @@ logger = logging.getLogger(" ")
 
 
 def create_fai(reference_fa):
-    """Create an FAI file for the reference genome if it doesn't exist."""
-    fai_file = reference_fa + ".fai"
-    
-    # Check if FAI file exists
-    if not os.path.exists(fai_file):
-        print(f"FAI file not found. Creating FAI file for {reference_fa}.")
-        try:
-            # Create the .fai index file using samtools
-            subprocess.run(["samtools", "faidx", reference_fa], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Error in creating FAI file: {e}")
-            return None
-    
-    return fai_file
+	"""Create an FAI file for the reference genome if it doesn't exist."""
+	fai_file = reference_fa + ".fai"
+
+	# Check if FAI file exists
+	if not os.path.exists(fai_file):
+		print(f"FAI file not found. Creating FAI file for {reference_fa}.")
+		try:
+			# Create the .fai index file using samtools
+			subprocess.run(["samtools", "faidx", reference_fa], check=True)
+		except subprocess.CalledProcessError as e:
+			print(f"Error in creating FAI file: {e}")
+			return None
+
+	return fai_file
 
 def extract_contigs_from_fai(fai_file):
-    """Extract contigs and lengths from FAI file."""
-    contigs = []
-    with open(fai_file, 'r') as file:
-        for line in file:
-            parts = line.split('\t')
-            contig_name = parts[0]
-            contig_length = parts[1]
-            contigs.append((contig_name, contig_length))
-    return contigs
+	"""Extract contigs and lengths from FAI file."""
+	contigs = []
+	with open(fai_file, 'r') as file:
+		for line in file:
+			parts = line.split('\t')
+			contig_name = parts[0]
+			contig_length = parts[1]
+			contigs.append((contig_name, contig_length))
+	return contigs
 
 def generate_vcf_header(reference_fa, header_file):
 	# Step 1: Check and create .fai file if necessary
