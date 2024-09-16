@@ -10,8 +10,8 @@ parser = ArgumentParser(description="",
 parser.add_argument('--input_dir','-i')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--data_type','-dtype',help='Hifi;CLR;ONT')
-
-parser.add_argument('--bam_file','-bam', help = "reads bam file for reads signature extraction; if both read_signature_dir and pre_cutesig are provided, you do not need to provide bam file")
+parser.add_argument('--bam_file','-bam', help = "reads bam file for reads signature extraction")
+# parser.add_argument('--bam_file','-bam', help = "reads bam file for reads signature extraction; if both read_signature_dir and pre_cutesig are provided, you do not need to provide bam file")
 parser.add_argument('--reference','-ref', help ="only needed when presig is not provided")
 
 
@@ -33,6 +33,7 @@ args = parser.parse_args()
 
 # fasta_pattern = args.fasta_pattern
 # ref_pattern = args.ref_pattern
+global prefix
 read_signature_dir = args.read_signature_dir
 rbam_file = args.bam_file
 reference=args.reference
@@ -52,8 +53,9 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 import pandas as pd
 from subprocess import Popen
+import subprocess
 
-
+global code_dir
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 os.system("mkdir -p "+output_dir)
 
@@ -65,6 +67,60 @@ level=logging.INFO,
 datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(" ")
 
+
+
+
+def create_fai(reference_fa):
+    """Create an FAI file for the reference genome if it doesn't exist."""
+    fai_file = reference_fa + ".fai"
+    
+    # Check if FAI file exists
+    if not os.path.exists(fai_file):
+        print(f"FAI file not found. Creating FAI file for {reference_fa}.")
+        try:
+            # Create the .fai index file using samtools
+            subprocess.run(["samtools", "faidx", reference_fa], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error in creating FAI file: {e}")
+            return None
+    
+    return fai_file
+
+def extract_contigs_from_fai(fai_file):
+    """Extract contigs and lengths from FAI file."""
+    contigs = []
+    with open(fai_file, 'r') as file:
+        for line in file:
+            parts = line.split('\t')
+            contig_name = parts[0]
+            contig_length = parts[1]
+            contigs.append((contig_name, contig_length))
+    return contigs
+
+def generate_vcf_header(reference_fa, header_file):
+	# Step 1: Check and create .fai file if necessary
+	fai_file = create_fai(reference_fa)
+
+	# Step 2: Extract contig lengths and names
+	contigs = extract_contigs_from_fai(fai_file)
+
+	# Step 3: Generate VCF header
+	"""Generate the VCF header from contig lengths."""
+	vcf_header = "##fileformat=VCFv4.2\n"
+	for contig_name, contig_length in contigs:
+		vcf_header += f"##contig=<ID={contig_name},length={contig_length}>\n"
+
+	with open(code_dir +  "/header_info",'r') as f:
+		header_info = f.read().replace("Sample", prefix)
+
+	with open(header_file,'w') as f:
+		f.write(vcf_header + header_info)
+
+	return vcf_header
+
+
+
+	
 
 def split_reference(input_path,output_dir, chr_num):
 	logger.info("load reference...")
@@ -131,19 +187,18 @@ def read_vcf(vcf_path):
 	return header,body 
 
 
-def phase_vcf(infile, outfile):
-	header = []
+def phase_vcf(infile, outfile, header_file):
+
 	body = []
 	with open(infile,'r') as fin:
 		for line in fin:
-			if line[0]=='#':
-				header.append(line)
-			else:
+			if line[0]!='#':
 				body.append(line)
 
 	### process header
-	info_add = '##INFO=<ID=PS,Number=.,Type=Integer,Description="phase block name">\n'	
-	header[-3] = info_add
+	with open(header_file,'r') as f:
+		header = f.readlines()
+
 	with open(outfile,'w') as fout:
 		fout.writelines(header)
 		for line in body:
@@ -165,6 +220,12 @@ def phase_vcf(infile, outfile):
 
 				
 
+# generate VCF header
+logger.info("generate VCF header...")
+if not os.path.exists(output_dir):
+	os.system("mkdir -p "+output_dir)
+header_file = output_dir+"/VCF_header"
+vcf_header = generate_vcf_header(reference, header_file)
 
 
 # split reference
@@ -226,5 +287,5 @@ Popen(cmd, shell = True).wait()
 
 infile = f"{output_dir}/variants_filtered_GT_corrected.vcf"
 outfile = f"{output_dir}/{prefix}_volcanosv_large_indel.vcf"
-phase_vcf(infile, outfile)
+phase_vcf(infile, outfile,header_file)
 

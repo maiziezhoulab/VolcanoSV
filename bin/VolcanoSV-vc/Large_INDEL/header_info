@@ -1,0 +1,10 @@
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of SV:DEL=Deletion, CON=Contraction, INS=Insertion, DUP=Duplication, INV=Inversion">
+##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=TIG_REGION,Number=.,Type=String,Description="Contig region where variant was found (one per alt with h1 before h2 for homozygous calls)">
+##INFO=<ID=QUERY_STRAND,Number=.,Type=String,Description="Strand of variant in the contig relative to the reference (order follows TIG_REGION)">
+##INFO=<ID=SIG_SOURCE,Number=.,Type=String,Description="Source of the variant call signature (order follows TIG_REGION)">
+##INFO=<ID=TIG_MAPQ,Number=.,Type=String,Description="Mapping quality of the contigs (order follows TIG_REGION)">
+##INFO=<ID=CollapseId,Number=1,Type=Integer,Description="collapse match ID">
+##INFO=<ID=PS,Number=.,Type=Integer,Description="phase block name">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Sample
