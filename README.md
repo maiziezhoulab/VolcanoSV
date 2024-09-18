@@ -379,7 +379,7 @@ volcanosv_small_indel/*/${prefix}_volcanosv_small_indel.vcf \
 volcanosv_asm_output/*/phasing_result/${prefix}_phased.vcf
 ```
 
-Through either way, the merge result will be `VolcanoSV_Variants.vcf`.
+Through either way, the merged result will be `VolcanoSV_Variants.vcf`.
 
 
 ## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
