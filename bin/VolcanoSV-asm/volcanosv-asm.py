@@ -51,7 +51,9 @@ import os
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
-
+def reformat_longshot_vcf(infile,outfile):
+	cmd='''sed '18a ##INFO=<ID=PS,Number=.,Type=Integer,Description="phase block name">' %s | awk 'BEGIN{OFS="\t"} $0 !~ /^#/ {n=split($NF, a, ":"); $8 = $8 "PS=" a[3]; print} $0 ~ /^#/ {print}' > %s'''%(infile, outfile)
+	os.system(cmd)
 
 
 cmd = f"mkdir -p {out_dir}"
@@ -72,10 +74,14 @@ Popen(cmd, shell = True).wait()
 
 cmd = f'''longshot --bam {out_dir}/{prefix}.bam \
 --ref {reference} \
---out {out_dir}/phasing_result/{prefix}_phased.vcf \
+--out {out_dir}/phasing_result/{prefix}_phased_temp.vcf \
 -O {out_dir}/phasing_result/{prefix}_phased.bam -F
 samtools index {out_dir}/phasing_result/{prefix}_phased.bam'''
 Popen(cmd, shell = True).wait()
+
+infile = f"{out_dir}/phasing_result/{prefix}_phased_temp.vcf"
+outfile = f"{out_dir}/phasing_result/{prefix}_phased.vcf"
+reformat_longshot_vcf(infile,outfile)
 
 
 logger.info("k-mer based reads partition...")
