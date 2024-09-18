@@ -15,6 +15,7 @@
   -  [WGS mode Complex SV detection](#wgs-mode-complex-sv-detection-volcanosv-vc)
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
   -  [WGS mode SNP detection](#wgs-mode-SNP-detection-volcanosv-vc)
+- [Merge VCF](#Merge-VCF)
 - [Improve assembly for regions enriched in segmental duplications](#Optional-Improve-assembly-for-regions-enriched-in-segmental-duplications-SDs)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
@@ -355,6 +356,30 @@ After running the above code, you will have output VCF in **`volcanosv_small_ind
 
 ### WGS mode SNP detection (VolcanoSV-vc) 
 We adopt Longshot's SNP call result as the final SNP call. After successfully running the assembly pipeline, you will have the phased SNP VCF file: `volcanosv_asm_output/<chromosome_name>/phasing_result/<prefix>_phased.vcf`.
+
+## Merge VCF
+
+After running the whole assembly-variant calling process, you may want to collect variants of all type and all chromosomes into one single VCF file. We provided script to do that.
+
+If you run large and small indel detection in WGS mode, then you can do this
+```
+python3 ${path_to_volcanosv}/bin/Utils/Merge_VCF.py VolcanoSV_Variants.vcf \
+volcanosv_large_indel_output/${prefix}_volcanosv_large_indel.vcf \
+volcanosv_complex_sv/${prefix}_volcanosv_complex_SV.vcf \
+volcanosv_small_indel/${prefix}_volcanosv_small_indel.vcf \
+volcanosv_asm_output/*/phasing_result/${prefix}_phased.vcf
+```
+
+If you run large and small indel detection in single chromosome mode, and the result is in a format like `volcanosv_large_indel_output/<chromosome_name>/${prefix}_volcanosv_large_indel.vcf`, then you can use '*' to substitute different chromosome name. The code is like
+```
+python3 ${path_to_volcanosv}/bin/Utils/Merge_VCF.py VolcanoSV_Variants.vcf \
+volcanosv_large_indel_output/*/${prefix}_volcanosv_large_indel.vcf \
+volcanosv_complex_sv/${prefix}_volcanosv_complex_SV.vcf \
+volcanosv_small_indel/*/${prefix}_volcanosv_small_indel.vcf \
+volcanosv_asm_output/*/phasing_result/${prefix}_phased.vcf
+```
+
+Through either way, the merge result will be `VolcanoSV_Variants.vcf`.
 
 
 ## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
