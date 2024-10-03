@@ -19,10 +19,15 @@ parser.add_argument('--read_signature_dir','-rdsig', help = "pre-extracted reads
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
 
 ## optional
+# parser.add_argument('--chr_num','-chr',type = int, 
+# 					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+# 					default= None,
+# 					help = "chrmosome number; Optional; if not provided, will assume input_dir contain chr1-chr22 results")
+
 parser.add_argument('--chr_num','-chr',type = int, 
-					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 					default= None,
 					help = "chrmosome number; Optional; if not provided, will assume input_dir contain chr1-chr22 results")
+
 parser.add_argument('--n_thread','-t',type = int, help = "number of threads",
 					default = 11)
 parser.add_argument('--n_thread_align','-ta',help = "number of threads for contig alignment",
@@ -31,8 +36,7 @@ parser.add_argument('--mem_per_thread','-mempt', default = '768M',help = "Set ma
 parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
 args = parser.parse_args()
 
-# fasta_pattern = args.fasta_pattern
-# ref_pattern = args.ref_pattern
+
 global prefix
 read_signature_dir = args.read_signature_dir
 rbam_file = args.bam_file
@@ -97,7 +101,7 @@ def extract_contigs_from_fai(fai_file):
 			contigs.append((contig_name, contig_length))
 	return contigs
 
-def generate_vcf_header(reference_fa, header_file):
+def generate_vcf_header(reference_fa, header_file, chr_num):
 	# Step 1: Check and create .fai file if necessary
 	fai_file = create_fai(reference_fa)
 
@@ -107,8 +111,16 @@ def generate_vcf_header(reference_fa, header_file):
 	# Step 3: Generate VCF header
 	"""Generate the VCF header from contig lengths."""
 	vcf_header = "##fileformat=VCFv4.2\n"
-	for contig_name, contig_length in contigs:
-		vcf_header += f"##contig=<ID={contig_name},length={contig_length}>\n"
+	if chr_num is None:
+		for contig_name, contig_length in contigs:
+			vcf_header += f"##contig=<ID={contig_name},length={contig_length}>\n"
+	else:
+		target_contig_name = "chr"+str(chr_num)
+		for contig_name, contig_length in contigs:
+			if contig_name ==  target_contig_name:
+				vcf_header += f"##contig=<ID={contig_name},length={contig_length}>\n"
+
+
 
 	with open(code_dir +  "/header_info",'r') as f:
 		header_info = f.read().replace("Sample", prefix)
@@ -225,7 +237,7 @@ logger.info("generate VCF header...")
 if not os.path.exists(output_dir):
 	os.system("mkdir -p "+output_dir)
 header_file = output_dir+"/VCF_header"
-vcf_header = generate_vcf_header(reference, header_file)
+vcf_header = generate_vcf_header(reference, header_file, chr_num)
 
 
 # split reference
