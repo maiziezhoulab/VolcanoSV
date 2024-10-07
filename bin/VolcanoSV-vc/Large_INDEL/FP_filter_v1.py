@@ -90,8 +90,11 @@ def compare_sigs(sig1,sig2,max_shift = 500,min_size_sim = 0.3):
     
     
     shift = abs(sig1[2]-sig2[2])
-    shift_ratio = shift/min(sig1[3],sig2[3])
-    size_sim = min(sig1[3],sig2[3])/max(sig1[3],sig2[3])
+    # shift_ratio = shift/min(sig1[3],sig2[3])
+    try:
+        size_sim = min(sig1[3],sig2[3])/max(sig1[3],sig2[3])
+    except:
+        size_sim = 0
     
     if (shift<=max_shift) and (size_sim >= min_size_sim):
         return 1
