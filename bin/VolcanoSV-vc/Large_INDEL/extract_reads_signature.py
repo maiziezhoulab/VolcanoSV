@@ -77,6 +77,9 @@ def extract_sig_from_cigar(read,min_svlen):
             if tp[1]>=min_svlen:
                 ins_sig.append([ref_name,'INS',offset_ref, tp[1],qname,offset_contig + hard_clip_head,direction,'cigar'])
             offset_contig +=tp[1]
+        elif tp[0] == 3:  # Skipped region
+            offset_ref += tp[1]  # Advance reference without consuming contig bases
+
     return (del_sig,ins_sig,offset_ref,offset_contig)
 def sort_sig(sig_list):
     pos_list = []
