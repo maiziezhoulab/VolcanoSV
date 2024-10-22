@@ -64,7 +64,7 @@ def extract_sig_from_cigar(read,min_svlen):
         direction = '+'
         
     for tp in cigar:
-        if tp[0] == 0:
+        if tp[0] in [0,7,8]:
             offset_ref+=tp[1]
             offset_contig +=tp[1]
         elif tp[0]==4:
