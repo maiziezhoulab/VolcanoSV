@@ -148,7 +148,7 @@ def extract_sig_from_split(read1,read2,min_mapq,max_svlen):
     def get_readlen(cigar):
         rl =0
         for tp in cigar:
-            if tp[0] in {0,1,4,5}:
+            if tp[0] in {0,7,8,1,4,5}:
                 rl+=tp[1]
         return rl
     
