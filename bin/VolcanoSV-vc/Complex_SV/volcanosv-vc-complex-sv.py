@@ -130,7 +130,7 @@ Popen(cmd, shell = True).wait()
 
 logger.info("-------------------------------DUP detection")
 cmd = f"python3 {code_dir}/align_ins2ref.py -i {indelvcf} -o {out_dir}/DUP -d {datatype} \
-   -ref {reference}"
+   -ref {reference} -t {n_thread} "
 Popen(cmd, shell = True).wait()
 cmd = f"cat {raw_dir}/variants.vcf |grep SVTYPE=DUP > {raw_dir}/variants_dup.vcf"
 Popen(cmd, shell = True).wait()
