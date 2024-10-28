@@ -132,10 +132,15 @@ def call_var(
     hp2_bam = f'{output_dir}/hp2.bam'
 
     # detect snp indel
+    if region is None:
+        region_flag = ""
+    else:
+        region_flag = f"-r {region}"
+
     logger.info(stars0 + "detect SNP indel from both haplotypes" + stars1)
     cmd = f'''{code_dir}/htsbox/htsbox pileup -q5 -ecf \
         {reference} \
-            {hp1_bam} {hp2_bam} -w 20 -r {region}  | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.pair.vcf.gz'''
+            {hp1_bam} {hp2_bam} -w 20 {region_flag} | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.pair.vcf.gz'''
     logger.info(cmd)
     Popen(cmd, shell = True).wait()
 

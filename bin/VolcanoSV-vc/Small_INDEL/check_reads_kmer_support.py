@@ -200,6 +200,13 @@ def filter_indel( prefix,vcffile, indel_kmer_file, reads_bamfile, output_folder,
     else:
         sequences = load_kmer_cnt(outfile)
 
+    # add debugger
+    for i in range(len(var_list)):
+        if len(len(sequences[i])) == 0:
+            print("encounter empty kmer support array!")
+            print("Var information: ", f"{i}-th var ",var_list[i])
+            exit()
+
 
     if eval_dir:
 
