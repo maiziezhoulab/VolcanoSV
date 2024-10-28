@@ -58,7 +58,7 @@ script_dir = os.path.dirname(__file__)  # Assuming this script is in the same di
 ################################# filter out false positive #####################################
 
 
-# cuteSv extract reads signature
+# cuteSV extract reads signature
 
 if pre_cutesig is None:
     new_cutesig = os.path.join(os.path.dirname(vcffile), "cute_sig")

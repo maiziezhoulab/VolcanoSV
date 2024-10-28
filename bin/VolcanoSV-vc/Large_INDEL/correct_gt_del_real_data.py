@@ -205,7 +205,16 @@ def extract_sig_support(sigfile, var_list_call,   bamfile, outfile,min_size_sim,
     
     num_sup_list = np.array(num_sup_list)
     depth_list = np.array(depth_list)
-    n_ratio_list = num_sup_list / depth_list
+
+
+    # n_ratio_list = num_sup_list / depth_list
+
+    n_ratio_list  = []
+    for i in range(len(num_sup_list)):
+        if depth_list[i] ==0:
+            n_ratio_list.append(1)
+        else:
+            n_ratio_list.append(num_sup_list[i]/depth_list[i] )
 
     dc = {'svlen': svlen_list,
           'svid':svid_list,
