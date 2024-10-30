@@ -132,7 +132,10 @@ def check_one_var(var,bamfile,kmer_size):
     # kmer_count  = [ (kmer,kmer_counter_reads[kmer]) if kmer in kmer_counter_reads else (kmer,0) for kmer in kmers_contig ]
     kmer_count  = [ kmer_counter_reads[kmer] if kmer in kmer_counter_reads else 0 for kmer in kmers_contig ]
     # print("kmer count in reads:",kmer_count)
-    return kmer_count[7:-7]
+    if len(kmer_count)< 40:
+        return kmer_count
+    else:
+        return kmer_count[7:-7]
 
 
 def load_index(vcf_file):
@@ -200,12 +203,12 @@ def filter_indel( prefix,vcffile, indel_kmer_file, reads_bamfile, output_folder,
     else:
         sequences = load_kmer_cnt(outfile)
 
-    # add debugger
-    for i in range(len(var_list)):
-        if len(sequences[i]) == 0:
-            print("encounter empty kmer support array!")
-            print("Var information: ", f"{i}-th var ",var_list[i])
-            exit()
+    # # add debugger
+    # for i in range(len(var_list)):
+    #     if len(sequences[i]) == 0:
+    #         print("encounter empty kmer support array!")
+    #         print("Var information: ", f"{i}-th var ",var_list[i])
+    #         exit()
 
 
     if eval_dir:

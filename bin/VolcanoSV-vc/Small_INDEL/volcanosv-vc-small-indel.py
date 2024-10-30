@@ -1,10 +1,6 @@
 
 '''ml GCC/10.2.0 BCFtools/1.16'''
 
-'''
-Note: by default using hs37d5.par.bed
-hs38.bed also exists but not used
-'''
 
 
 def merge_fasta(input_dir,outdir, chr_num= None):
@@ -51,12 +47,14 @@ def filter_vcf_by_size_bed(input_vcf_path,  output_folder, bed_path = None):
         # print(cmd)
         os.system(cmd)
 
-    # sort and index input VCF
-    sorted_vcf_path = os.path.join(output_folder, "indel_2_49_sorted.vcf")
-    subprocess.run(f"bcftools sort  {output_folder}/indel_2_49_raw.vcf -Ov -o {sorted_vcf_path}", shell=True, check=True)
-    # subprocess.run(f"bcftools index -f {sorted_vcf_path}", shell=True, check=True)
+   
+    
 
     if bed_path is not None:
+        # sort and index input VCF
+        sorted_vcf_path = os.path.join(output_folder, "indel_2_49_sorted.vcf.gz")
+        subprocess.run(f"bcftools sort  {output_folder}/indel_2_49_raw.vcf -Oz -o {sorted_vcf_path}", shell=True, check=True)
+        subprocess.run(f"bcftools index -f {sorted_vcf_path}", shell=True, check=True)
         # filter VCF based on bed file
         filtered_vcf_path = os.path.join(output_folder, 'indel_2_49_sorted_filtered_by_bed.vcf' )
         subprocess.run(f"bcftools view -R {bed_path} {sorted_vcf_path} -Ov -o {filtered_vcf_path}", shell=True, check=True)
@@ -64,6 +62,9 @@ def filter_vcf_by_size_bed(input_vcf_path,  output_folder, bed_path = None):
         # os.system(f"rm {output_folder}/sorted.vcf.gz* {output_folder}/raw.vcf")
         return filtered_vcf_path
     else:
+        # sort and index input VCF
+        sorted_vcf_path = os.path.join(output_folder, "indel_2_49_sorted.vcf")
+        subprocess.run(f"bcftools sort  {output_folder}/indel_2_49_raw.vcf -Ov -o {sorted_vcf_path}", shell=True, check=True)
         return sorted_vcf_path
 
 
@@ -103,6 +104,7 @@ def call_var(
     kmer_size,
     ratio ,
     min_support ,
+    ref_version,
     restart ):
 
     ## set logger
@@ -122,14 +124,14 @@ def call_var(
         filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted_filtered_by_bed.vcf' )
     else:
         filtered_vcf_path = os.path.join(output_dir, 'indel_2_49_sorted.vcf' )
-
+    hp1_bam = f'{output_dir}/hp1.bam'
+    hp2_bam = f'{output_dir}/hp2.bam'
 
     # align contig
     logger.info(stars0 + "align contigs to reference" + stars1)
     align_fa(reference, hp1_fa, 'hp1', output_dir,n_thread)
     align_fa(reference, hp2_fa, 'hp2', output_dir,n_thread)
-    hp1_bam = f'{output_dir}/hp1.bam'
-    hp2_bam = f'{output_dir}/hp2.bam'
+    
 
     # detect snp indel
     if region is None:
@@ -144,11 +146,15 @@ def call_var(
     logger.info(cmd)
     Popen(cmd, shell = True).wait()
 
-
     # pair
     logger.info(stars0 + "pair SNP, indel"+ stars1)
+    if ref_version == '37':
+        par_bed = f"{code_dir}/dipcall/data/hs37d5.PAR.bed"
+    else:
+        par_bed = f"{code_dir}/dipcall/data/hs38.PAR.bed"
+
     cmd = f'''
-    {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair  -p {code_dir}/dipcall/data/hs37d5.PAR.bed \
+    {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair  -p {par_bed} \
         {output_dir}/var_raw.pair.vcf.gz | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.dip.vcf.gz
     '''
     logger.info(cmd)
@@ -190,7 +196,7 @@ if __name__ == '__main__':
     parser.add_argument('--bam_file','-bam')
     parser.add_argument('--output_dir','-o')
     parser.add_argument('--reference','-ref')
-
+    parser.add_argument('--ref_version','-rv', help = "reference version to decide which par.bed to use in calling (GRC37 -> hs37d5.par.bed; GRC38 or other -> hs38.bed)", choices=['37','38','other'],default = "37")
     parser.add_argument('--bedfile','-bed', help = "optional; a high confidence bed file")
     parser.add_argument('--region','-r', help = "optional; exmaple: chr21:2000000-2100000")
     parser.add_argument("--n_thread",'-t', help = "number pf threads",type = int, default = 50)
@@ -200,6 +206,7 @@ if __name__ == '__main__':
     parser.add_argument('--restart','-rs', action='store_true', help = "restart mode; assume there is kmer support file already.")
     parser.add_argument('--eval','-e', action='store_true')
     parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
+    
     args = parser.parse_args()
 
     reference = args.reference
@@ -214,8 +221,10 @@ if __name__ == '__main__':
     min_support = args.min_support
     restart = args.restart
     eval = args.eval
-    global prefix
+    global prefix, ref_version
     prefix=args.prefix
+    ref_version = args.ref_version
+
 
     import logging
     import subprocess
@@ -251,6 +260,7 @@ if __name__ == '__main__':
     kmer_size,
     ratio ,
     min_support ,
+    ref_version,
     restart )
 
 
