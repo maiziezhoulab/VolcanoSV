@@ -178,7 +178,7 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-ind
 -chr 10 -t 10 \
 -px Hifi_L2
 ```
-The VCF file will be **`volcanosv_large_indel_output/Hifi_L2_volcanosv_large_indel.vcf`**. 
+The VCF file will be **`volcanosv_large_indel_output/chr10/Hifi_L2_volcanosv_large_indel_chr10.vcf`**. 
 If the volcanosv-vc-large-indel pipeline is executed successfully, your VCF file should have roughly the same number of variants as the Hifi_L2_variants.vcf from zenodo.
 **Note that, due to the randomness in assembly and alignment procedure, your VCF file may have 1 or 2 variants more or less than the Hifi_L2_variants.vcf. If that happens, we may still consider the pipeline as executed successfully, as long as the difference is minor.**
 
