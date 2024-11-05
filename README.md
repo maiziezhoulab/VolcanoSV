@@ -193,8 +193,6 @@ The main script is `${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-
   --bam_file READ_BAM, -bam READ_BAM
   --output_dir OUTPUT_DIR, -o OUTPUT_DIR
   --reference REFERENCE, -ref REFERENCE
-  --ref_version {37,38,other}, -rv {37,38,other}
-                        reference version to decide which par.bed to use in calling (GRC37 -> hs37d5.par.bed; GRC38 or other -> hs38.bed) (default: 37)
   --bedfile BEDFILE, -bed BEDFILE
                         optional; a high confidence bed file (default: None)
   --region REGION, -r REGION
@@ -219,7 +217,6 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Small_INDEL/volcanosv-vc-small-ind
 -o volcanosv_small_indel \
 -bam Hifi_L2_hg19_minimap2_chr10.bam \
 -ref refdata-hg19-2.1.0/fasta/genome.fa \
--rv 37 \
 -r chr10 \
 -t 30 \
 -px Hifi_L2
