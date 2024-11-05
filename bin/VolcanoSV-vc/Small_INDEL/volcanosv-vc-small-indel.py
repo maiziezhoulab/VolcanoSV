@@ -104,7 +104,6 @@ def call_var(
     kmer_size,
     ratio ,
     min_support ,
-    ref_version,
     restart ):
 
     ## set logger
@@ -146,17 +145,25 @@ def call_var(
     logger.info(cmd)
     Popen(cmd, shell = True).wait()
 
+    
+    # if ref_version == '37':
+    #     par_bed = f"{code_dir}/dipcall/data/hs37d5.PAR.bed"
+    # else:
+    #     par_bed = f"{code_dir}/dipcall/data/hs38.PAR.bed"
+
+    # cmd = f'''
+    # {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair  -p {par_bed} \
+    #     {output_dir}/var_raw.pair.vcf.gz | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.dip.vcf.gz
+    # '''
+
     # pair
     logger.info(stars0 + "pair SNP, indel"+ stars1)
-    if ref_version == '37':
-        par_bed = f"{code_dir}/dipcall/data/hs37d5.PAR.bed"
-    else:
-        par_bed = f"{code_dir}/dipcall/data/hs38.PAR.bed"
-
     cmd = f'''
-    {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair  -p {par_bed} \
+    {code_dir}/k8 {code_dir}/dipcall//dipcall-aux.js vcfpair   \
         {output_dir}/var_raw.pair.vcf.gz | {code_dir}/htsbox/htsbox bgzip > {output_dir}/var_raw.dip.vcf.gz
     '''
+
+
     logger.info(cmd)
     Popen(cmd, shell = True).wait()
 
@@ -196,7 +203,7 @@ if __name__ == '__main__':
     parser.add_argument('--bam_file','-bam')
     parser.add_argument('--output_dir','-o')
     parser.add_argument('--reference','-ref')
-    parser.add_argument('--ref_version','-rv', help = "reference version to decide which par.bed to use in calling (GRC37 -> hs37d5.par.bed; GRC38 or other -> hs38.bed)", choices=['37','38','other'],default = "37")
+    # parser.add_argument('--ref_version','-rv', help = "reference version to decide which par.bed to use in calling (GRC37 -> hs37d5.par.bed; GRC38 or other -> hs38.bed)", choices=['37','38','other'],default = "37")
     parser.add_argument('--bedfile','-bed', help = "optional; a high confidence bed file")
     parser.add_argument('--region','-r', help = "optional; exmaple: chr21:2000000-2100000")
     parser.add_argument("--n_thread",'-t', help = "number pf threads",type = int, default = 50)
@@ -223,7 +230,7 @@ if __name__ == '__main__':
     eval = args.eval
     global prefix, ref_version
     prefix=args.prefix
-    ref_version = args.ref_version
+    # ref_version = args.ref_version
 
 
     import logging
@@ -260,7 +267,6 @@ if __name__ == '__main__':
     kmer_size,
     ratio ,
     min_support ,
-    ref_version,
     restart )
 
 
