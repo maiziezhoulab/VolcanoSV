@@ -162,7 +162,7 @@ def run_one_chrom(i):
 			fasta_list[i],
 			ref_one_chr,
 			rbam_file,
-			output_dir+'/chr%d'%(i+1),
+			output_dir+"/chr%d/"%(i+1),
 			data_type,
 			n_thread_align,
 			i+1
@@ -174,7 +174,7 @@ def run_one_chrom(i):
 			fasta_list[i],
 			ref_one_chr,
 			read_signature_dir,
-			output_dir+'/chr%d'%(i+1),
+			output_dir+"/chr%d/"%(i+1),
 			data_type,
 			n_thread_align,
 			i+1
@@ -231,18 +231,32 @@ def phase_vcf(infile, outfile, header_file):
 			fout.write(line)
 
 				
+# output
+if chr_num is not None:
+	output_dir_chr = output_dir+"/chr%d/"%chr_num
+	if not os.path.exists(output_dir_chr):
+		os.system("mkdir -p "+output_dir_chr)
+else:
+	if not os.path.exists(output_dir):
+		os.system("mkdir -p "+output_dir)
+
 
 # generate VCF header
 logger.info("generate VCF header...")
-if not os.path.exists(output_dir):
-	os.system("mkdir -p "+output_dir)
-header_file = output_dir+"/VCF_header"
+
+if chr_num is not None:
+	header_file = output_dir_chr+"/VCF_header"
+else:
+	header_file = output_dir+"/VCF_header"
 vcf_header = generate_vcf_header(reference, header_file, chr_num)
 
 
 # split reference
 logger.info("split reference by chromosome...")
-ref_dir = output_dir+"/ref_by_chr/"
+if chr_num is not None:
+	ref_dir = output_dir_chr+"/ref_by_chr/"
+else:
+	ref_dir = output_dir + "/ref_by_chr/"
 split_reference(reference, ref_dir, chr_num)
 
 fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
@@ -259,15 +273,15 @@ if chr_num is None:
 		vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(i+1)
 		header,body = read_vcf(vcf_path)
 		body_wgs.extend(body)
-
-	with open(output_dir+"/variants.vcf",'w') as f:
+	raw_vcf = output_dir+"/raw_variants_wgs.vcf"
+	with open(raw_vcf,'w') as f:
 		f.writelines(header + body_wgs)
 else:
 	run_one_chrom(chr_num -1 )
-	vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(chr_num)
-	out_file = output_dir+"/variants.vcf"
-	cmd = "cp " + vcf_path + " " + out_file
-	Popen(cmd, shell = True).wait()
+	raw_vcf = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(chr_num)
+	# raw_vcf = output_dir+"/raw_variants_chr%d.vcf"%(chr_num)
+	# cmd = "cp " + vcf_path + " " + raw_vcf
+	# Popen(cmd, shell = True).wait()
 
 
 
@@ -280,13 +294,13 @@ else:
 logger.info("Filter VCF and correct genotype...")
 if pre_cutesig is not None:
 	cmd = f'''python3 {code_dir}/filter_GT_correction.py \
-		-vcf {output_dir}/variants.vcf \
+		-vcf {raw_vcf} \
 		-presig {pre_cutesig} \
 		-dtype {data_type} \
 		-t {n_thread} {chr_para}'''
 else:
 	cmd = f'''python3 {code_dir}/filter_GT_correction.py \
-		-vcf {output_dir}/variants.vcf \
+		-vcf {raw_vcf} \
 		-bam {rbam_file} \
 		-ref {reference} \
 		-dtype {data_type} \
@@ -295,9 +309,12 @@ else:
 print(cmd)
 Popen(cmd, shell = True).wait()
 
+if chr_num is not None:
+	infile = output_dir+'/chr%d/final_vcf/variants_filtered_GT_corrected.vcf'%(chr_num)
+	outfile = f"{output_dir_chr}/{prefix}_volcanosv_large_indel_chr%d.vcf"%(chr_num)
+else:
+	infile = f"{output_dir}/variants_filtered_GT_corrected.vcf"
+	outfile = f"{output_dir}/{prefix}_volcanosv_large_indel.vcf"
 
-
-infile = f"{output_dir}/variants_filtered_GT_corrected.vcf"
-outfile = f"{output_dir}/{prefix}_volcanosv_large_indel.vcf"
 phase_vcf(infile, outfile,header_file)
 
