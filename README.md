@@ -63,8 +63,7 @@ for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV
 
 ## Before you start
 
-**Note: 
-1.VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
+**1.VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
 
 **2.The reference file should have contig name in a format like "chr1, chr2, chr3 ..." and does not have descriptive field after it.**
 
