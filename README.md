@@ -63,11 +63,12 @@ for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV
 
 ## Before you start
 
-**Note: VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
+**Note: 
+1.VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
 
-**The reference file should have contig name in a format like "chr1, chr2, chr3 ..." and does not have descriptive field after it.**
+**2.The reference file should have contig name in a format like "chr1, chr2, chr3 ..." and does not have descriptive field after it.**
 
-**We highly recommend you to run the test data first before using VolcanoSV on your own data!**
+**3.We highly recommend you to run the test data first before using VolcanoSV on your own data!**
 
 ## Single chromosome mode
 
