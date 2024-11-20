@@ -60,8 +60,11 @@ for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV
 
 # Running The Code:
 
-
+## Before your start
 **Note: VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
+**The reference file should have contig name in a format like "chr1, chr2, chr3 ..." and does not have descriptive field after it.**
+**We highly recommend you to run the test data first before using VolcanoSV on your own data!**
+
 ## Single chromosome mode
 
 For the single chromosome mode, we provided the chr10 BAM file, contigs file and VCF file for Hifi, CLR and ONT data. You can download them from [zenodo](https://zenodo.org/records/10520476).
