@@ -2,7 +2,7 @@
 # :milky_way: VolcanoSV 🌋
 ## Table of Content 
 - [Installation](#install-through-github)
-- [Before you start](#Before-you-start)
+- [Before you start](#before-you-start)
 - [Single chromosome mode (test example included)](#single-chromosome-mode)
     - [Single chromosome mode VolcanoSV Assembly](#Single-chromosome-mode-VolcanoSV-Assembly-volcanosv-asm)
     - [Single chromosome mode VolcanoSV Assembly (Single assembler)](#Single-chromosome-mode-VolcanoSV-Assembly-Single-assembler)
@@ -62,8 +62,11 @@ for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV
 # Running The Code:
 
 ## Before your start
+
 **Note: VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
+
 **The reference file should have contig name in a format like "chr1, chr2, chr3 ..." and does not have descriptive field after it.**
+
 **We highly recommend you to run the test data first before using VolcanoSV on your own data!**
 
 ## Single chromosome mode
