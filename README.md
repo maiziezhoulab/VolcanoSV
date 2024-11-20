@@ -61,7 +61,7 @@ for convenience or just use the full path of `${path_to_volcanosv}/bin/VolcanoSV
 
 # Running The Code:
 
-## Before your start
+## Before you start
 
 **Note: VolcanoSV is designed only for autosome chromosomes since the phasing procedure for sex chromosomes is very different!**
 
