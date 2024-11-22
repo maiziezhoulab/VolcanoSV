@@ -17,6 +17,7 @@
   -  [WGS mode Small Indel detection](#wgs-mode-small-Indel-detection-volcanosv-vc)
   -  [WGS mode SNP detection](#wgs-mode-SNP-detection-volcanosv-vc)
 - [Merge VCF](#Merge-VCF)
+- [Use VolcanoSV-vc for other assemblies](#Use-VolcanoSV-vc-for-other-assemblies)
 - [Improve assembly for regions enriched in segmental duplications](#Optional-Improve-assembly-for-regions-enriched-in-segmental-duplications-SDs)
 - [Truvari evaluation](#Truvari-evaluation)
 - [Computation resource usage](#Computation-resource-usage)
@@ -390,6 +391,20 @@ volcanosv_asm_output/*/phasing_result/${prefix}_phased.vcf
 
 Through either way, the merged result will be `VolcanoSV_Variants.vcf`.
 
+## Use VolcanoSV-vc for other assemblies
+You may also use VolcanoSV-vc for other haplotype-resolved assemblies.
+**Note: you need to reformat your assemblies file before you run it. You assemblies file should have "hp1" or "hp2" in the contig name to differentiate different haplotype.**
+
+Here is an example of using other assemblies, when the data type is Hifi.
+```
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-indel-otherasm.py \
+	-i contigs.fa \
+	-o out \
+	-d Hifi \
+	-bam ${reads_bamfile} \
+	-ref ${reference_file} \
+	-t 10 -px ${prefix}
+```
 
 ## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
 
