@@ -730,6 +730,7 @@ else:
 
 logger.info("load asm contigs...")
 dc_contig = load_contigs(contig_path)
+print(dc_contig.keys())
 logger.info("load reference...")
 dc_ref = load_contigs(ref_path)
 
