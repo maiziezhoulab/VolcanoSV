@@ -406,6 +406,19 @@ python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Large_INDEL/volcanosv-vc-large-ind
 	-t 10 -px ${prefix}
 ```
 
+```
+python3 ${path_to_volcanosv}/bin/VolcanoSV-vc/Complex_SV/volcanosv-vc-complex-sv-otherasm.py \
+	-hp1 hp1.fa \
+	-hp2 hp2.fa \
+	-vcf volcanosv_large_indel_output/volcanosv_large_indel.vcf \
+	-o volcanosv_complex_sv \
+	-dtype <datatype> \
+	-bam <wgs_reads_bamfile> \
+	-ref <reference> \
+	-t 11 \
+	-px <prefix>
+```
+
 ## (Optional) Improve assembly for regions enriched in segmental duplications (SDs) 
 
 After WGS assembly, if you would like to evaluate assembly for SDs and further achieve better assembly in SD-enriched regions, you can run the below pipeline, which includes 3 steps. 
