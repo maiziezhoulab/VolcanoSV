@@ -338,12 +338,7 @@ def extract_sig_from_split(read1,read2,min_mapq,max_svlen):
 
             
         Diffdis = (Ref2s-Ref1e)-(Read2s-Read1e)
-        if Diffdis >= 30:
-            # del
-            Diffolp = Read1e - Read2s
-        else:
-            # ins
-            Diffolp = Ref1e - Ref2s
+        Diffolp = Ref1e - Ref2s
         
         if reverse1:
             direction = '-'
@@ -351,23 +346,23 @@ def extract_sig_from_split(read1,read2,min_mapq,max_svlen):
             direction = '+'
             
 
-        if abs(Diffdis)<=max_svlen:
-            if Diffdis >= 30:
-                # DEL
-                if abs(Diffolp) <= 3000:
-                    sigdel = [read1.reference_name,'DEL', Ref1e - int(Diffolp/2), Diffdis,read1.qname, Read1e- int(Diffolp/2),Read1e- int(Diffolp/2)+1,direction,'split-alignment',"%d-%d"%(read1.mapq,read2.mapq)]
-                    del_list.append(sigdel)
-            elif Diffdis<= -30:
-                # INS
-                if Diffolp<3000:
-                    svlen = abs(Read2s-Read1e+Diffolp)
-                    if abs(Diffolp) > 400:
-                        pos_ref = int((Ref1e+Ref2s)/2)
-                    else:
-                        pos_ref = Ref2s
-                    sigins = [read1.reference_name,'INS', pos_ref, svlen , read1.qname,Read1e-Diffolp, Read2s,direction,'split-alignment',"%d-%d"%(read1.mapq,read2.mapq)]
 
-                    ins_list.append(sigins)
+        if abs(Diffdis)<=max_svlen:
+            if (Diffolp<30)  and (Diffdis >= 30 ):
+                sigdel = [read1.reference_name,'DEL', Ref1e, Diffdis,read1.qname, Read1e,Read2s,direction,'split-alignment',"%d-%d"%(read1.mapq,read2.mapq)]
+                del_list.append(sigdel)
+            elif (Diffolp<3000)  and (Diffdis >= 30 ):
+                sigdel = [read1.reference_name,'DEL', Ref1e-Diffdis, Diffdis,read1.qname, Read1e-Diffdis,Read2s-Diffdis,direction,'split-alignment',"%d-%d"%(read1.mapq,read2.mapq)]
+                del_list.append(sigdel)
+            elif (Diffolp<3000) and (Diffdis<= -30) :
+                svlen = abs(Read2s-Read1e+Diffolp)
+                if abs(Diffolp) > 400:
+                    pos_ref = int((Ref1e+Ref2s)/2)
+                else:
+                    pos_ref = Ref2s
+                sigins = [read1.reference_name,'INS', pos_ref, svlen , read1.qname,Read1e-Diffolp, Read2s,direction,'split-alignment',"%d-%d"%(read1.mapq,read2.mapq)]
+
+                ins_list.append(sigins)
     return del_list,ins_list
 
                     
