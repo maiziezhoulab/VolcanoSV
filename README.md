@@ -1,5 +1,8 @@
 
 # :milky_way: VolcanoSV 🌋
+VolcanoSV is an innovative hybrid SV detection pipeline that utilizes both a reference genome and local de novo assembly to generate a phased diploid assembly. 
+![VolcanoSV Pipeline](volcanosv_pipeline.png)
+
 ## Table of Content 
 - [Installation](#install-through-github)
 - [Before you start](#before-you-start)
