@@ -516,8 +516,11 @@ Hifi | 56X | 21GB | 50| 00:25:11| 21 |
 CLR | 89x | 215GB | 50 | 02:27:35 | 123|
 ONT | 48x | 34GB| 50 | 00:38:24| 32|
 
+
 ## Cite VolcanoSV
-C. Luo, B. A. Peters, X. M. Zhou. Large indel detection in region-based phased diploid assemblies from linked-reads. BMC Genomics (2025) 26:263. 
+Luo C, Liu YH, Zhou XM. VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing. Nat Commun. 2024 Aug 13;15(1):6956. PubMed PMID: 39138168. 
+
+
 
 
 ## Troubleshooting:
