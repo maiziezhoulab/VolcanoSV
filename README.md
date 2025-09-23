@@ -518,7 +518,7 @@ ONT | 48x | 34GB| 50 | 00:38:24| 32|
 
 
 ## Cite VolcanoSV
-Luo C, Liu YH, Zhou XM. VolcanoSV enables accurate and robust structural variant calling in diploid genomes from single-molecule long read sequencing. Nat Commun. 2024 Aug 13;15(1):6956. PubMed PMID: 39138168. 
+C. Luo, Z. J. Zhou, Y. H. Liu, X. M. Zhou. FocalSV enables target region-based structural variant assessment and refinement using single-molecule long-read sequencing. Genome Research (2025) gr.280282.124
 
 
 
