@@ -11,6 +11,7 @@ parser.add_argument('--data_type','-dtype', choices=['Hifi','CLR','ONT'])
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
+parser.add_argument('--chrom_list','-cl', required=True, help = "text file with one chromosome/contig name per line, matching the per-chromosome subfolder names under --input_dir")
 # parser.add_argument('--delete_temp_file','-d', action='store_true')
 args = parser.parse_args()
 input_dir = args.input_dir
@@ -21,6 +22,7 @@ reference = args.reference
 n_thread = args.n_thread
 datatype = args.data_type
 prefix=args.prefix
+chrom_list_file = args.chrom_list
 
 import logging
 ## set logger
@@ -38,12 +40,13 @@ from subprocess import Popen
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
-def merge_fasta(input_dir,outdir):
-   # if datatype == "CCS":
-   #    fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
-   # else:
-   
-   fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
+def load_chrom_list(chrom_list_file):
+   with open(chrom_list_file, 'r') as f:
+      return [line.strip() for line in f if line.strip()]
+
+def merge_fasta(input_dir,outdir,chrom_list_file):
+   chrom_list = load_chrom_list(chrom_list_file)
+   fasta_list =  [input_dir+"/"+chrom+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for chrom in chrom_list]
 
    if not os.path.exists(outdir):
       os.system("mkdir -p " + outdir)
@@ -102,7 +105,7 @@ hp2fa = out_dir+"/hp2.fa"
 raw_dir = out_dir+"/Raw_Detection/"
 
 logger.info("-------------------------------Merge contigs")
-merge_fasta(input_dir,out_dir)
+merge_fasta(input_dir,out_dir,chrom_list_file)
 
 logger.info("-------------------------------Extract raw complex SV")
 

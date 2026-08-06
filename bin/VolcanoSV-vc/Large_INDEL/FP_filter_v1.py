@@ -168,17 +168,15 @@ def load_wgs_vcf(vcf_path):
 vcf_path = input_path
 header,dc = load_wgs_vcf(vcf_path)
 
+chrom_list = list(dc.keys())
+
 final_lines = []
-for i in range(1,23):
-    chr_name = 'chr%d'%i
-    if chr_name in dc:
-        print(chr_name)
-        sig_path = signature_dir + "/%s_reads_sig.txt"%chr_name
-        vcf_lines_chr = filter_vcf(dc[chr_name],chr_name,sig_path,
-                       max_dist,max_comp_svlen,max_shift,min_size_sim)
-        final_lines.append(vcf_lines_chr)
-    else:
-        final_lines.append([])
+for chr_name in chrom_list:
+    print(chr_name)
+    sig_path = signature_dir + "/%s_reads_sig.txt"%chr_name
+    vcf_lines_chr = filter_vcf(dc[chr_name],chr_name,sig_path,
+                   max_dist,max_comp_svlen,max_shift,min_size_sim)
+    final_lines.append(vcf_lines_chr)
 
 
 
@@ -186,14 +184,10 @@ out_path = output_path
 fw = open(out_path,'w')
 fw.writelines(header)
 reduced_line  = 0
-for i in range(22):
-#     idxs = np.where(final_lines[i]>0)[0]
-    chr_name = 'chr%d'%(i+1)
-    if chr_name in dc:
-        print(chr_name,len(dc[chr_name]),len(final_lines[i]))
-        reduced_line += (len(dc[chr_name])-len(final_lines[i]))
-    #     vcf_lines = list(np.array(dc[chr_name])[idxs])
-        fw.writelines(final_lines[i])
+for i, chr_name in enumerate(chrom_list):
+    print(chr_name,len(dc[chr_name]),len(final_lines[i]))
+    reduced_line += (len(dc[chr_name])-len(final_lines[i]))
+    fw.writelines(final_lines[i])
 fw.close()
 
 

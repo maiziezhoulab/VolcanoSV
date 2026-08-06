@@ -19,14 +19,11 @@ parser.add_argument('--read_signature_dir','-rdsig', help = "pre-extracted reads
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
 
 ## optional
-# parser.add_argument('--chr_num','-chr',type = int, 
-# 					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
-# 					default= None,
-# 					help = "chrmosome number; Optional; if not provided, will assume input_dir contain chr1-chr22 results")
-
-parser.add_argument('--chr_num','-chr',type = int, 
+parser.add_argument('--chr_num','-chr',
 					default= None,
-					help = "chrmosome number; Optional; if not provided, will assume input_dir contain chr1-chr22 results")
+					help = "chromosome/contig name (e.g. chr10, or NC_000010.11); Optional; if not provided, will run in WGS mode over every chromosome in --chrom_list")
+parser.add_argument('--chrom_list','-cl', required=True,
+					help = "text file with one chromosome/contig name per line, in the order to process (must match names in the reference FASTA)")
 
 parser.add_argument('--n_thread','-t',type = int, help = "number of threads",
 					default = 11)
@@ -47,6 +44,7 @@ output_dir = args.output_dir
 data_type = args.data_type
 ## optional
 chr_num = args.chr_num
+chrom_list_file = args.chrom_list
 n_thread = args.n_thread
 n_thread_align = args.n_thread_align
 mem_per_thread = args.mem_per_thread
@@ -101,6 +99,11 @@ def extract_contigs_from_fai(fai_file):
 			contigs.append((contig_name, contig_length))
 	return contigs
 
+def get_chrom_list(chrom_list_file):
+	"""Ordered list of chromosome/contig names to process, from --chrom_list (one name per line)."""
+	with open(chrom_list_file, 'r') as f:
+		return [line.strip() for line in f if line.strip()]
+
 def generate_vcf_header(reference_fa, header_file, chr_num):
 	# Step 1: Check and create .fai file if necessary
 	fai_file = create_fai(reference_fa)
@@ -115,7 +118,7 @@ def generate_vcf_header(reference_fa, header_file, chr_num):
 		for contig_name, contig_length in contigs:
 			vcf_header += f"##contig=<ID={contig_name},length={contig_length}>\n"
 	else:
-		target_contig_name = "chr"+str(chr_num)
+		target_contig_name = chr_num
 		for contig_name, contig_length in contigs:
 			if contig_name ==  target_contig_name:
 				vcf_header += f"##contig=<ID={contig_name},length={contig_length}>\n"
@@ -134,56 +137,63 @@ def generate_vcf_header(reference_fa, header_file, chr_num):
 
 	
 
-def split_reference(input_path,output_dir, chr_num):
+def split_reference(input_path,output_dir, chrom_list, target_chrom=None):
 	logger.info("load reference...")
 	with open(input_path,'r') as f:
 		s = f.read()
-	chr_list = s.split('>')[1:]
+	records = s.split('>')[1:]
+	chrom_set = set(chrom_list)
 	if not os.path.exists(output_dir):
 		os.system("mkdir -p "+output_dir)
-	for i in tqdm(range(22),desc = "write by chromosome ref"):
-		if (chr_num is None) or ( int(i+1) == chr_num):
-			path = output_dir+'/chr%d.fa'%(i+1)
-			with open(path, 'w') as f:
-				f.write('>'+chr_list[i])
-			cmd = "samtools faidx "+path
-			os.system(cmd)
-	return 
+	for record in tqdm(records,desc = "write by chromosome ref"):
+		header_line, _, _ = record.partition('\n')
+		name = header_line.split()[0]
+		if name not in chrom_set:
+			continue
+		if (target_chrom is not None) and (name != target_chrom):
+			continue
+		path = output_dir+'/'+name+'.fa'
+		with open(path, 'w') as f:
+			f.write('>'+record)
+		cmd = "samtools faidx "+path
+		os.system(cmd)
+	return
 
 
-def run_one_chrom(i):
-	ref_one_chr = ref_list[i]
-	logger.info("process chromosome %d..."%(i+1))
+def run_one_chrom(chrom):
+	ref_one_chr = ref_dir+"/"+chrom+".fa"
+	contig_one_chr = input_dir+"/"+chrom+f"/assembly/final_contigs/{prefix}_final_contigs.fa"
+	logger.info("process chromosome %s..."%chrom)
 
 	if read_signature_dir is None:
 		cmd = "python3 "+code_dir+"/Raw_variant_call.py \
 		-contig %s -ref %s \
-		-rbam %s  -o %s -dtype %s -t %d -chr %d"%(
-			fasta_list[i],
+		-rbam %s  -o %s -dtype %s -t %d -chr %s"%(
+			contig_one_chr,
 			ref_one_chr,
 			rbam_file,
-			output_dir+"/chr%d/"%(i+1),
+			output_dir+"/"+chrom+"/",
 			data_type,
 			n_thread_align,
-			i+1
+			chrom
 			)
 	else:
 		cmd = "python3 "+code_dir+"/Raw_variant_call.py \
 		-contig %s -ref %s \
-		-sigd %s -o %s -dtype %s -t %d -chr %d"%(
-			fasta_list[i],
+		-sigd %s -o %s -dtype %s -t %d -chr %s"%(
+			contig_one_chr,
 			ref_one_chr,
 			read_signature_dir,
-			output_dir+"/chr%d/"%(i+1),
+			output_dir+"/"+chrom+"/",
 			data_type,
 			n_thread_align,
-			i+1
+			chrom
 			)
 
 	logger.info(cmd)
 	Popen(cmd,shell = True).wait()
-	logger.info("finish chromosome %d"%(i+1))
-	return 
+	logger.info("finish chromosome %s"%chrom)
+	return
 
 
 def read_vcf(vcf_path):
@@ -233,12 +243,18 @@ def phase_vcf(infile, outfile, header_file):
 				
 # output
 if chr_num is not None:
-	output_dir_chr = output_dir+"/chr%d/"%chr_num
+	output_dir_chr = output_dir+"/"+chr_num+"/"
 	if not os.path.exists(output_dir_chr):
 		os.system("mkdir -p "+output_dir_chr)
 else:
 	if not os.path.exists(output_dir):
 		os.system("mkdir -p "+output_dir)
+
+
+# resolve chromosome list from --chrom_list
+chrom_list = get_chrom_list(chrom_list_file)
+if (chr_num is not None) and (chr_num not in chrom_list):
+	raise ValueError(f"chromosome '{chr_num}' not found in --chrom_list/reference .fai (available: {chrom_list})")
 
 
 # generate VCF header
@@ -257,31 +273,25 @@ if chr_num is not None:
 	ref_dir = output_dir_chr+"/ref_by_chr/"
 else:
 	ref_dir = output_dir + "/ref_by_chr/"
-split_reference(reference, ref_dir, chr_num)
-
-fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
-ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
+split_reference(reference, ref_dir, chrom_list, chr_num)
 
 
 if chr_num is None:
 	# wgs mode
-	results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(i) for i in tqdm(range(22)))
-	### collect all result to be one 
+	results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(chrom) for chrom in tqdm(chrom_list))
+	### collect all result to be one
 	logger.info("collect all chromosome result")
 	body_wgs = []
-	for i in range(22):
-		vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(i+1)
+	for chrom in chrom_list:
+		vcf_path = output_dir+'/'+chrom+'/final_vcf/volcano_variant_no_redundancy.vcf'
 		header,body = read_vcf(vcf_path)
 		body_wgs.extend(body)
 	raw_vcf = output_dir+"/raw_variants_wgs.vcf"
 	with open(raw_vcf,'w') as f:
 		f.writelines(header + body_wgs)
 else:
-	run_one_chrom(chr_num -1 )
-	raw_vcf = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(chr_num)
-	# raw_vcf = output_dir+"/raw_variants_chr%d.vcf"%(chr_num)
-	# cmd = "cp " + vcf_path + " " + raw_vcf
-	# Popen(cmd, shell = True).wait()
+	run_one_chrom(chr_num)
+	raw_vcf = output_dir+'/'+chr_num+'/final_vcf/volcano_variant_no_redundancy.vcf'
 
 
 
@@ -289,7 +299,7 @@ else:
 if chr_num is None:
 	chr_para = " "
 else:
-	chr_para = " -chr "+str(chr_num)
+	chr_para = " -chr "+chr_num
 
 logger.info("Filter VCF and correct genotype...")
 if pre_cutesig is not None:
@@ -310,8 +320,8 @@ print(cmd)
 Popen(cmd, shell = True).wait()
 
 if chr_num is not None:
-	infile = output_dir+'/chr%d/final_vcf/variants_filtered_GT_corrected.vcf'%(chr_num)
-	outfile = f"{output_dir_chr}/{prefix}_volcanosv_large_indel_chr%d.vcf"%(chr_num)
+	infile = output_dir+'/'+chr_num+'/final_vcf/variants_filtered_GT_corrected.vcf'
+	outfile = f"{output_dir_chr}/{prefix}_volcanosv_large_indel_{chr_num}.vcf"
 else:
 	infile = f"{output_dir}/variants_filtered_GT_corrected.vcf"
 	outfile = f"{output_dir}/{prefix}_volcanosv_large_indel.vcf"

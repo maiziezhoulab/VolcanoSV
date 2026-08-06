@@ -600,6 +600,7 @@ if __name__ == "__main__":
     parser.add_argument('--asm_thread','-ta', type = int, default = 7 )
     parser.add_argument('--clean','-cl', action='store_true')
     parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
+    parser.add_argument('--chrom_list','-chl', required=True, help = "text file with one chromosome/contig name per line (must match the per-chromosome subfolder names under --input_dir)")
     args = parser.parse_args()
     global data_type
     hap_file = args.hap_file
@@ -615,7 +616,9 @@ if __name__ == "__main__":
     pacbio_subtype = args.pacbio_subtype
     prefix=args.prefix
 
-    fastq_dirs = [  input_dir +  f"/chr{i+1}/Assembly/fastq_by_hap" for i in range(22)]
+    with open(args.chrom_list, 'r') as f:
+        chrom_list = [line.strip() for line in f if line.strip()]
+    fastq_dirs = [  input_dir +  f"/{chrom}/Assembly/fastq_by_hap" for chrom in chrom_list]
     run_assembly(hap_file, fastq_dirs, output_dir, assemblers, 
                  n_thread, asm_thread, clean, data_type, shasta_ont_config,
                   pacbio_subtype, prefix )

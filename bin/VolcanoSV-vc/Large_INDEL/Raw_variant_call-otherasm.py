@@ -59,7 +59,7 @@ Popen(cmd,shell=True).wait()
 
 ### combine all vcf together
 
-cmd = "cat %s/volcano_variant_chr*vcf | grep -v \"#\" > %s/body "%(output_dir,output_dir)
+cmd = "cat %s/volcano_variant_*.vcf | grep -v \"#\" > %s/body "%(output_dir,output_dir)
 Popen(cmd,shell=True).wait()
 cmd = "cat %s %s/body > %s/volcano_raw_variant.vcf; rm %s/body "%(header_file,output_dir,output_dir,output_dir)
 Popen(cmd,shell=True).wait()

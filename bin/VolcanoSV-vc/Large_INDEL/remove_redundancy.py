@@ -26,8 +26,7 @@ seq_sim_thresh = args.seq_sim_thresh
 
 def sort_sig(sig_list):
     sorted_sig = []
-    for i in range(1,23):
-        chr_name = 'chr'+str(i)
+    for chr_name in sorted(set(sig[0] for sig in sig_list)):
         sig_list_chr = []
         for sig in sig_list:
             if sig[0]==chr_name:
@@ -146,8 +145,7 @@ def match_del_chr(sig_list,dist_thresh, size_sim_thresh, overlap_thresh):
     return links
 def match_del(sig_list,dist_thresh, size_sim_thresh, overlap_thresh):
     links = []
-    for i in tqdm(range(1,23)):
-        chr_name = 'chr'+str(i)
+    for chr_name in tqdm(sorted(set(sig[0] for sig in sig_list))):
         sig_list_chr = []
         for sig in sig_list:
             if sig[0]==chr_name:
@@ -183,8 +181,7 @@ def match_ins_chr(sig_list,dist_thresh, size_sim_thresh, seq_sim_thresh):
                 
 def match_ins(sig_list,dist_thresh, size_sim_thresh, seq_sim_thresh):
     links = []
-    for i in tqdm(range(1,23)):
-        chr_name = 'chr'+str(i)
+    for chr_name in tqdm(sorted(set(sig[0] for sig in sig_list))):
         sig_list_chr = []
         for sig in sig_list:
             if sig[0]==chr_name:

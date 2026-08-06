@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 parser = ArgumentParser(description="",usage='use "python3 %(prog)s --help" for more information')
-parser.add_argument('--chr_number','-chr',type = int)
+parser.add_argument('--chr_number','-chr', help = "chromosome/contig name, e.g. chr1 or NC_000001.11")
 parser.add_argument('--input_path','-i')
 parser.add_argument('--output_dir','-o')
 
@@ -22,7 +22,7 @@ min_siglen = args.min_siglen
 
 
 
-chr_name = "chr%d"%chr_number
+chr_name = chr_number
 
 import matplotlib.pyplot as plt
 import numpy as np

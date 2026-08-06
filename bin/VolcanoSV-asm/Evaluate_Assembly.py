@@ -2,9 +2,11 @@ from subprocess import Popen
 import os
 
 
-def merge_fasta(input_dir,outdir):
+def merge_fasta(input_dir,outdir,chrom_list_file):
 
-    fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
+    with open(chrom_list_file, 'r') as f:
+        chrom_list = [line.strip() for line in f if line.strip()]
+    fasta_list =  [input_dir+"/"+chrom+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for chrom in chrom_list]
 
     if not os.path.exists(outdir):
         os.system("mkdir -p " + outdir)
@@ -20,8 +22,8 @@ def merge_fasta(input_dir,outdir):
     return 
 
 
-def preprocess_flagger(input_dir, outdir, fq_file, dtype,bam_prefix, n_thread,mem_per_t, ):
-    merge_fasta(input_dir, outdir)
+def preprocess_flagger(input_dir, outdir, fq_file, dtype,bam_prefix, n_thread,mem_per_t, chrom_list_file):
+    merge_fasta(input_dir, outdir, chrom_list_file)
     cmd = f'''sh {code_dir}/preprocess_flagger.sh {fq_file} {outdir} {bam_prefix} {dtype} {n_thread} {mem_per_t}'''
     Popen(cmd, shell = True).wait()
 
@@ -83,6 +85,7 @@ parser.add_argument('--mem_per_thread','-m', default = '5G' )
 parser.add_argument('--sample_name','-samp', default = 'Sample' )
 
 parser.add_argument('--lib_name','-lib',  )
+parser.add_argument('--chrom_list','-cl', required=True, help = "text file with one chromosome/contig name per line, matching the per-chromosome subfolder names under --input_dir")
 
 args = parser.parse_args()
 input_dir = args.input_dir
@@ -93,6 +96,7 @@ n_thread = args.n_thread
 mem_per_t = args.m_per_thread
 sample_name = args.sample_name
 suffix = args.lib_name
+chrom_list_file = args.chrom_list
 
 
 
@@ -101,5 +105,5 @@ code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 bam_prefix = "reads2contig"
 
-preprocess_flagger(input_dir, out_dir, fq_file, dtype, bam_prefix , n_thread, mem_per_t)
+preprocess_flagger(input_dir, out_dir, fq_file, dtype, bam_prefix , n_thread, mem_per_t, chrom_list_file)
 run_flagger(out_dir,  suffix, bam_prefix, sample_name, dtype, n_thread)

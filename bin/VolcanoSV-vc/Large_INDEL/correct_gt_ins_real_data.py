@@ -45,7 +45,6 @@ def load_vcf(vcffile):
             if 'SVTYPE=INS' in line:
                 data = line.split()
                 chrom = data[0]
-                chrom = int(chrom[3:])
                 pos = int(data[1])
                 gt = data[-1].split(':')[0]
                 svid = data[2]
@@ -79,15 +78,11 @@ def load_sig_file(sig_file):
             pos = int(pos)
             svlen = int(svlen)
             if svlen >= 30:
-                try:
-                    chrom = int(chrom[3:])
-                    var = (chrom,pos,svlen)
-                    if var in sig_dc:
-                        sig_dc[var]+=1
-                    else:
-                        sig_dc[var] = 1
-                except:
-                    continue
+                var = (chrom,pos,svlen)
+                if var in sig_dc:
+                    sig_dc[var]+=1
+                else:
+                    sig_dc[var] = 1
 
             # sig_dc[(chrom,pos)].append(svlen)
     print('num different signature: ', len(sig_dc))
@@ -202,7 +197,7 @@ def extract_local_read_cov(bamfile,flanking,sv_list_comp, n_thread):
     for sv in sv_list_comp:
         pos = sv[1]
         pos_list.append(pos)
-        chrom = 'chr'+str(sv[0])
+        chrom = sv[0]
         chrom_list.append(chrom)
         rg = f'{chrom}:{pos-flanking}-{pos+flanking}'
         region_list.append(rg)

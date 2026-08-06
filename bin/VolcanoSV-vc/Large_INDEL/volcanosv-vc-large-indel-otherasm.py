@@ -25,6 +25,8 @@ parser.add_argument('--n_thread_align','-ta',help = "number of threads for conti
 					type = int, default = 10)
 parser.add_argument('--mem_per_thread','-mempt', default = '768M',help = "Set maximum memory per thread for alignment; suffix K/M/G recognized; default = 768M")
 parser.add_argument('--prefix','-px', help = "file prefix in the output folder", default = "Sample")
+parser.add_argument('--chrom_list','-cl', required=True,
+					help = "text file with one chromosome/contig name per line, in the order to process (must match names in the reference FASTA)")
 args = parser.parse_args()
 
 
@@ -37,8 +39,8 @@ input_path = args.input_path
 output_dir = args.output_dir
 data_type = args.data_type
 ## optional
-# chr_num = args.chr_num
 chr_num = None
+chrom_list_file = args.chrom_list
 n_thread = args.n_thread
 n_thread_align = args.n_thread_align
 mem_per_thread = args.mem_per_thread
@@ -94,6 +96,11 @@ def extract_contigs_from_fai(fai_file):
 			contigs.append((contig_name, contig_length))
 	return contigs
 
+def get_chrom_list(chrom_list_file):
+	"""Ordered list of chromosome/contig names to process, from --chrom_list (one name per line)."""
+	with open(chrom_list_file, 'r') as f:
+		return [line.strip() for line in f if line.strip()]
+
 def generate_vcf_header(reference_fa, header_file, chr_num):
 	# Step 1: Check and create .fai file if necessary
 	fai_file = create_fai(reference_fa)
@@ -127,61 +134,67 @@ def generate_vcf_header(reference_fa, header_file, chr_num):
 
 	
 
-def split_reference(input_path,output_dir, chr_num):
+def split_reference(input_path,output_dir, chrom_list, target_chrom=None):
 	logger.info("load reference...")
 	with open(input_path,'r') as f:
 		s = f.read()
-	chr_list = s.split('>')[1:]
+	records = s.split('>')[1:]
+	chrom_set = set(chrom_list)
 	if not os.path.exists(output_dir):
 		os.system("mkdir -p "+output_dir)
-	for i in tqdm(range(22),desc = "write by chromosome ref"):
-		if (chr_num is None) or ( int(i+1) == chr_num):
-			path = output_dir+'/chr%d.fa'%(i+1)
-			with open(path, 'w') as f:
-				f.write('>'+chr_list[i])
-			cmd = "samtools faidx "+path
-			os.system(cmd)
-	return 
+	for record in tqdm(records,desc = "write by chromosome ref"):
+		header_line, _, _ = record.partition('\n')
+		name = header_line.split()[0]
+		if name not in chrom_set:
+			continue
+		if (target_chrom is not None) and (name != target_chrom):
+			continue
+		path = output_dir+'/'+name+'.fa'
+		with open(path, 'w') as f:
+			f.write('>'+record)
+		cmd = "samtools faidx "+path
+		os.system(cmd)
+	return
 
 
-def run_one_chrom(i,):
-	ref_one_chr = ref_list[i]
-	contig_one_chr = fasta_list[i]
-	logger.info("process chromosome %d..."%(i+1))
+def run_one_chrom(chrom):
+	ref_one_chr = ref_dir+"/"+chrom+".fa"
+	contig_one_chr = contig_by_chr_folder+"/"+chrom+".fasta"
+	logger.info("process chromosome %s..."%chrom)
 
 	if read_signature_dir is None:
 		cmd = "python3 "+code_dir+"/Raw_variant_call-otherasm.py \
 		-contig %s  \
 		-cbam %s -ref %s \
-		-rbam %s  -o %s -dtype %s -t %d -chr %d"%(
+		-rbam %s  -o %s -dtype %s -t %d -chr %s"%(
 			contig_one_chr,
 			contig_bam,
 			ref_one_chr,
 			rbam_file,
-			output_dir+"/chr%d/"%(i+1),
+			output_dir+"/"+chrom+"/",
 			data_type,
 			n_thread_align,
-			i+1
+			chrom
 			)
 	else:
 		cmd = "python3 "+code_dir+"/Raw_variant_call-otherasm.py \
 		-contig %s  \
 		-cbam %s -ref %s \
-		-sigd %s -o %s -dtype %s -t %d -chr %d"%(
+		-sigd %s -o %s -dtype %s -t %d -chr %s"%(
 			contig_one_chr,
 			contig_bam,
 			ref_one_chr,
 			read_signature_dir,
-			output_dir+"/chr%d/"%(i+1),
+			output_dir+"/"+chrom+"/",
 			data_type,
 			n_thread_align,
-			i+1
+			chrom
 			)
 
 	logger.info(cmd)
 	Popen(cmd,shell = True).wait()
-	logger.info("finish chromosome %d"%(i+1))
-	return 
+	logger.info("finish chromosome %s"%chrom)
+	return
 
 
 def read_vcf(vcf_path):
@@ -246,24 +259,25 @@ def align_contig(contig_path, reference_path, bam_path, n_thread, mem_per_thread
 
 
 
-def split_contigs_by_chromosome(bam_file, contig_file, output_folder):
+def split_contigs_by_chromosome(bam_file, contig_file, output_folder, chrom_list):
     """
-    Splits contigs from a contig file by chromosomes (chr1-22) based on BAM file alignments.
+    Splits contigs from a contig file by chromosome, based on BAM file alignments.
 
     Args:
         bam_file (str): Path to the BAM file with contig alignments.
         contig_file (str): Path to the contig FASTA file.
         output_folder (str): Folder to store chromosome-specific FASTA files.
+        chrom_list (list): chromosome/contig names to keep (from the reference).
     """
     # Ensure output folder exists
     os.makedirs(output_folder, exist_ok=True)
-    
+
     # Load BAM file
     bam = pysam.AlignmentFile(bam_file, "rb")
-    
-    # Filter chromosome names (chr1-22)
-    valid_chromosomes = {f"chr{i}" for i in range(1, 23)}
-    
+
+    # Only keep alignments to a chromosome we're actually processing
+    valid_chromosomes = set(chrom_list)
+
     # Dictionary to store chromosome-specific contigs
     chromosome_contigs = {chrom: [] for chrom in valid_chromosomes}
     logger.info("Iterate over BAM alignments to group contigs by chromosome...")
@@ -301,10 +315,8 @@ def split_contigs_by_chromosome(bam_file, contig_file, output_folder):
 # set variables
 header_file = output_dir+"/VCF_header"
 ref_dir = output_dir + "/ref_by_chr/"
-ref_list = [ref_dir + "/chr"+str(i+1)+".fa" for i in range(22)]
 contig_bam = output_dir+'/'+prefix+'.sorted.bam'
 contig_by_chr_folder = output_dir + "/contig_by_chr/"
-fasta_list =  [contig_by_chr_folder+"/chr"+str(i+1)+".fasta" for i in range(22)]
 raw_vcf = output_dir+"/raw_variants_wgs.vcf"
 chr_para = " "
 final_gonotyped_vcf = f"{output_dir}/variants_filtered_GT_corrected.vcf"
@@ -314,6 +326,8 @@ final_phased_vcf = f"{output_dir}/{prefix}_volcanosv_large_indel.vcf"
 if not os.path.exists(output_dir):
 	os.system("mkdir -p "+output_dir)
 
+# resolve chromosome list from --chrom_list
+chrom_list = get_chrom_list(chrom_list_file)
 
 # generate VCF header
 logger.info("generate VCF header...")
@@ -321,7 +335,7 @@ vcf_header = generate_vcf_header(reference, header_file, chr_num)
 
 # split reference
 logger.info("split reference by chromosome...")
-split_reference(reference, ref_dir, chr_num)
+split_reference(reference, ref_dir, chrom_list, chr_num)
 
 # align contig
 logger.info(f"Aligning contig {input_path} to reference {reference}...")
@@ -329,17 +343,17 @@ align_contig(input_path, reference , contig_bam, n_thread, mem_per_thread,)
 
 # split contig
 logger.info("split assemblies by chromosome...")
-split_contigs_by_chromosome(contig_bam, input_path, contig_by_chr_folder)
+split_contigs_by_chromosome(contig_bam, input_path, contig_by_chr_folder, chrom_list)
 
 # loop each chr to call SV
-results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(i) for i in tqdm(range(22)))
+results = Parallel(n_jobs=n_thread)(delayed(run_one_chrom)(chrom) for chrom in tqdm(chrom_list))
 
 
-# collect all result 
+# collect all result
 logger.info("collect all chromosome result")
 body_wgs = []
-for i in range(22):
-	vcf_path = output_dir+'/chr%d/final_vcf/volcano_variant_no_redundancy.vcf'%(i+1)
+for chrom in chrom_list:
+	vcf_path = output_dir+'/'+chrom+'/final_vcf/volcano_variant_no_redundancy.vcf'
 	header,body = read_vcf(vcf_path)
 	body_wgs.extend(body)
 with open(raw_vcf,'w') as f:

@@ -42,32 +42,6 @@ from subprocess import Popen
 code_dir = os.path.dirname(os.path.realpath(__file__))+'/'
 
 
-def merge_fasta(input_dir,outdir):
-   # if datatype == "CCS":
-   #    fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
-   # else:
-   
-   fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
-
-   if not os.path.exists(outdir):
-      os.system("mkdir -p " + outdir)
-   hp1file = outdir+"/hp1.fa"
-   hp2file = outdir+"/hp2.fa"
-   fhp1 = open(hp1file,'w')
-   fhp2 = open(hp2file,'w')
-   for fasta in fasta_list:
-      with open(fasta,'r') as f:
-         for line in f:
-            if line[0] == '>':
-               if "hp1" in line:
-                  fw = fhp1 
-               else:
-                  fw = fhp2 
-            fw.write(line)
-   fhp1.close()
-   fhp2.close()
-   return 
-
 def phase_vcf(infile, outfile):
 	header = []
 	body = []
@@ -101,12 +75,7 @@ def phase_vcf(infile, outfile):
 			fout.write(line)
 			
 
-# hp1fa = out_dir+"/hp1.fa"
-# hp2fa = out_dir+"/hp2.fa"
 raw_dir = out_dir+"/Raw_Detection/"
-
-# logger.info("-------------------------------Merge contigs")
-# merge_fasta(input_dir,out_dir)
 
 logger.info("-------------------------------Extract raw complex SV")
 

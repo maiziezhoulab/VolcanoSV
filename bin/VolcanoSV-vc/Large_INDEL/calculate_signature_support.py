@@ -16,10 +16,9 @@ parser.add_argument('--cutesv_dir','-ct')
 parser.add_argument('--n_thread','-t',type = int,default = 22, help = "number of threads")
 parser.add_argument('--flanking','-f',type = int, default = 1000, help = 'flanking region around breakpoint')
 parser.add_argument('--min_size','-s', type = int, default = 30, help = "min signature size")
-parser.add_argument('--chr_num','-chr',type = int, 
-					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+parser.add_argument('--chr_num','-chr',
 					default= None,
-					help = "chrmosome number;Optional; if not provided, will assume input_dir contain chr1-chr22 results")
+					help = "chromosome/contig name;Optional; if not provided, will process every chromosome found in the vcf/signature files")
 
 args = parser.parse_args()
 vcffile = args.vcffile
@@ -291,18 +290,19 @@ dc_call_del = load_vcf(vcffile,'DEL')
 
 
 if chr_num is None:
-	ins_results = Parallel(n_jobs=n_thread)(delayed(calc_ins_call_cov)(dc_call_ins['chr'+str(i)],dc_sig_ins['chr'+str(i)]) for i in tqdm(range(1,23)))
-	del_results = Parallel(n_jobs=n_thread)(delayed(calc_del_call_cov)(dc_call_del['chr'+str(i)],dc_sig_del['chr'+str(i)]) for i in tqdm(range(1,23)))
+	# process every chromosome name found across the calls/signatures
+	chrom_list = sorted(set(dc_call_ins) | set(dc_call_del) | set(dc_sig_ins) | set(dc_sig_del))
+	ins_results = Parallel(n_jobs=n_thread)(delayed(calc_ins_call_cov)(dc_call_ins[chrom],dc_sig_ins[chrom]) for chrom in tqdm(chrom_list))
+	del_results = Parallel(n_jobs=n_thread)(delayed(calc_del_call_cov)(dc_call_del[chrom],dc_sig_del[chrom]) for chrom in tqdm(chrom_list))
 else:
-	ins_results = calc_ins_call_cov(dc_call_ins['chr'+str(chr_num)],dc_sig_ins['chr'+str(chr_num)]) 
-	del_results = calc_del_call_cov(dc_call_del['chr'+str(chr_num)],dc_sig_del['chr'+str(chr_num)]) 
+	ins_results = calc_ins_call_cov(dc_call_ins[chr_num],dc_sig_ins[chr_num])
+	del_results = calc_del_call_cov(dc_call_del[chr_num],dc_sig_del[chr_num])
 
 ##### add cov back
-	
+
 if chr_num is None:
 	final_info = []
-	for i in range(22):
-		chrom = 'chr'+str(i+1)
+	for i, chrom in enumerate(chrom_list):
 		if chrom in dc_call_ins:
 			call_list = dc_call_ins[chrom]
 			dc_ins_cov = ins_results[i]
@@ -314,8 +314,7 @@ if chr_num is None:
 					cov = 0
 				final_info.append([start,end,svlen,svid,gt,svtype,cov])
 
-	for i in range(22):
-		chrom = 'chr'+str(i+1)
+	for i, chrom in enumerate(chrom_list):
 		if chrom in dc_call_del:
 			call_list = dc_call_del[chrom]
 			dc_del_cov = del_results[i]
@@ -329,7 +328,7 @@ if chr_num is None:
 
 else:
 	final_info = []
-	chrom = 'chr'+str(chr_num)
+	chrom = chr_num
 	if chrom in dc_call_ins:
 		call_list = dc_call_ins[chrom]
 		dc_ins_cov = ins_results

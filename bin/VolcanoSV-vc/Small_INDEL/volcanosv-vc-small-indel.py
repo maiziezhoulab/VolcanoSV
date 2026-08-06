@@ -3,15 +3,17 @@
 
 
 
-def merge_fasta(input_dir,outdir, chr_num= None):
-    # test_path = input_dir+"/chr"+str(1)+"/assembly/final_contigs/final_contig.p_ctg.fa"
-    # if os.path.exists(test_path):
-    # fasta_list =  [input_dir+"/chr"+str(i+1)+"/assembly/final_contigs/final_contig.p_ctg.fa" for i in range(22)]
-    # else:
-    if chr_num is None:
-        fasta_list =  [input_dir+"/chr"+str(i+1)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for i in range(22)]
+def get_chrom_list(chrom_list_file):
+    """Ordered list of chromosome/contig names to process, from --chrom_list (one name per line)."""
+    with open(chrom_list_file, 'r') as f:
+        return [line.strip() for line in f if line.strip()]
+
+def merge_fasta(input_dir,outdir, chrom_list_file, chrom_name= None):
+    if chrom_name is None:
+        chrom_list = get_chrom_list(chrom_list_file)
+        fasta_list =  [input_dir+"/"+chrom+f"/assembly/final_contigs/{prefix}_final_contigs.fa" for chrom in chrom_list]
     else:
-        fasta_list =  [input_dir+"/chr"+str(chr_num)+f"/assembly/final_contigs/{prefix}_final_contigs.fa" ]
+        fasta_list =  [input_dir+"/"+chrom_name+f"/assembly/final_contigs/{prefix}_final_contigs.fa" ]
 
     if not os.path.exists(outdir):
         os.system("mkdir -p " + outdir)
@@ -206,6 +208,7 @@ if __name__ == '__main__':
     # parser.add_argument('--ref_version','-rv', help = "reference version to decide which par.bed to use in calling (GRC37 -> hs37d5.par.bed; GRC38 or other -> hs38.bed)", choices=['37','38','other'],default = "37")
     parser.add_argument('--bedfile','-bed', help = "optional; a high confidence bed file")
     parser.add_argument('--region','-r', help = "optional; exmaple: chr21:2000000-2100000")
+    parser.add_argument('--chrom_list','-cl', required=True, help = "text file with one chromosome/contig name per line (only used when --region is not given)")
     parser.add_argument("--n_thread",'-t', help = "number pf threads",type = int, default = 50)
     parser.add_argument('--kmer_size','-k', help = "kmer size",type = int, default = 15)
     parser.add_argument("--ratio",'-rt', type = float, default = 0.3, help = "maximum bad kmer ratio")
@@ -250,9 +253,9 @@ if __name__ == '__main__':
 
     logger.info("-------------------------------Merge contigs")
     if region is None:
-        merge_fasta(input_dir,output_dir)
+        merge_fasta(input_dir,output_dir, args.chrom_list)
     else:
-        merge_fasta(input_dir,output_dir, int(region.split(':')[0][3:]))
+        merge_fasta(input_dir,output_dir, args.chrom_list, region.split(':')[0])
 
     hp1_fa = output_dir+"/hp1.fa"
     hp2_fa = output_dir+"/hp2.fa"

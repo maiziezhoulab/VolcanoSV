@@ -8,10 +8,9 @@ parser.add_argument('--bamfile','-bam', help ="only needed when presig is not pr
 parser.add_argument('--reference','-ref', help ="only needed when presig is not provided")
 parser.add_argument('--pre_cutesig','-presig', help = "pre-extracted cutesv signature directory;optional; if not provided, will generate a new one")
 parser.add_argument('--dtype','-dtype', choices = ['Hifi','CLR','ONT'])
-parser.add_argument('--chr_num','-chr',type = int, 
-					choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+parser.add_argument('--chr_num','-chr',
 					default= None,
-					help = "chrmosome number;Optional; if not provided, will assume input_dir contain chr1-chr22 results")
+					help = "chromosome/contig name;Optional; if not provided, will assume the vcf/input_dir contains whole-genome results")
 parser.add_argument('--n_thread','-t', type = int, default = 22 )
 args = parser.parse_args()
 
@@ -71,14 +70,23 @@ if pre_cutesig is None:
     if chr_num is None:
         bed_para = " "
     else:
-        # get chromosome length
+        # get chromosome length by matching its name in the .fai index
         fai_file = reference + ".fai"
+        if not os.path.exists(fai_file):
+            os.system("samtools faidx " + reference)
+        chr_len = None
         with open(fai_file,'r') as f:
-            chr_len = int(f.readlines()[chr_num -1 ].split()[1])
+            for line in f:
+                parts = line.split()
+                if parts[0] == chr_num:
+                    chr_len = int(parts[1])
+                    break
+        if chr_len is None:
+            raise ValueError(f"chromosome '{chr_num}' not found in {fai_file}")
         bed_file = new_cutesig + "/sample.bed"
         with open(bed_file, 'w') as f:
-            f.write("chr"+str(chr_num)+"\t1\t"+str(chr_len)+'\n')
-        
+            f.write(chr_num+"\t1\t"+str(chr_len)+'\n')
+
         bed_para = " -include_bed " + bed_file
 
 

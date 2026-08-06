@@ -6,7 +6,7 @@ parser = ArgumentParser(description="",
 parser.add_argument('--bam_file','-bam')
 parser.add_argument('--output_dir','-o')
 parser.add_argument('--reference','-ref')
-parser.add_argument('--chrnum','-chr', type = int, choices=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22] )
+parser.add_argument('--chrnum','-chr', help = "chromosome/contig name to process, exactly as it appears in the reference and BAM (e.g. chr10, or NC_000010.11)" )
 parser.add_argument('--bedfile','-bed')
 parser.add_argument('--inbed_assembler','-inasm', choices = ['wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'])
 parser.add_argument('--outbed_assembler','-outasm', choices = ['wtdbg2','canu','miniasm','shasta','nextdenovo','hifiasm','hicanu','flye'])
@@ -24,7 +24,7 @@ inbam=args.bam_file
 prefix=args.prefix
 reference=args.reference
 chrnum = args.chrnum
-out_dir= args.output_dir + "/chr"+str(chrnum)+"/"
+out_dir= args.output_dir + "/"+chrnum+"/"
 dtype=args.data_type
 pacbio_subtype = args.pacbio_subtype
 n_thread = args.n_thread
@@ -63,7 +63,7 @@ Popen(cmd, shell = True).wait()
 
 
 logger.info("Extract by chromosome bam...")
-cmd = f'''samtools view -b {inbam} chr{chrnum} >  {out_dir}/{prefix}.bam;
+cmd = f'''samtools view -b {inbam} {chrnum} >  {out_dir}/{prefix}.bam;
 samtools index  {out_dir}/{prefix}.bam'''
 Popen(cmd, shell = True).wait()
 
@@ -111,7 +111,7 @@ Popen(cmd, shell = True).wait()
 
 logger.info("write fastq...")
 
-write_fastqs_general(f"{out_dir}/{prefix}.bam", f"{out_dir}/assembly/", f"{out_dir}/kmer_assign/", bedfile, f"chr{chrnum}")
+write_fastqs_general(f"{out_dir}/{prefix}.bam", f"{out_dir}/assembly/", f"{out_dir}/kmer_assign/", bedfile, chrnum)
 
 
 

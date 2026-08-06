@@ -10,7 +10,7 @@ import logging
 import os
 from argparse import ArgumentParser
 parser = ArgumentParser(description="",usage='use "python3 %(prog)s --help" for more information')
-parser.add_argument('--chr_number','-chr',type = int)
+parser.add_argument('--chr_number','-chr', help = "chromosome/contig name, e.g. chr1 or NC_000001.11")
 parser.add_argument('--bam_path','-bam')
 parser.add_argument('--contig_path','-contig')
 parser.add_argument('--header_path','-header')
@@ -42,7 +42,6 @@ min_split_mapq = args.min_cigar_mapq
 
 
 
-# chr_name = "chr%d"%chr_number
 ## set logger
 logging.basicConfig(
 format='%(asctime)s %(levelname)-8s %(message)s',
@@ -766,19 +765,16 @@ signature_dir = output_dir+'/signature/'
 os.system("mkdir -p "+signature_dir)
 
 
-if chr_number is not None:
-    start_i = chr_number
-    end_i = chr_number+1 
-else:
-    start_i = 1 
-    end_i = 23
-
-
 dc_contig = load_contigs(contig_path)
 
-for i in range(start_i, end_i) :
-    chr_name = 'chr'+str(i)
-    chr_number = i
+if chr_number is not None:
+    chrom_names = [chr_number]
+else:
+    # no chromosome given: process every contig found in the reference file
+    chrom_names = list(load_contigs(ref_path).keys())
+
+for chr_name in chrom_names:
+    chr_number = chr_name
     print(chr_name)
     fw = open(signature_dir+'/%s_cigar.txt'%chr_name,'w')
     samfile = pysam.AlignmentFile(bam_path)
@@ -804,6 +800,6 @@ for i in range(start_i, end_i) :
     paired_sig_sorted = pair_sig(final_sig_hp1,final_sig_hp2,1000,200,0.5,0.5)
 
     write_vcf(paired_sig_sorted,
-              vcf_path=output_dir+"/volcano_variant_chr%d.vcf"%chr_number,
+              vcf_path=output_dir+"/volcano_variant_%s.vcf"%chr_number,
               ref_path=ref_path,
               contig_path = contig_path)
