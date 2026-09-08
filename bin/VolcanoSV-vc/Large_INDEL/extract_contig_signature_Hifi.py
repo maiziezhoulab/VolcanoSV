@@ -609,7 +609,7 @@ def load_contigs(fasta_path):
 
     for line in tqdm(s,desc='load contig'):
         if '>' in line:
-            cur_name = line[1:-1]
+            cur_name = line[1:-1].split()[0]
         else:
             if cur_name in dc:
                 dc[cur_name].append(line[:-1])
